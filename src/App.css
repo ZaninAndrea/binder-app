@@ -1,33 +1,71 @@
+body {
+    margin: 0;
+    background: #efefef;
+    overflow: hidden;
+}
+
 .App {
-  text-align: center;
+    display: grid;
+    grid-template-columns: auto 270px auto;
+    grid-template-rows: 60px 50px 370px 50px 40px auto;
+    grid-template-areas: "header header header" ". . ." ". card ." ". . ." ". footer ." ". . .";
+    height: 100vh;
+}
+.footer {
+    grid-area: footer;
+    display: flex;
+    justify-content: space-between;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+.footer button {
+    width: 40px;
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+    color: #333;
+    border-width: 2px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.card {
+    width: 200px;
+    height: 300px;
+    border: 5px solid green;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    border: solid 7px #41403e;
 }
 
-.App-link {
-  color: #61dafb;
+.front {
+    background: #b9deed;
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.back {
+    background: #b9deed;
+    border-radius: 15px 255px 15px 225px/225px 15px 255px 15px;
+}
+
+.card-enter {
+    opacity: 0.01;
+    position: relative;
+    right: 600px;
+}
+
+.card-enter.card-enter-active {
+    opacity: 1;
+    right: 0px;
+    transition: opacity 300ms ease-out, right 300ms ease-out;
+}
+
+.card-leave {
+    opacity: 1;
+    position: relative;
+    left: 0px;
+}
+
+.card-leave.card-leave-active {
+    opacity: 0.01;
+    left: 600px;
+    transition: opacity 300ms ease-in, left 300ms ease-in;
 }
