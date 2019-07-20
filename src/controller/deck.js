@@ -1,18 +1,27 @@
 const supermemo2 = require("./supermemo2.js")
 const dayjs = require("dayjs")
-let db = require("./db")
+let starterDB = require("./db")
 
 class Deck {
     constructor() {
         const now = new Date()
 
-        this.db = db
-        this.indexesToReview = db
+        let db = localStorage.getItem("db")
+
+        if (db !== null) {
+            this.db = JSON.parse(db)
+        } else {
+            this.db = starterDB
+        }
+
+        this.indexesToReview = this.db
             .filter(
                 ({ nextRepeat, isRepeatAgain }) =>
-                    (nextRepeat !== null && nextRepeat <= now) || isRepeatAgain
+                    (nextRepeat !== null && new Date(nextRepeat) <= now) ||
+                    isRepeatAgain
             )
             .map(card => card.id)
+        console.log(this.indexesToReview, this.db)
         this.currentIndex =
             this.indexesToReview.length > 0 ? this.indexesToReview[0] : null
     }
@@ -46,6 +55,7 @@ class Deck {
                   }
                 : entry
         )
+        localStorage.setItem("db", JSON.stringify(this.db))
 
         if (isRepeatAgain) {
             this.indexesToReview.push(this.currentIndex)
