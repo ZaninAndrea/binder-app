@@ -18,10 +18,17 @@ body {
 }
 
 .footer button {
-    width: 40px;
     border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
     color: #333;
     border-width: 2px;
+}
+
+.footer .gradeButton {
+    width: 40px;
+}
+
+.footer .okButton {
+    flex-grow: 1;
 }
 
 .card {
@@ -34,6 +41,10 @@ body {
     justify-content: center;
     padding: 30px;
     border: solid 7px #41403e;
+}
+
+.card.new {
+    border-color: gold;
 }
 
 .front {

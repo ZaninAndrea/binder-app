@@ -10,7 +10,7 @@ export default class Card extends React.Component {
 
     state = {
         flipped: false,
-        card: this.deck.getCard(),
+        card: this.deck.nextCard(),
         showFooter: false,
     }
 
@@ -26,7 +26,14 @@ export default class Card extends React.Component {
     onGrade = quality => {
         this.deck.grade(quality)
         this.setState({
-            card: this.deck.getCard(),
+            card: this.deck.nextCard(),
+            flipped: false,
+            showFooter: false,
+        })
+    }
+    onOk = () => {
+        this.setState({
+            card: this.deck.nextCard(),
             flipped: false,
             showFooter: false,
         })
@@ -47,16 +54,35 @@ export default class Card extends React.Component {
                             onClick={this.onFlip}
                             key={this.state.card.id}
                         >
-                            <div className="card front">
+                            <div
+                                className={
+                                    this.state.card.isNew
+                                        ? "card front new"
+                                        : "card front"
+                                }
+                            >
                                 {this.state.card.front}
                             </div>
-                            <div className="card back">
+                            <div
+                                className={
+                                    this.state.card.isNew
+                                        ? "card back new"
+                                        : "card back"
+                                }
+                            >
                                 {this.state.card.back}
                             </div>
                         </Flipcard>
                     )}
                 </CSSTransitionGroup>
-                }{this.state.showFooter && <Footer onGrade={this.onGrade} />}
+                }
+                {this.state.showFooter && (
+                    <Footer
+                        onGrade={this.onGrade}
+                        isNew={this.state.card.isNew}
+                        onOk={this.onOk}
+                    />
+                )}
             </>
         )
     }
