@@ -1,12 +1,14 @@
 import React from "react"
 import "../stylesheets/App.css"
-import Card from "./Card"
+import Sidebar from "./Sidebar"
+import Main from "./Main"
 
 class App extends React.Component {
     render() {
         return (
             <div className="App">
-                <Card />
+                <Sidebar />
+                <Main />
             </div>
         )
     }

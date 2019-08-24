@@ -1,82 +1,87 @@
 body {
     margin: 0;
-    background: #efefef;
     overflow: hidden;
+    font-family: monospace;
+}
+
+div {
+    box-sizing: border-box;
+}
+
+button {
+    outline: none;
 }
 
 .App {
     display: grid;
-    grid-template-columns: auto 270px auto;
-    grid-template-rows: 60px 50px 370px 50px 40px auto;
-    grid-template-areas: "header header header" ". . ." ". card ." ". . ." ". footer ." ". . .";
+    grid-template-columns: 270px auto;
+    grid-template-rows: auto;
+    grid-template-areas: "sidebar main";
     height: 100vh;
 }
+.sidebar {
+    grid-area: sidebar;
+    color: rgba(255, 255, 255, 0.9);
+    background: rgb(55, 60, 63);
+}
+.main {
+    grid-area: main;
+    color: rgba(255, 255, 255, 0.9);
+    background-color: rgb(47, 52, 55);
+}
+
 .footer {
-    grid-area: footer;
-    display: flex;
-    justify-content: space-between;
-}
-
-.footer button {
-    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
-    color: #333;
-    border-width: 2px;
-}
-
-.footer .gradeButton {
-    width: 40px;
-}
-
-.footer .okButton {
-    flex-grow: 1;
-}
-
-.card {
-    width: 200px;
-    height: 300px;
-    border: 5px solid green;
-    border-radius: 15px;
+    height: 96px;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.footer button {
+    display: inline-block;
+    border: none;
+    box-shadow: none;
+    height: 64px;
+    width: 64px;
+    margin: 16px 4px;
+    color: rgba(255, 255, 255, 0.9);
+    background: none;
+    font-size: 18px;
+}
+
+.footer button:hover {
+    border-radius: 32px;
+    background: rgb(55, 60, 63);
+}
+
+.card {
+    width: 100%;
+    height: calc(100% - 96px);
     padding: 30px;
-    border: solid 7px #41403e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
 }
 
-.card.new {
-    border-color: gold;
+.card .front,
+.card .back {
+    width: 100%;
+    max-width: 600px;
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.front {
-    background: #b9deed;
-    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+.card .front {
+    border-bottom: 3px dashed rgb(55, 60, 63);
 }
 
-.back {
-    background: #b9deed;
-    border-radius: 15px 255px 15px 225px/225px 15px 255px 15px;
+.card .back.hidden {
+    color: rgba(255, 255, 255, 0.5);
 }
-
-.card-enter {
-    opacity: 0.01;
-    position: relative;
-    right: 600px;
-}
-
-.card-enter.card-enter-active {
-    opacity: 1;
-    right: 0px;
-    transition: opacity 300ms ease-out, right 300ms ease-out;
-}
-
-.card-leave {
-    opacity: 1;
-    position: relative;
-    left: 0px;
-}
-
-.card-leave.card-leave-active {
-    opacity: 0.01;
-    left: 600px;
-    transition: opacity 300ms ease-in, left 300ms ease-in;
+.card .back.hidden:hover {
+    background: rgb(55, 60, 63);
 }

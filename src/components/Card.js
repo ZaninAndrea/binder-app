@@ -1,7 +1,4 @@
 import React from "react"
-import Flipcard from "@kennethormandy/react-flipcard"
-import "../stylesheets/flipcard.css"
-import { CSSTransitionGroup } from "react-transition-group" // ES6
 import Deck from "../controller/deck"
 import Footer from "./Footer"
 
@@ -17,7 +14,7 @@ export default class Card extends React.Component {
     onFlip = () => {
         this.setState(({ flipped }) => {
             return {
-                flipped: !flipped,
+                flipped: true,
                 showFooter: true,
             }
         })
@@ -42,40 +39,23 @@ export default class Card extends React.Component {
     render() {
         return (
             <>
-                <CSSTransitionGroup
-                    transitionName="card"
-                    transitionEnterTimeout={300}
-                    transitionLeaveTimeout={300}
-                    style={{ gridArea: "card" }}
-                >
-                    {this.state.card && (
-                        <Flipcard
-                            flipped={this.state.flipped}
-                            onClick={this.onFlip}
-                            key={this.state.card.id}
-                        >
+                {this.state.card && (
+                    <>
+                        <div className="card">
+                            <div className="front">{this.state.card.front}</div>
                             <div
                                 className={
-                                    this.state.card.isNew
-                                        ? "card front new"
-                                        : "card front"
+                                    this.state.flipped ? "back" : "back hidden"
                                 }
+                                onClick={this.onFlip}
                             >
-                                {this.state.card.front}
+                                {this.state.flipped
+                                    ? this.state.card.back
+                                    : "show"}
                             </div>
-                            <div
-                                className={
-                                    this.state.card.isNew
-                                        ? "card back new"
-                                        : "card back"
-                                }
-                            >
-                                {this.state.card.back}
-                            </div>
-                        </Flipcard>
-                    )}
-                </CSSTransitionGroup>
-                }
+                        </div>
+                    </>
+                )}
                 {this.state.showFooter && (
                     <Footer
                         onGrade={this.onGrade}
