@@ -44,9 +44,9 @@ export default class MobileSidebar extends React.Component {
                             <LibraryBooksIcon /> {deck.name}
                         </NavLink>
                     ))}
-                    <NavLink to={"/new-deck/"} activeClassName="active">
+                    <a onClick={this.props.createNewDeck}>
                         <LibraryAddIcon /> New Deck
-                    </NavLink>
+                    </a>
                 </div>
             </Drawer>
         )

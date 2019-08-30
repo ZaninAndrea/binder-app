@@ -13,8 +13,8 @@ export default class Card extends React.Component {
                         {/* <button onClick={() => onGrade(1)}>1</button> */}
                         <button onClick={() => onGrade(2)}>~</button>
                         {/* <button onClick={() => onGrade(3)}>3</button> */}
-                        {/* <button onClick={() => onGrade(4)}>4</button> */}
-                        <button onClick={() => onGrade(5)}>✓</button>
+                        <button onClick={() => onGrade(4)}>✓</button>
+                        {/* <button onClick={() => onGrade(5)}>5</button> */}
                     </>
                 )}
             </div>

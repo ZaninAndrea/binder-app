@@ -77,7 +77,7 @@ class Deck {
 
     learn() {
         // learning a card counts as a grade 4 recollection
-        this.indexesToReview.push(this.indexesToLearn.shift())
+        this.indexesToReview.unshift(this.indexesToLearn.shift())
         this.grade(4)
     }
 
@@ -119,18 +119,16 @@ class Deck {
 
     addCard() {
         const newCard = {
-            id: 0,
+            id: this.cards.length,
             repetitions: [],
             lastSchedule: 1,
             nextRepeat: null,
             factor: 2.5,
             isRepeatAgain: false,
         }
-        this.cards.unshift(newCard)
+        this.cards.push(newCard)
 
-        this.indexesToReview.map(id => id + 1)
-        this.indexesToLearn.map(id => id + 1)
-        this.indexesToLearn.push(0)
+        this.indexesToLearn.push(this.cards.length - 1)
 
         return newCard
     }

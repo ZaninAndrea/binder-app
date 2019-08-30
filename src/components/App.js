@@ -74,7 +74,7 @@ class App extends React.Component {
         this.setState({ bearer: null, redirectTo: "/login", decks: [] })
     }
 
-    updateDecks = () =>
+    updateDecks = (refresh = true) => {
         fetch("https://flipcards-server.herokuapp.com/user", {
             body: JSON.stringify({
                 decks: this.state.decks,
@@ -85,6 +85,26 @@ class App extends React.Component {
             },
             method: "POST",
         })
+
+        if (refresh) this.forceUpdate()
+    }
+
+    createNewDeck = () => {
+        const newId = this.state.decks.length
+        this.setState(
+            ({ decks }) => ({
+                decks: [
+                    ...decks,
+                    new Deck(
+                        { id: newId, name: "Unnamed deck", cards: [] },
+                        this.props.updateDecks
+                    ),
+                ],
+                redirectTo: "/deck/" + newId,
+            }),
+            () => this.updateDecks(false)
+        )
+    }
 
     render() {
         if (this.state.redirectTo) {
@@ -104,6 +124,7 @@ class App extends React.Component {
                         decks={this.state.decks}
                         updateDecks={this.updateDecks}
                         logout={this.logout}
+                        createNewDeck={this.createNewDeck}
                     />
                 </Desktop>
                 <Mobile>
@@ -114,6 +135,7 @@ class App extends React.Component {
                     <MobileSidebar
                         decks={this.state.decks}
                         updateDecks={this.updateDecks}
+                        createNewDeck={this.createNewDeck}
                         open={this.state.open}
                         onClose={() => this.setState({ open: false })}
                     />
@@ -135,13 +157,7 @@ class App extends React.Component {
                     {!this.state.bearer && <Redirect to="/login" />}
                     <Route path="/" exact component={loggedInComponent} />
                     <Route
-                        path={[
-                            "/review",
-                            "/learn",
-                            "/settings",
-                            "/deck",
-                            "/new-deck",
-                        ]}
+                        path={["/review", "/learn", "/settings", "/deck"]}
                         component={loggedInComponent}
                     />
                     <Route path="/login" component={notLoggedInComponent} />

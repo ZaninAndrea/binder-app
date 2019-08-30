@@ -1,5 +1,6 @@
 import React from "react"
 import EditCardModal from "../blocks/EditCardModal"
+import Markdown from "../utils/Markdown"
 
 export default class DeckPage extends React.Component {
     state = {
@@ -26,6 +27,14 @@ export default class DeckPage extends React.Component {
                 )}
                 <h1 className="deckName">{deck.name}</h1>
                 <div className="cardsList">
+                    {deck.cards.map(card => (
+                        <div
+                            key={card.id}
+                            onClick={() => this.setState({ editCard: card })}
+                        >
+                            <Markdown source={card.front} />
+                        </div>
+                    ))}
                     <div
                         key="new-card"
                         id="new-card"
@@ -37,14 +46,6 @@ export default class DeckPage extends React.Component {
                     >
                         New Card
                     </div>
-                    {deck.cards.map(card => (
-                        <div
-                            key={card.id}
-                            onClick={() => this.setState({ editCard: card })}
-                        >
-                            {card.front}
-                        </div>
-                    ))}
                 </div>
             </>
         )
