@@ -1,15 +1,17 @@
 const supermemo2 = require("./supermemo2.js")
 const dayjs = require("dayjs")
-let starterDB = require("./db")
+
+const maskArray = (arr, indexes) => [...new Set(indexes)].map(id => arr[id])
 
 class Deck {
-    constructor() {
+    constructor(deck, updateDecks) {
         const now = new Date()
-        this.loadDB()
+        this.cards = deck.cards
+        this.id = deck.id
+        this.name = deck.name
+        this.updateDecks = updateDecks
 
-        console.log(this.db)
-
-        this.indexesToReview = this.db
+        this.indexesToReview = this.cards
             .filter(
                 ({ nextRepeat, isRepeatAgain }) =>
                     (nextRepeat !== null && new Date(nextRepeat) <= now) ||
@@ -17,49 +19,35 @@ class Deck {
             )
             .map(card => card.id)
 
-        this.indexesToLearn = this.db
+        this.indexesToLearn = this.cards
             .filter(({ nextRepeat }) => nextRepeat === null)
             .map(card => card.id)
 
         this.currentIndex = null
-        this._mode = this.indexesToReview.length > 0 ? "REVIEW" : "LEARN"
     }
 
-    mode() {
-        this._mode =
-            this.indexesToReview.length >= 3
-                ? "REVIEW"
-                : this.indexesToReview.length === 0
-                ? "LEARN"
-                : this._mode
-
-        return this._mode
+    saveDB() {
+        this.updateDecks()
     }
 
-    loadDB() {
-        let db = localStorage.getItem("db")
-
-        if (db !== null) {
-            this.db = JSON.parse(db)
-        } else {
-            this.db = starterDB
-            localStorage.setItem("db", JSON.stringify(this.db))
+    toJSON() {
+        return {
+            id: this.id,
+            name: this.name,
+            cards: this.cards,
         }
-    }
-
-    saveDB(newDB) {
-        localStorage.setItem("db", JSON.stringify(newDB))
     }
 
     grade(quality) {
         let card = this.getCurrentCard()
+        this.indexesToReview.shift()
         let { isRepeatAgain, factor, schedule } = supermemo2(
             quality,
             card.lastSchedule,
             card.factor
         )
 
-        this.db = this.db.map(entry =>
+        this.cards = this.cards.map(entry =>
             entry.id === card.id
                 ? {
                       ...entry,
@@ -80,15 +68,29 @@ class Deck {
                   }
                 : entry
         )
-        this.saveDB(this.db)
+        this.saveDB()
 
         if (isRepeatAgain) {
             this.indexesToReview.push(this.currentIndex)
         }
     }
 
+    learn() {
+        // learning a card counts as a grade 4 recollection
+        this.indexesToReview.push(this.indexesToLearn.shift())
+        this.grade(4)
+    }
+
     getCurrentCard() {
-        return this.currentIndex !== null ? this.db[this.currentIndex] : null
+        return this.currentIndex !== null ? this.cards[this.currentIndex] : null
+    }
+
+    cardsToReview() {
+        return maskArray(this.cards, this.indexesToReview)
+    }
+
+    cardsToLearn() {
+        return maskArray(this.cards, this.indexesToLearn)
     }
 
     hasCardsToReview() {
@@ -99,18 +101,11 @@ class Deck {
         return this.indexesToLearn.length > 0
     }
 
-    nextCard() {
-        return this.mode() === "REVIEW"
-            ? this.nextCardToReview()
-            : this.nextCardToLearn()
-    }
-
     nextCardToReview() {
         this.currentIndex = this.hasCardsToReview()
             ? this.indexesToReview[0]
             : null
 
-        this.indexesToReview.shift()
         return { ...this.getCurrentCard(), isNew: false }
     }
 
@@ -119,7 +114,6 @@ class Deck {
             ? this.indexesToLearn[0]
             : null
 
-        this.indexesToReview.push(this.indexesToLearn.shift())
         return { ...this.getCurrentCard(), isNew: true }
     }
 }

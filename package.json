@@ -1,34 +1,43 @@
 {
-  "name": "spanish_course",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@kennethormandy/react-flipcard": "^0.4.3",
-    "dayjs": "^1.8.15",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1",
-    "react-transition-group": "1.x"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+    "name": "spanish_course",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "@material-ui/core": "^4.3.3",
+        "@material-ui/icons": "^4.2.1",
+        "dayjs": "^1.8.15",
+        "katex": "^0.11.0",
+        "react": "^16.8.6",
+        "react-dom": "^16.8.6",
+        "react-router-dom": "^5.0.1",
+        "react-scripts": "3.0.1",
+        "rehype-katex": "^1.2.0",
+        "rehype-stringify": "^6.0.0",
+        "remark-html": "^10.0.0",
+        "remark-math": "^1.0.6",
+        "remark-parse": "^7.0.1",
+        "remark-rehype": "^5.0.0",
+        "unified": "^8.3.2"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject"
+    },
+    "eslintConfig": {
+        "extends": "react-app"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    }
 }
