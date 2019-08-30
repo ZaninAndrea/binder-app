@@ -40,14 +40,17 @@ class App extends React.Component {
         this.setState({ bearer, redirectTo })
         localStorage.setItem("bearer", bearer)
 
-        let { decks } = await fetch("http://localhost:5000/user", {
-            headers: {
-                Authorization: "Bearer " + bearer,
-            },
-        }).then(res => res.json())
+        let { decks } = await fetch(
+            "https://flipcards-server.herokuapp.com/user",
+            {
+                headers: {
+                    Authorization: "Bearer " + bearer,
+                },
+            }
+        ).then(res => res.json())
 
         if (!decks) {
-            await fetch("http://localhost:5000/user", {
+            await fetch("https://flipcards-server.herokuapp.com/user", {
                 body: JSON.stringify({
                     decks: starterDB.decks,
                 }),
@@ -72,7 +75,7 @@ class App extends React.Component {
     }
 
     updateDecks = () =>
-        fetch("http://localhost:5000/user", {
+        fetch("https://flipcards-server.herokuapp.com/user", {
             body: JSON.stringify({
                 decks: this.state.decks,
             }),

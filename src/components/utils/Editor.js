@@ -1,6 +1,7 @@
 import React from "react"
 import Markdown from "./Markdown"
 import Cursor from "./Cursor"
+import ClickAwayListener from "@material-ui/core/ClickAwayListener"
 
 function Char({ text, pos, onCharClick }) {
     if (text === "\n") return <br />
@@ -75,49 +76,82 @@ class Editor extends React.Component {
     state = {
         text: "",
         curPos: 0,
+        focused: false,
     }
 
-    constructor() {
-        super()
-        document.onkeypress = e => {
-            e = e || window.event
+    constructor(props) {
+        super(props)
 
-            const newChar = e.key === "Enter" ? "\n" : e.key
+        document.addEventListener("keypress", this.onKeyPress)
+        document.addEventListener("keydown", this.onKeyDown)
 
-            this.setState(({ text, curPos }) => ({
-                text: text.slice(0, curPos) + newChar + text.slice(curPos),
+        this.state.text = props.value || ""
+    }
+
+    onKeyPress = e => {
+        if (!this.state.focused) return
+
+        e = e || window.event
+
+        const newChar = e.key === "Enter" ? "\n" : e.key
+
+        this.setState(({ text, curPos }) => {
+            const newText = text.slice(0, curPos) + newChar + text.slice(curPos)
+            this.props.onTextUpdate(newText)
+
+            return {
+                text: newText,
                 curPos: curPos + 1,
+            }
+        })
+
+        e.preventDefault()
+    }
+
+    onKeyDown = e => {
+        if (!this.state.focused) return
+
+        e = e || window.event
+
+        if (e.key === "Backspace")
+            this.setState(({ text, curPos }) => {
+                const newText =
+                    curPos !== 0
+                        ? text.slice(0, curPos - 1) + text.slice(curPos)
+                        : text
+
+                this.props.onTextUpdate(newText)
+                return {
+                    text: newText,
+                    curPos: curPos !== 0 ? curPos - 1 : curPos,
+                }
+            })
+        if (e.key === "Delete")
+            this.setState(({ text, curPos }) => {
+                const newText =
+                    curPos !== text.length
+                        ? text.slice(0, curPos) + text.slice(curPos + 1)
+                        : text
+
+                this.props.onTextUpdate(newText)
+
+                return {
+                    text: newText,
+                }
+            })
+        if (e.key === "ArrowLeft")
+            this.setState(({ curPos }) => ({
+                curPos: curPos !== 0 ? curPos - 1 : curPos,
             }))
-        }
+        if (e.key === "ArrowRight")
+            this.setState(({ text, curPos }) => ({
+                curPos: curPos !== text.length ? curPos + 1 : curPos,
+            }))
+    }
 
-        document.onkeydown = e => {
-            e = e || window.event
-
-            console.log(e)
-            if (e.key === "Backspace")
-                this.setState(({ text, curPos }) => ({
-                    text:
-                        curPos !== 0
-                            ? text.slice(0, curPos - 1) + text.slice(curPos)
-                            : text,
-                    curPos: curPos !== 0 ? curPos - 1 : curPos,
-                }))
-            if (e.key === "Delete")
-                this.setState(({ text, curPos }) => ({
-                    text:
-                        curPos !== text.length
-                            ? text.slice(0, curPos) + text.slice(curPos + 1)
-                            : text,
-                }))
-            if (e.key === "ArrowLeft")
-                this.setState(({ curPos }) => ({
-                    curPos: curPos !== 0 ? curPos - 1 : curPos,
-                }))
-            if (e.key === "ArrowRight")
-                this.setState(({ text, curPos }) => ({
-                    curPos: curPos !== text.length ? curPos + 1 : curPos,
-                }))
-        }
+    componentWillUnmount = () => {
+        document.removeEventListener("keypress", this.onKeyPress)
+        document.removeEventListener("keydown", this.onKeyDown)
     }
 
     onCharClick = n => e => {
@@ -126,56 +160,67 @@ class Editor extends React.Component {
         this.setState({
             curPos: e.clientX - left < right - e.clientX ? n : n + 1,
         })
+
+        e.preventDefault()
     }
 
     render() {
         const { text, curPos } = this.state
 
         const paragraphs = split(text, curPos)
-        console.log(paragraphs)
 
         return (
-            <div className="editor">
-                {paragraphs.map(({ text, active, startCurPos }, i) =>
-                    active ? (
-                        <p className="active" key={"paragraph_" + i}>
-                            {text
-                                .slice(0, curPos - startCurPos)
-                                .split("")
-                                .map((char, i) => (
-                                    <Char
-                                        onCharClick={this.onCharClick}
-                                        pos={startCurPos + 1}
-                                        key={startCurPos + 1}
-                                        text={char}
-                                    />
-                                ))}
-                            <Cursor key={"cursor" + curPos} />
-                            {text
-                                .slice(curPos - startCurPos)
-                                .split("")
-                                .map((char, i) => (
-                                    <Char
-                                        onCharClick={this.onCharClick}
-                                        pos={curPos + i}
-                                        key={curPos + i}
-                                        text={char}
-                                    />
-                                ))}
-                        </p>
-                    ) : (
-                        <div
-                            key={"paragraph_" + i}
-                            onClick={() => {
-                                this.setState({ curPos: startCurPos })
-                            }}
-                            className="paragraph"
-                        >
-                            <Markdown source={text} />
-                        </div>
-                    )
-                )}
-            </div>
+            <ClickAwayListener
+                onClickAway={() => this.setState({ focused: false })}
+                mouseEvent="onMouseDown"
+            >
+                <div
+                    className="editor"
+                    onClick={() => this.setState({ focused: true })}
+                >
+                    {paragraphs.map(({ text, active, startCurPos }, i) =>
+                        active && this.state.focused ? (
+                            <p className="active" key={"paragraph_" + i}>
+                                {text
+                                    .slice(0, curPos - startCurPos)
+                                    .split("")
+                                    .map((char, i) => (
+                                        <Char
+                                            onCharClick={this.onCharClick}
+                                            pos={startCurPos + 1}
+                                            key={startCurPos + 1}
+                                            text={char}
+                                        />
+                                    ))}
+                                {this.state.focused && (
+                                    <Cursor key={"cursor" + curPos} />
+                                )}
+                                {text
+                                    .slice(curPos - startCurPos)
+                                    .split("")
+                                    .map((char, i) => (
+                                        <Char
+                                            onCharClick={this.onCharClick}
+                                            pos={curPos + i}
+                                            key={curPos + i}
+                                            text={char}
+                                        />
+                                    ))}
+                            </p>
+                        ) : (
+                            <div
+                                key={"paragraph_" + i}
+                                onClick={() => {
+                                    this.setState({ curPos: startCurPos })
+                                }}
+                                className="paragraph"
+                            >
+                                <Markdown source={text} />
+                            </div>
+                        )
+                    )}
+                </div>
+            </ClickAwayListener>
         )
     }
 }

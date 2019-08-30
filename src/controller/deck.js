@@ -116,6 +116,24 @@ class Deck {
 
         return { ...this.getCurrentCard(), isNew: true }
     }
+
+    addCard() {
+        const newCard = {
+            id: 0,
+            repetitions: [],
+            lastSchedule: 1,
+            nextRepeat: null,
+            factor: 2.5,
+            isRepeatAgain: false,
+        }
+        this.cards.unshift(newCard)
+
+        this.indexesToReview.map(id => id + 1)
+        this.indexesToLearn.map(id => id + 1)
+        this.indexesToLearn.push(0)
+
+        return newCard
+    }
 }
 
 export default Deck

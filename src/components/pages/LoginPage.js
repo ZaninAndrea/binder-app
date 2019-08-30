@@ -7,16 +7,19 @@ export default class LoginPage extends React.Component {
     }
 
     login = async () => {
-        const res = await fetch("http://localhost:5000/login", {
-            body: JSON.stringify({
-                email: this.state.email,
-                password: this.state.password,
-            }),
-            headers: {
-                "content-type": "application/json",
-            },
-            method: "POST",
-        }).then(res => res.text())
+        const res = await fetch(
+            "https://flipcards-server.herokuapp.com/login",
+            {
+                body: JSON.stringify({
+                    email: this.state.email,
+                    password: this.state.password,
+                }),
+                headers: {
+                    "content-type": "application/json",
+                },
+                method: "POST",
+            }
+        ).then(res => res.text())
 
         this.props.setBearer(res)
     }

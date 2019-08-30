@@ -11,7 +11,10 @@ class Main extends React.Component {
         )
         const learnPathComponent = () => <LearnPage decks={this.props.decks} />
         const deckPage = ({ match }) => (
-            <DeckPage deck={this.props.decks[match.params.deckId]} />
+            <DeckPage
+                deck={this.props.decks[match.params.deckId]}
+                updateDecks={this.props.updateDecks}
+            />
         )
 
         return (
