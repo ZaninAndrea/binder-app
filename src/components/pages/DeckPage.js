@@ -168,7 +168,14 @@ export default class DeckPage extends React.Component {
                             key={card.id}
                             onClick={() => this.setState({ editCard: card })}
                         >
-                            <Markdown source={card.front} />
+                            {card.front && (
+                                <Markdown
+                                    source={card.front
+                                        .split("\n")[0]
+                                        .replace(new RegExp("^#+", "g"), "")
+                                        .trim()}
+                                />
+                            )}
                         </div>
                     ))}
                     <div

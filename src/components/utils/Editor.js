@@ -1,15 +1,9 @@
 import React from "react"
 import Markdown from "./Markdown"
-import Cursor from "./Cursor"
 import ClickAwayListener from "@material-ui/core/ClickAwayListener"
+import TextareaAutosize from "@material-ui/core/TextareaAutosize"
 
-function Char({ text, pos, onCharClick }) {
-    if (text === "\n") return <br />
-
-    return <span onClick={onCharClick(pos)}>{text}</span>
-}
-
-function split(text, curPos) {
+function split(text) {
     let lines = text.split("\n")
     let paragraphs = []
 
@@ -17,26 +11,9 @@ function split(text, curPos) {
     let accumulatingLatex = false
     let accumulatedLine = ""
 
-    let accumulatedCurPos = 0
-    let previousCurPos = 0
-    let alreadyFoundActive = false
-    let isActive = false
-
     for (let line of lines) {
-        accumulatedCurPos += line.length + 1
-        if (!alreadyFoundActive && accumulatedCurPos > curPos) {
-            isActive = true
-            alreadyFoundActive = true
-        }
-
         if (!accumulatingLatex && !line.startsWith("$$")) {
-            paragraphs.push({
-                active: isActive,
-                text: line,
-                startCurPos: previousCurPos,
-            })
-            isActive = false
-            previousCurPos = accumulatedCurPos
+            paragraphs.push(line)
 
             continue
         } else if (!accumulatingLatex && line.startsWith("$$")) {
@@ -49,24 +26,14 @@ function split(text, curPos) {
         } else if (accumulatingLatex && line.startsWith("$$")) {
             accumulatedLine += "\n" + line
             accumulatingLatex = false
-            paragraphs.push({
-                active: isActive,
-                text: accumulatedLine,
-                startCurPos: previousCurPos,
-            })
+            paragraphs.push(accumulatedLine)
             accumulatedLine = ""
-            isActive = false
-            previousCurPos = accumulatedCurPos
             continue
         }
     }
 
     if (accumulatingLatex) {
-        paragraphs.push({
-            active: isActive,
-            text: accumulatedLine,
-            startCurPos: previousCurPos,
-        })
+        paragraphs.push(accumulatedLine)
     }
 
     return paragraphs
@@ -75,144 +42,204 @@ function split(text, curPos) {
 class Editor extends React.Component {
     state = {
         text: "",
-        curPos: 0,
+        curParagraph: 0,
         focused: false,
+        curSelection: 0,
     }
+
+    setSelection = true
 
     constructor(props) {
         super(props)
 
-        document.addEventListener("keypress", this.onKeyPress)
-        document.addEventListener("keydown", this.onKeyDown)
-
         this.state.text = props.value || ""
     }
 
-    onKeyPress = e => {
-        if (!this.state.focused) return
+    getText = () => (this.textarea ? this.textarea.value : null)
 
-        e = e || window.event
+    selectParagraph = i => () => {
+        if (this.state.focused) {
+            let paragraphs = split(this.state.text)
 
-        const newChar = e.key === "Enter" ? "\n" : e.key
-
-        this.setState(({ text, curPos }) => {
-            const newText = text.slice(0, curPos) + newChar + text.slice(curPos)
+            paragraphs[this.state.curParagraph] = this.getText()
+            const newText = paragraphs.join("\n")
             this.props.onTextUpdate(newText)
 
-            return {
+            this.setState({
+                curParagraph: i,
                 text: newText,
-                curPos: curPos + 1,
-            }
-        })
+                curSelection: 0,
+            })
+            this.setSelection = true
+        } else {
+            this.setState({
+                curParagraph: i,
+                curSelection: 0,
+            })
+            this.setSelection = true
+        }
+    }
 
-        e.preventDefault()
+    onKeyUp = e => {
+        if (e.key === "Enter") {
+            let paragraphs = split(this.state.text)
+            paragraphs[this.state.curParagraph] = this.getText()
+            const newText = paragraphs.join("\n")
+            this.props.onTextUpdate(newText)
+
+            this.setState(({ curParagraph }) => ({
+                text: newText,
+                curParagraph: curParagraph + 1,
+                curSelection: 0,
+            }))
+            this.setSelection = true
+        }
     }
 
     onKeyDown = e => {
-        if (!this.state.focused) return
+        if (
+            e.key === "Backspace" &&
+            this.textarea.selectionEnd === 0 &&
+            this.state.curParagraph !== 0
+        ) {
+            let paragraphs = split(this.state.text)
+            paragraphs.splice(this.state.curParagraph)
 
-        e = e || window.event
+            let curSelection = paragraphs[this.state.curParagraph - 1].length
+            paragraphs[this.state.curParagraph - 1] += this.getText()
 
-        if (e.key === "Backspace")
-            this.setState(({ text, curPos }) => {
-                const newText =
-                    curPos !== 0
-                        ? text.slice(0, curPos - 1) + text.slice(curPos)
-                        : text
+            const newText = paragraphs.join("\n")
+            this.props.onTextUpdate(newText)
 
-                this.props.onTextUpdate(newText)
-                return {
-                    text: newText,
-                    curPos: curPos !== 0 ? curPos - 1 : curPos,
-                }
-            })
-        if (e.key === "Delete")
-            this.setState(({ text, curPos }) => {
-                const newText =
-                    curPos !== text.length
-                        ? text.slice(0, curPos) + text.slice(curPos + 1)
-                        : text
-
-                this.props.onTextUpdate(newText)
-
-                return {
-                    text: newText,
-                }
-            })
-        if (e.key === "ArrowLeft")
-            this.setState(({ curPos }) => ({
-                curPos: curPos !== 0 ? curPos - 1 : curPos,
+            this.setState(({ curParagraph }) => ({
+                text: newText,
+                curParagraph: curParagraph - 1,
+                curSelection,
             }))
-        if (e.key === "ArrowRight")
-            this.setState(({ text, curPos }) => ({
-                curPos: curPos !== text.length ? curPos + 1 : curPos,
+            this.setSelection = true
+
+            e.preventDefault()
+        } else if (
+            e.key === "Delete" &&
+            this.textarea.selectionStart === this.textarea.value.length &&
+            this.state.curParagraph !== split(this.state.text).length - 1
+        ) {
+            let paragraphs = split(this.state.text)
+            const nextLine = paragraphs.splice(this.state.curParagraph + 1)[0]
+            const currentLine = this.getText()
+
+            paragraphs[this.state.curParagraph] = currentLine + nextLine
+
+            const newText = paragraphs.join("\n")
+            this.props.onTextUpdate(newText)
+
+            this.setState(({ curParagraph }) => ({
+                text: newText,
+                curParagraph: curParagraph,
+                curSelection: currentLine.length,
             }))
-    }
+            this.setSelection = true
+            e.preventDefault()
+        } else if (
+            e.key === "ArrowLeft" &&
+            this.textarea.selectionEnd === 0 &&
+            this.state.curParagraph !== 0
+        ) {
+            let paragraphs = split(this.state.text)
+            let curSelection = paragraphs[this.state.curParagraph - 1].length
+            paragraphs[this.state.curParagraph] = this.getText()
 
-    componentWillUnmount = () => {
-        document.removeEventListener("keypress", this.onKeyPress)
-        document.removeEventListener("keydown", this.onKeyDown)
-    }
+            const newText = paragraphs.join("\n")
+            this.props.onTextUpdate(newText)
 
-    onCharClick = n => e => {
-        const { left, right } = e.target.getBoundingClientRect()
+            this.setState(({ curParagraph }) => ({
+                text: newText,
+                curParagraph: curParagraph - 1,
+                curSelection,
+            }))
+            this.setSelection = true
 
-        this.setState({
-            curPos: e.clientX - left < right - e.clientX ? n : n + 1,
-        })
+            e.preventDefault()
+        } else if (
+            e.key === "ArrowRight" &&
+            this.textarea.selectionStart === this.textarea.value.length &&
+            this.state.curParagraph !== split(this.state.text).length - 1
+        ) {
+            let paragraphs = split(this.state.text)
+            paragraphs[this.state.curParagraph] = this.getText()
 
-        e.preventDefault()
+            const newText = paragraphs.join("\n")
+            this.props.onTextUpdate(newText)
+
+            this.setState(({ curParagraph }) => ({
+                text: newText,
+                curParagraph: curParagraph + 1,
+                curSelection: 0,
+            }))
+            this.setSelection = true
+
+            e.preventDefault()
+        }
     }
 
     render() {
-        const { text, curPos } = this.state
+        const { text, curParagraph } = this.state
 
-        const paragraphs = split(text, curPos)
+        const paragraphs = split(text)
 
         return (
             <ClickAwayListener
-                onClickAway={() => this.setState({ focused: false })}
+                onClickAway={() => {
+                    if (this.state.focused) {
+                        let paragraphs = split(this.state.text)
+                        paragraphs[this.state.curParagraph] = this.getText()
+
+                        const newText = paragraphs.join("\n")
+                        this.props.onTextUpdate(newText)
+
+                        this.setState({
+                            text: newText,
+                            focused: false,
+                        })
+
+                        this.textarea = null
+                    }
+                }}
                 mouseEvent="onMouseDown"
             >
                 <div
                     className="editor"
                     onClick={() => this.setState({ focused: true })}
                 >
-                    {paragraphs.map(({ text, active, startCurPos }, i) =>
-                        active && this.state.focused ? (
-                            <p className="active" key={"paragraph_" + i}>
-                                {text
-                                    .slice(0, curPos - startCurPos)
-                                    .split("")
-                                    .map((char, i) => (
-                                        <Char
-                                            onCharClick={this.onCharClick}
-                                            pos={startCurPos + 1}
-                                            key={startCurPos + 1}
-                                            text={char}
-                                        />
-                                    ))}
-                                {this.state.focused && (
-                                    <Cursor key={"cursor" + curPos} />
-                                )}
-                                {text
-                                    .slice(curPos - startCurPos)
-                                    .split("")
-                                    .map((char, i) => (
-                                        <Char
-                                            onCharClick={this.onCharClick}
-                                            pos={curPos + i}
-                                            key={curPos + i}
-                                            text={char}
-                                        />
-                                    ))}
+                    {paragraphs.map((text, i) =>
+                        i === curParagraph && this.state.focused ? (
+                            <p
+                                className="paragraph active"
+                                key={"paragraph_" + i}
+                            >
+                                <TextareaAutosize
+                                    defaultValue={text}
+                                    key={text}
+                                    ref={el => {
+                                        this.textarea = el
+                                        if (el !== null) {
+                                            el.focus()
+
+                                            if (this.setSelection) {
+                                                el.selectionStart = this.state.curSelection
+                                                el.selectionEnd = this.state.curSelection
+                                                this.setSelection = false
+                                            }
+                                        }
+                                    }}
+                                    onKeyUp={this.onKeyUp}
+                                    onKeyDown={this.onKeyDown}
+                                />
                             </p>
                         ) : (
                             <div
                                 key={"paragraph_" + i}
-                                onClick={() => {
-                                    this.setState({ curPos: startCurPos })
-                                }}
+                                onClick={this.selectParagraph(i)}
                                 className="paragraph"
                             >
                                 <Markdown source={text} />
