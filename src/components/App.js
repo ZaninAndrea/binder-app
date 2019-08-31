@@ -8,6 +8,22 @@ import { BrowserRouter as Router, Route, Redirect } from "react-router-dom"
 import Deck from "../controller/deck"
 import LoginPage from "./pages/LoginPage"
 import { Mobile, Desktop } from "./utils/MobileDesktop"
+import { createMuiTheme } from "@material-ui/core"
+import { ThemeProvider } from "@material-ui/styles"
+
+const theme = createMuiTheme({
+    props: {
+        // Name of the component ⚛️
+        MuiButtonBase: {
+            // The properties to apply
+            disableRipple: true, // No more ripple, on the whole application 💣!
+        },
+    },
+    transitions: {
+        // So we have `transition: none;` everywhere
+        create: () => "none",
+    },
+})
 
 let starterDB = require("../controller/db")
 
@@ -76,8 +92,20 @@ class App extends React.Component {
         if (refresh) this.forceUpdate()
     }
 
+    deleteDeck = deletedId => () => {
+        this.setState(
+            ({ decks }) => ({
+                decks: decks.filter(
+                    ({ id }) => id.toString() !== deletedId.toString()
+                ),
+                redirectTo: "/",
+            }),
+            () => this.updateDecks(false)
+        )
+    }
+
     createNewDeck = () => {
-        const newId = this.state.decks.length
+        const newId = this.state.decks.length.toString()
         this.setState(
             ({ decks }) => ({
                 decks: [
@@ -131,6 +159,7 @@ class App extends React.Component {
                     decks={this.state.decks}
                     updateDecks={this.updateDecks}
                     isMobile={false}
+                    deleteDeck={this.deleteDeck}
                 />
             </>
         )
@@ -139,17 +168,19 @@ class App extends React.Component {
         )
 
         return (
-            <Router>
-                <div className="App">
-                    {!this.state.bearer && <Redirect to="/login" />}
-                    <Route path="/" exact component={loggedInComponent} />
-                    <Route
-                        path={["/review", "/learn", "/settings", "/deck"]}
-                        component={loggedInComponent}
-                    />
-                    <Route path="/login" component={notLoggedInComponent} />
-                </div>
-            </Router>
+            <ThemeProvider theme={theme}>
+                <Router>
+                    <div className="App">
+                        {!this.state.bearer && <Redirect to="/login" />}
+                        <Route path="/" exact component={loggedInComponent} />
+                        <Route
+                            path={["/review", "/learn", "/settings", "/deck"]}
+                            component={loggedInComponent}
+                        />
+                        <Route path="/login" component={notLoggedInComponent} />
+                    </div>
+                </Router>
+            </ThemeProvider>
         )
     }
 }

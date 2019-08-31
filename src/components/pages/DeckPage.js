@@ -2,10 +2,18 @@ import React from "react"
 import EditCardModal from "../blocks/EditCardModal"
 import Markdown from "../utils/Markdown"
 import MoreIcon from "@material-ui/icons/MoreHoriz"
+import DeleteIcon from "@material-ui/icons/Delete"
+import Menu from "@material-ui/core/Menu"
+import MenuItem from "@material-ui/core/MenuItem"
+import InboxIcon from "@material-ui/icons/Inbox"
+import SchoolIcon from "@material-ui/icons/School"
+import WarningIcon from "@material-ui/icons/Warning"
 
 export default class DeckPage extends React.Component {
     state = {
         editCard: null,
+        anchorEl: null,
+        wantsToDelete: false,
     }
 
     onCloseEditModal = () => {
@@ -40,6 +48,9 @@ export default class DeckPage extends React.Component {
         const recallAccuracy =
             reps === 0 ? 100 : Math.round((100 * correct) / reps)
 
+        const nCardsToReview = deck.cardsToReview().length
+        const nCardsToLearn = deck.cardsToLearn().length
+
         return (
             <>
                 {this.state.editCard && (
@@ -56,9 +67,74 @@ export default class DeckPage extends React.Component {
                             this.props.updateDecks()
                         }}
                     />
-                    <div>
+                    <div
+                        onClick={e =>
+                            this.setState({
+                                anchorEl: e.currentTarget,
+                            })
+                        }
+                    >
                         <MoreIcon />
                     </div>
+                    <Menu
+                        id="deck-menu"
+                        anchorEl={this.state.anchorEl}
+                        open={!!this.state.anchorEl}
+                        onClose={() => this.setState({ anchorEl: null })}
+                    >
+                        <MenuItem
+                            onClick={() => {
+                                this.setState({ anchorEl: null })
+                            }}
+                            disabled={!nCardsToReview}
+                        >
+                            <InboxIcon />
+                            Review {!!nCardsToReview && `( ${nCardsToReview} )`}
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                this.setState({ anchorEl: null })
+                            }}
+                            disabled={!nCardsToLearn}
+                        >
+                            <SchoolIcon />
+                            Learn {!!nCardsToLearn && `( ${nCardsToLearn} )`}
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                let shouldDelete = false
+                                this.setState(
+                                    ({ wantsToDelete }) => {
+                                        if (wantsToDelete) {
+                                            shouldDelete = true
+                                            return { anchorEl: null }
+                                        } else return { wantsToDelete: true }
+                                    },
+                                    () => {
+                                        if (shouldDelete)
+                                            this.props.deleteDeck()
+                                    }
+                                )
+                            }}
+                            style={
+                                this.state.wantsToDelete
+                                    ? { color: "rgb(255, 115, 105)" }
+                                    : {}
+                            }
+                        >
+                            {this.state.wantsToDelete ? (
+                                <>
+                                    <WarningIcon />
+                                    Confirm
+                                </>
+                            ) : (
+                                <>
+                                    <DeleteIcon />
+                                    Delete
+                                </>
+                            )}
+                        </MenuItem>
+                    </Menu>
                 </h1>
                 <div className="stats">
                     <div className="stats-learned">

@@ -376,3 +376,20 @@ a {
 .stats-recall .bar .fill {
     background: rgb(154, 109, 215);
 }
+
+.MuiMenu-list,
+.MuiMenu-paper {
+    background: rgb(47, 52, 55) !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.MuiListItem-root {
+    font-family: "Montserrat", sans-serif !important;
+}
+.MuiListItem-root:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.MuiListItem-root svg {
+    margin-right: 6px;
+}

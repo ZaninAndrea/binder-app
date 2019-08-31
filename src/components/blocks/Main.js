@@ -14,6 +14,7 @@ class Main extends React.Component {
             <DeckPage
                 deck={this.props.decks[match.params.deckId]}
                 updateDecks={this.props.updateDecks}
+                deleteDeck={this.props.deleteDeck(match.params.deckId)}
             />
         )
 
