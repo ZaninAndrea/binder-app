@@ -7,22 +7,9 @@ import Header from "./blocks/Header"
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom"
 import Deck from "../controller/deck"
 import LoginPage from "./pages/LoginPage"
-import useMediaQuery from "@material-ui/core/useMediaQuery"
+import { Mobile, Desktop } from "./utils/MobileDesktop"
 
 let starterDB = require("../controller/db")
-
-function Mobile({ children }) {
-    const isMobile = useMediaQuery("(max-width:866px)")
-
-    if (isMobile) return <>{children}</>
-    else return ""
-}
-function Desktop({ children }) {
-    const isDesktop = useMediaQuery("(min-width:867px)")
-
-    if (isDesktop) return <>{children}</>
-    else return ""
-}
 
 class App extends React.Component {
     state = {

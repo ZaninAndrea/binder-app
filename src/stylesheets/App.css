@@ -13,7 +13,8 @@ p {
     box-sizing: border-box;
 }
 
-button {
+button,
+input {
     outline: none;
 }
 
@@ -140,7 +141,7 @@ a {
     justify-content: center;
     flex-wrap: wrap;
     width: 100%;
-    height: calc(100vh - 81px);
+    height: calc(100vh - 81px - 51px);
     overflow: auto;
     padding: 0 calc((100vw - 270px - 890px) / 2);
 }
@@ -297,4 +298,81 @@ a {
 }
 .editor-container .back {
     padding: 30px 0 0 0;
+}
+
+.deckName {
+    display: flex;
+    align-items: center;
+}
+
+.deckName input {
+    font: inherit;
+    background: unset;
+    box-shadow: unset;
+    border: 0;
+    color: inherit;
+    padding: 0;
+    flex-grow: 1;
+}
+
+.deckName div {
+    font-weight: 300;
+    color: rgb(255, 255, 255, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    box-shadow: none;
+    height: 38px;
+    width: 38px;
+    color: rgba(255, 255, 255, 0.9);
+    background: none;
+    font-size: 18px;
+}
+
+.deckName div:hover {
+    border-radius: 19px;
+    background: rgb(47, 52, 55);
+}
+
+.stats {
+    margin: 0 auto 15px auto;
+    max-width: 850px;
+    width: calc(100% - 60px);
+    height: 36px;
+    display: flex;
+    color: rgb(255, 255, 255, 0.65);
+}
+
+.stats-learned,
+.stats-recall {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: calc(50% - 10px);
+}
+.stats-recall {
+    margin-left: 10px;
+}
+.stats-learned {
+    margin-right: 10px;
+}
+
+.bar {
+    width: 100%;
+    margin-bottom: 10px;
+    height: 6px;
+    border-radius: 3px;
+    background: rgb(255, 255, 255, 0.2);
+}
+.bar .fill {
+    height: 6px;
+    border-radius: 3px;
+}
+.stats-learned .bar .fill {
+    background: rgb(82, 156, 202);
+}
+
+.stats-recall .bar .fill {
+    background: rgb(154, 109, 215);
 }
