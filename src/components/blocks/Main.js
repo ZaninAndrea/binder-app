@@ -15,6 +15,8 @@ class Main extends React.Component {
                 deck={this.props.decks[match.params.deckId]}
                 updateDecks={this.props.updateDecks}
                 deleteDeck={this.props.deleteDeck(match.params.deckId)}
+                setBackToPage={this.props.setBackToPage}
+                redirectTo={this.props.redirectTo}
             />
         )
 
@@ -22,7 +24,21 @@ class Main extends React.Component {
             <div className="main">
                 <Route path="/review" component={reviewPathComponent} exact />
                 <Route path="/learn" component={learnPathComponent} exact />
-                <Route path="/deck/:deckId" component={deckPage} />
+                <Route path="/deck/:deckId" component={deckPage} exact />
+                <Route
+                    path="/deck/:deckId/learn"
+                    component={({ match }) => {
+                        if (!this.props.decks[match.params.deckId]) return ""
+
+                        return (
+                            <LearnPage
+                                decks={[this.props.decks[match.params.deckId]]}
+                                backTo={`/deck/${match.params.deckId}`}
+                            />
+                        )
+                    }}
+                    exact
+                />
             </div>
         )
     }

@@ -19,7 +19,7 @@ class Sidebar extends React.Component {
         return (
             <div className="sidebar">
                 <div id="flipcardHeader">
-                    <span id="flipcardTitle">Flipcards</span>
+                    <span id="flipcardTitle">Binder</span>
                     <ExitToApp id="logoutButton" onClick={this.props.logout} />
                 </div>
                 <NavLink to="/review" activeClassName="active">

@@ -121,7 +121,7 @@ class Deck {
         const newCard = {
             id: this.cards.length,
             repetitions: [],
-            lastSchedule: 1,
+            lastSchedule: null,
             nextRepeat: null,
             factor: 2.5,
             isRepeatAgain: false,

@@ -8,6 +8,7 @@ import MenuItem from "@material-ui/core/MenuItem"
 import InboxIcon from "@material-ui/icons/Inbox"
 import SchoolIcon from "@material-ui/icons/School"
 import WarningIcon from "@material-ui/icons/Warning"
+import Loop from "@material-ui/icons/Loop"
 
 export default class DeckPage extends React.Component {
     state = {
@@ -84,6 +85,27 @@ export default class DeckPage extends React.Component {
                     >
                         <MenuItem
                             onClick={() => {
+                                this.props.redirectTo(
+                                    `/deck/${this.props.deck.id}/learn`
+                                )
+                                this.props.setBackToPage(
+                                    `/deck/${this.props.deck.id}`
+                                )
+                                this.setState({ anchorEl: null })
+                            }}
+                            disabled={!nCardsToLearn}
+                        >
+                            <SchoolIcon />
+                            Learn {!!nCardsToLearn && `( ${nCardsToLearn} )`}
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                this.props.redirectTo(
+                                    `/deck/${this.props.deck.id}/review`
+                                )
+                                this.props.setBackToPage(
+                                    `/deck/${this.props.deck.id}`
+                                )
                                 this.setState({ anchorEl: null })
                             }}
                             disabled={!nCardsToReview}
@@ -93,12 +115,17 @@ export default class DeckPage extends React.Component {
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
+                                this.props.redirectTo(
+                                    `/deck/${this.props.deck.id}/cram`
+                                )
+                                this.props.setBackToPage(
+                                    `/deck/${this.props.deck.id}`
+                                )
                                 this.setState({ anchorEl: null })
                             }}
-                            disabled={!nCardsToLearn}
                         >
-                            <SchoolIcon />
-                            Learn {!!nCardsToLearn && `( ${nCardsToLearn} )`}
+                            <Loop />
+                            Cram review
                         </MenuItem>
                         <MenuItem
                             onClick={() => {

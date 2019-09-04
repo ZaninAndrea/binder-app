@@ -32,6 +32,7 @@ class App extends React.Component {
         decks: [],
         bearer: null,
         open: false,
+        backToPage: null,
     }
 
     componentWillMount() {
@@ -146,6 +147,13 @@ class App extends React.Component {
                     <Header
                         logout={this.logout}
                         openSidebar={() => this.setState({ open: true })}
+                        backToPage={this.state.backToPage}
+                        redirectTo={location =>
+                            this.setState({ redirectTo: location })
+                        }
+                        setBackToPage={page =>
+                            this.setState({ backToPage: page })
+                        }
                     />
                     <MobileSidebar
                         decks={this.state.decks}
@@ -160,6 +168,10 @@ class App extends React.Component {
                     updateDecks={this.updateDecks}
                     isMobile={false}
                     deleteDeck={this.deleteDeck}
+                    setBackToPage={page => this.setState({ backToPage: page })}
+                    redirectTo={location =>
+                        this.setState({ redirectTo: location })
+                    }
                 />
             </>
         )

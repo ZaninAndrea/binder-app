@@ -1,6 +1,9 @@
 import React from "react"
 import Footer from "../blocks/Footer"
 import Markdown from "../utils/Markdown"
+import ArrowBackIcon from "@material-ui/icons/ArrowBack"
+import { NavLink } from "react-router-dom"
+import { Desktop } from "../utils/MobileDesktop"
 
 export default class LearnPage extends React.Component {
     state = {
@@ -105,6 +108,18 @@ export default class LearnPage extends React.Component {
                 <>
                     {this.state.card && (
                         <>
+                            <div className="learn-header">
+                                <Desktop>
+                                    {this.props.backTo && (
+                                        <NavLink
+                                            to={this.props.backTo}
+                                            className="icon"
+                                        >
+                                            <ArrowBackIcon />
+                                        </NavLink>
+                                    )}
+                                </Desktop>
+                            </div>
                             <div className="card">
                                 <div className="front">
                                     <Markdown source={this.state.card.front} />
