@@ -145,7 +145,7 @@ export default class DeckPage extends React.Component {
                             }}
                             style={
                                 this.state.wantsToDelete
-                                    ? { color: "rgb(255, 115, 105)" }
+                                    ? { color: "var(--primary-color)" }
                                     : {}
                             }
                         >

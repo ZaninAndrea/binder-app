@@ -2,6 +2,10 @@ body {
     margin: 0;
     overflow: hidden;
     font-family: "Montserrat", sans-serif;
+    --primary-color: hsl(5, 100%, 65%);
+    --secondary-color: #fdfdfd;
+    --primary-text-color: rgba(0, 0, 0, 0.9);
+    --secondary-text-color: rgba(0, 0, 0, 0.9);
 }
 
 h1 {
@@ -32,8 +36,8 @@ textarea {
 
 .sidebar {
     grid-area: sidebar;
-    color: rgba(255, 255, 255, 0.9);
-    background-color: rgb(47, 52, 55);
+    color: var(--primary-text-color);
+    background-color: var(--primary-color);
 }
 
 .drawer {
@@ -43,8 +47,8 @@ textarea {
 
 .main {
     grid-area: main;
-    color: rgba(255, 255, 255, 0.9);
-    background: rgb(55, 60, 63);
+    color: var(--secondary-text-color);
+    background: var(--secondary-color);
     overflow: auto;
 }
 
@@ -62,14 +66,14 @@ textarea {
     height: 64px;
     width: 64px;
     margin: 16px 4px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--secondary-text-color);
     background: none;
     font-size: 18px;
 }
 
 .footer button:hover {
     border-radius: 32px;
-    background: rgb(47, 52, 55);
+    background: var(--primary-color);
 }
 
 .learn-header {
@@ -83,11 +87,11 @@ textarea {
 .learn-header .icon {
     grid-area: icon;
     padding: 0;
-    color: white;
+    color: rgba(0, 0, 0, 0.8);
 }
 
 .learn-header .icon:hover {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(0, 0, 0, 0.4);
 }
 
 .card {
@@ -112,14 +116,14 @@ textarea {
 }
 
 .card .front {
-    border-bottom: 3px dashed rgb(47, 52, 55);
+    border-bottom: 3px dashed var(--primary-color);
 }
 
 .card .back.hidden {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(0, 0, 0, 0.6);
 }
 .card .back.hidden:hover {
-    background: rgb(47, 52, 55);
+    background: var(--primary-color);
 }
 
 .sidebar p,
@@ -139,19 +143,19 @@ a {
 .sidebar p.title {
     font-family: "Karla", sans-serif;
     margin: 3px 0;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(0, 0, 0, 0.6);
 }
 
 .sidebar a {
     font-family: "Montserrat", sans-serif;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(0, 0, 0, 0.8);
 }
 .sidebar a:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.1);
 }
 .sidebar a.active {
-    color: white;
-    background: rgba(255, 255, 255, 0.15);
+    color: black;
+    background: rgba(0, 0, 0, 0.15);
 }
 
 .sidebar .indented {
@@ -173,7 +177,7 @@ a {
     width: 250px;
     margin: 20px;
     height: 120px;
-    border: 2px solid white;
+    border: 2px solid var(--primary-color);
     padding: 5px 10px;
     flex-grow: 0;
     display: flex;
@@ -196,7 +200,7 @@ a {
     align-items: center;
 }
 .cardsList div:hover {
-    background: rgb(47, 52, 55);
+    background: var(--primary-color);
 }
 
 .deckName {
@@ -215,7 +219,7 @@ a {
     grid-area: logout;
 }
 #logoutButton:hover {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(0, 0, 0, 0.5);
 }
 
 #flipcardHeader {
@@ -230,7 +234,7 @@ a {
     grid-area: hamburger;
 }
 #hamburger:hover {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(0, 0, 0, 0.5);
 }
 
 .modalClickAway {
@@ -249,15 +253,15 @@ a {
     top: 0;
     width: 60vw;
     height: 80vh;
-    color: rgba(255, 255, 255, 0.9);
-    background: rgb(55, 60, 63);
+    color: var(--secondary-text-color);
+    background: var(--secondary-color);
     margin: 10vh 20vw;
     z-index: 2000;
     padding: 20px;
     border-radius: 10px;
-    -webkit-box-shadow: 0px 3px 2px 2px rgba(0, 0, 0, 0.61);
-    -moz-box-shadow: 0px 3px 2px 2px rgba(0, 0, 0, 0.61);
-    box-shadow: 0px 3px 2px 2px rgba(0, 0, 0, 0.61);
+    -webkit-box-shadow: 0px 3px 2px 2px rgba(100, 84, 75, 0.61);
+    -moz-box-shadow: 0px 3px 2px 2px rgba(100, 84, 75, 0.61);
+    box-shadow: 0px 3px 2px 2px rgba(100, 84, 75, 0.61);
 }
 
 @media only screen and (max-width: 866px) {
@@ -279,8 +283,8 @@ a {
     #flipcardHeader {
         grid-template-columns: 14px 24px 14px auto 8px 24px 8px;
         grid-template-areas: ". . . . . . ." ". hamburger. title . logout ." ". . . . . . .";
-        color: rgba(255, 255, 255, 0.9);
-        background-color: rgb(47, 52, 55);
+        color: var(--primary-text-color);
+        background-color: var(--primary-color);
     }
 
     .modal {
@@ -327,7 +331,7 @@ a {
 
 .editor-container .front {
     padding: 0 0 30px 0;
-    border-bottom: 3px dashed rgb(47, 52, 55);
+    border-bottom: 3px dashed var(--primary-color);
 }
 .editor-container .back {
     padding: 30px 0 0 0;
@@ -351,7 +355,6 @@ a {
 
 .deckName div {
     font-weight: 300;
-    color: rgb(255, 255, 255, 0.6);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -359,14 +362,14 @@ a {
     box-shadow: none;
     height: 38px;
     width: 38px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--secondary-text-color);
     background: none;
     font-size: 18px;
 }
 
 .deckName div:hover {
     border-radius: 19px;
-    background: rgb(47, 52, 55);
+    background: var(--primary-color);
 }
 
 .stats {
@@ -375,7 +378,7 @@ a {
     width: calc(100% - 60px);
     height: 36px;
     display: flex;
-    color: rgb(255, 255, 255, 0.65);
+    color: rgb(0, 0, 0, 0.65);
 }
 
 .stats-learned,
@@ -397,31 +400,31 @@ a {
     margin-bottom: 10px;
     height: 6px;
     border-radius: 3px;
-    background: rgb(255, 255, 255, 0.2);
+    background: rgb(0, 0, 0, 0.15);
 }
 .bar .fill {
     height: 6px;
     border-radius: 3px;
 }
 .stats-learned .bar .fill {
-    background: rgb(82, 156, 202);
+    background: var(--primary-color);
 }
 
 .stats-recall .bar .fill {
-    background: rgb(154, 109, 215);
+    background: var(--primary-color);
 }
 
 .MuiMenu-list,
 .MuiMenu-paper {
-    background: rgb(47, 52, 55) !important;
-    color: rgba(255, 255, 255, 0.8) !important;
+    background: var(--secondary-color) !important;
+    color: var(--secondary-text-color) !important;
 }
 
 .MuiListItem-root {
     font-family: "Montserrat", sans-serif !important;
 }
 .MuiListItem-root:hover {
-    background: rgba(255, 255, 255, 0.1) !important;
+    background: rgba(0, 0, 0, 0.1) !important;
 }
 
 .MuiListItem-root svg {
