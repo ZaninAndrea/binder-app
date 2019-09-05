@@ -23,15 +23,20 @@ export default class MobileSidebar extends React.Component {
                     <div id="flipcardHeader">
                         <Close id="logoutButton" onClick={this.props.onClose} />
                     </div>
-                    <NavLink to="/review" activeClassName="active">
+                    <NavLink
+                        to="/review"
+                        activeClassName="active"
+                        onClick={() => this.props.onClose()}
+                    >
                         <InboxIcon /> Review ( {cardsToReview} )
                     </NavLink>
-                    <NavLink to="/learn" activeClassName="active">
+                    <NavLink
+                        to="/learn"
+                        activeClassName="active"
+                        onClick={() => this.props.onClose()}
+                    >
                         <SchoolIcon /> Learn ( {cardsToLearn} )
                     </NavLink>
-                    {/* <NavLink to="/settings" activeClassName="active">
-                        <SettingsIcon /> Settings
-                    </NavLink> */}
                     <br />
                     <p className="title">DECKS</p>
                     {this.props.decks.map(deck => (
@@ -40,11 +45,17 @@ export default class MobileSidebar extends React.Component {
                             activeClassName="active"
                             key={deck.id}
                             className="deck"
+                            onClick={() => this.props.onClose()}
                         >
                             <LibraryBooksIcon /> {deck.name}
                         </NavLink>
                     ))}
-                    <a onClick={this.props.createNewDeck}>
+                    <a
+                        onClick={() => {
+                            this.props.createNewDeck()
+                            this.props.onClose()
+                        }}
+                    >
                         <LibraryAddIcon /> New Deck
                     </a>
                 </div>
