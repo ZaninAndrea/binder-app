@@ -5,102 +5,57 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack"
 import { NavLink } from "react-router-dom"
 import { Desktop } from "../utils/MobileDesktop"
 
-export default class ReviewPage extends React.Component {
+export default class LearnPage extends React.Component {
     state = {
         flipped: false,
         card: null,
         showFooter: false,
-        deckIndex: -1,
-        done: true,
     }
 
     constructor(props) {
         super(props)
 
+        const cards = this.props.decks
+            .map(deck => deck.cards)
+            .reduce((acc, arr) => [...acc, ...arr], [])
+            .map(card => ({ ...card, score: 0, tries: 1 })) // this generates new cards so that we do not edit the original deck
+
         this.state = {
-            ...this.state,
-            ...this.nextDeckState(),
+            cards,
+            card: cards.length !== 0 && cards[0],
         }
-
-        if (!this.state.done)
-            this.state.card = this.props.decks[
-                this.state.deckIndex
-            ].nextCardToReview()
     }
 
-    onFlip = () => {
-        this.setState(({ flipped }) => {
-            return {
-                flipped: true,
-                showFooter: true,
-            }
-        })
-    }
-
-    nextCard = () => {
-        const currentDeck = this.props.decks[this.state.deckIndex]
-
-        let nextCard, _deckIndex, _done
-
-        if (currentDeck.hasCardsToReview()) {
-            nextCard = currentDeck.nextCardToReview()
-            _deckIndex = this.state.deckIndex
-            _done = false
-        } else {
-            let { deckIndex, done } = this.nextDeckState()
-            _deckIndex = deckIndex
-            _done = done
-
-            nextCard = done
-                ? null
-                : this.props.decks[deckIndex].nextCardToReview()
-        }
-
+    onFlip = () =>
         this.setState({
-            card: nextCard,
-            deckIndex: _deckIndex,
-            done: _done,
-            flipped: false,
-            showFooter: false,
+            flipped: true,
+            showFooter: true,
         })
-    }
 
-    onGrade = quality => {
-        this.props.decks[this.state.deckIndex].grade(quality)
-        this.nextCard()
-    }
+    onGrade = grade => {
+        // We are scoring the cards by average grade giving a malus to cards
+        // reviewed less times
 
-    nextDeckState = () => {
-        let deckIndex = this.state.deckIndex
-        // advance to next deck
-        deckIndex++
+        this.state.card.score += grade
+        this.state.card.tries++
 
-        // skip decks with no cards to review until you run out of decks
-        while (
-            deckIndex < this.props.decks.length &&
-            !this.props.decks[deckIndex].hasCardsToReview()
-        ) {
-            deckIndex++
-        }
+        const nextCard = this.state.cards.reduce(
+            (acc, curr) =>
+                acc.score / acc.tries - 3 / acc.tries <=
+                curr.score / curr.tries - 3 / curr.tries
+                    ? acc
+                    : curr,
+            this.state.cards[0]
+        )
 
-        let done
-        if (deckIndex === this.props.decks.length) {
-            done = true
-        } else {
-            done = false
-        }
-
-        return {
-            deckIndex,
-            done,
-        }
+        this.setState({ card: nextCard, flipped: false, showFooter: false })
     }
 
     render() {
-        if (this.state.done) {
+        if (this.state.cards.length === 0) {
             return (
                 <div className="card">
-                    <div className="front">You have no cards to review</div>
+                    <div className="front">You have no cards to cram</div>
                 </div>
             )
         } else
@@ -119,7 +74,7 @@ export default class ReviewPage extends React.Component {
                                         </NavLink>
                                     )}
                                 </Desktop>
-                                {/* TODO: percentage reviewed in this session bar */}
+                                {/* TODO: average score bar */}
                             </div>
                             <div className="card">
                                 <div className="front">
@@ -144,12 +99,7 @@ export default class ReviewPage extends React.Component {
                             </div>
                         </>
                     )}
-                    {this.state.showFooter && (
-                        <Footer
-                            onGrade={this.onGrade}
-                            isNew={this.state.card.isNew}
-                        />
-                    )}
+                    {this.state.showFooter && <Footer onGrade={this.onGrade} />}
                 </>
             )
     }

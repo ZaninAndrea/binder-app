@@ -92,7 +92,7 @@ textarea {
 
 .card {
     width: 100%;
-    min-height: calc(100vh - 116px);
+    min-height: calc(100vh - 146px);
     padding: 0 30px;
     display: flex;
     flex-direction: column;
@@ -233,30 +233,6 @@ a {
     color: rgba(255, 255, 255, 0.5);
 }
 
-@media only screen and (max-width: 866px) {
-    .App {
-        grid-template-columns: auto;
-        grid-template-rows: 52px auto;
-        grid-template-areas: "header" "main";
-    }
-
-    .card {
-        min-height: calc(100vh - 96px - 52px);
-    }
-
-    .cardsList {
-        overflow: unset;
-        height: unset;
-    }
-
-    #flipcardHeader {
-        grid-template-columns: 14px 24px 14px auto 8px 24px 8px;
-        grid-template-areas: ". . . . . . ." ". hamburger. title . logout ." ". . . . . . .";
-        color: rgba(255, 255, 255, 0.9);
-        background-color: rgb(47, 52, 55);
-    }
-}
-
 .modalClickAway {
     position: absolute;
     width: 100vw;
@@ -282,6 +258,35 @@ a {
     -webkit-box-shadow: 0px 3px 2px 2px rgba(0, 0, 0, 0.61);
     -moz-box-shadow: 0px 3px 2px 2px rgba(0, 0, 0, 0.61);
     box-shadow: 0px 3px 2px 2px rgba(0, 0, 0, 0.61);
+}
+
+@media only screen and (max-width: 866px) {
+    .App {
+        grid-template-columns: auto;
+        grid-template-rows: 52px auto;
+        grid-template-areas: "header" "main";
+    }
+
+    .card {
+        min-height: calc(100vh - 96px - 52px - 50px);
+    }
+
+    .cardsList {
+        overflow: unset;
+        height: unset;
+    }
+
+    #flipcardHeader {
+        grid-template-columns: 14px 24px 14px auto 8px 24px 8px;
+        grid-template-areas: ". . . . . . ." ". hamburger. title . logout ." ". . . . . . .";
+        color: rgba(255, 255, 255, 0.9);
+        background-color: rgb(47, 52, 55);
+    }
+
+    .modal {
+        width: 80vw;
+        margin: 10vh 10vw;
+    }
 }
 
 .editor {
@@ -341,6 +346,7 @@ a {
     color: inherit;
     padding: 0;
     flex-grow: 1;
+    min-width: 50px;
 }
 
 .deckName div {

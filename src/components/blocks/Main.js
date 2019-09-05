@@ -1,6 +1,7 @@
 import React from "react"
 import ReviewPage from "../pages/ReviewPage"
 import LearnPage from "../pages/LearnPage"
+import CramPage from "../pages/CramPage"
 import DeckPage from "../pages/DeckPage"
 import { Route } from "react-router-dom"
 
@@ -32,6 +33,34 @@ class Main extends React.Component {
 
                         return (
                             <LearnPage
+                                decks={[this.props.decks[match.params.deckId]]}
+                                backTo={`/deck/${match.params.deckId}`}
+                            />
+                        )
+                    }}
+                    exact
+                />
+                <Route
+                    path="/deck/:deckId/review"
+                    component={({ match }) => {
+                        if (!this.props.decks[match.params.deckId]) return ""
+
+                        return (
+                            <LearnPage
+                                decks={[this.props.decks[match.params.deckId]]}
+                                backTo={`/deck/${match.params.deckId}`}
+                            />
+                        )
+                    }}
+                    exact
+                />
+                <Route
+                    path="/deck/:deckId/cram"
+                    component={({ match }) => {
+                        if (!this.props.decks[match.params.deckId]) return ""
+
+                        return (
+                            <CramPage
                                 decks={[this.props.decks[match.params.deckId]]}
                                 backTo={`/deck/${match.params.deckId}`}
                             />
