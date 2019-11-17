@@ -5,6 +5,16 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack"
 import { NavLink } from "react-router-dom"
 import { Desktop } from "../utils/MobileDesktop"
 
+const isToday = someDate => {
+    const today = new Date()
+    someDate = new Date(someDate)
+    return (
+        someDate.getDate() == today.getDate() &&
+        someDate.getMonth() == today.getMonth() &&
+        someDate.getFullYear() == today.getFullYear()
+    )
+}
+
 export default class ReviewPage extends React.Component {
     state = {
         flipped: false,
@@ -17,9 +27,30 @@ export default class ReviewPage extends React.Component {
     constructor(props) {
         super(props)
 
+        const reviewedCardsCount = this.props.decks
+            .map(
+                deck =>
+                    deck.cards.filter(
+                        card =>
+                            card.repetitions.length > 0 &&
+                            isToday(
+                                card.repetitions[card.repetitions.length - 1]
+                                    .date
+                            )
+                    ).length
+            )
+            .reduce((a, b) => a + b, 0)
+
+        const cardsToReview =
+            this.props.decks
+                .map(deck => deck.cardsToReview().length)
+                .reduce((a, b) => a + b, 0) + reviewedCardsCount
+
         this.state = {
             ...this.state,
             ...this.nextDeckState(),
+            cardsToReview,
+            reviewedCardsCount,
         }
 
         if (!this.state.done)
@@ -56,13 +87,14 @@ export default class ReviewPage extends React.Component {
                 : this.props.decks[deckIndex].nextCardToReview()
         }
 
-        this.setState({
+        this.setState(({ reviewedCardsCount }) => ({
             card: nextCard,
             deckIndex: _deckIndex,
             done: _done,
             flipped: false,
             showFooter: false,
-        })
+            reviewedCardsCount: reviewedCardsCount + 1,
+        }))
     }
 
     onGrade = quality => {
@@ -97,6 +129,13 @@ export default class ReviewPage extends React.Component {
     }
 
     render() {
+        console.log(this.state.reviewedCardsCount)
+        const reviewRate =
+            this.state.cardsToReview === 0
+                ? 1
+                : (100 * this.state.reviewedCardsCount) /
+                  this.state.cardsToReview
+
         if (this.state.done) {
             return (
                 <div className="card">
@@ -119,7 +158,20 @@ export default class ReviewPage extends React.Component {
                                         </NavLink>
                                     )}
                                 </Desktop>
-                                {/* TODO: percentage reviewed in this session bar */}
+                                <span className="review-deck-title">
+                                    {
+                                        this.props.decks[this.state.deckIndex]
+                                            .name
+                                    }
+                                </span>
+                                <div className="review-bar">
+                                    <div
+                                        className="fill"
+                                        style={{
+                                            width: `${reviewRate}%`,
+                                        }}
+                                    />
+                                </div>
                             </div>
                             <div className="card">
                                 <div className="front">

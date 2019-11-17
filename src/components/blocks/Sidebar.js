@@ -23,16 +23,13 @@ class Sidebar extends React.Component {
                     <ExitToApp id="logoutButton" onClick={this.props.logout} />
                 </div>
                 <NavLink to="/review" activeClassName="active">
-                    <InboxIcon /> Review ( {cardsToReview} )
+                    <InboxIcon /> Smart Review ( {cardsToReview} )
                 </NavLink>
                 <NavLink to="/learn" activeClassName="active">
                     <SchoolIcon /> Learn ( {cardsToLearn} )
                 </NavLink>
-                {/* <NavLink to="/settings" activeClassName="active">
-                    <SettingsIcon /> Settings
-                </NavLink> */}
                 <br />
-                <p className="title">DECKS</p>
+                <p className="title">BINDERS</p>
                 {this.props.decks.map(deck => (
                     <NavLink
                         to={"/deck/" + deck.id}
@@ -44,7 +41,7 @@ class Sidebar extends React.Component {
                     </NavLink>
                 ))}
                 <a onClick={this.props.createNewDeck}>
-                    <LibraryAddIcon /> New Deck
+                    <LibraryAddIcon /> New Binder
                 </a>
             </div>
         )

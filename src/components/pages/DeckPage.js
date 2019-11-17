@@ -88,9 +88,6 @@ export default class DeckPage extends React.Component {
                                 this.props.redirectTo(
                                     `/deck/${this.props.deck.id}/learn`
                                 )
-                                this.props.setBackToPage(
-                                    `/deck/${this.props.deck.id}`
-                                )
                                 this.setState({ anchorEl: null })
                             }}
                             disabled={!nCardsToLearn}
@@ -103,23 +100,18 @@ export default class DeckPage extends React.Component {
                                 this.props.redirectTo(
                                     `/deck/${this.props.deck.id}/review`
                                 )
-                                this.props.setBackToPage(
-                                    `/deck/${this.props.deck.id}`
-                                )
                                 this.setState({ anchorEl: null })
                             }}
                             disabled={!nCardsToReview}
                         >
                             <InboxIcon />
-                            Review {!!nCardsToReview && `( ${nCardsToReview} )`}
+                            Smart Review{" "}
+                            {!!nCardsToReview && `( ${nCardsToReview} )`}
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
                                 this.props.redirectTo(
                                     `/deck/${this.props.deck.id}/cram`
-                                )
-                                this.props.setBackToPage(
-                                    `/deck/${this.props.deck.id}`
                                 )
                                 this.setState({ anchorEl: null })
                             }}
@@ -186,7 +178,9 @@ export default class DeckPage extends React.Component {
                                 }}
                             />
                         </div>
-                        <span className="text">{recallAccuracy}% accuracy</span>
+                        <span className="text">
+                            {recallAccuracy}% right reviews
+                        </span>
                     </div>
                 </div>
                 <div className="cardsList">

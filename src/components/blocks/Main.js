@@ -16,7 +16,6 @@ class Main extends React.Component {
                 deck={this.props.decks[match.params.deckId]}
                 updateDecks={this.props.updateDecks}
                 deleteDeck={this.props.deleteDeck(match.params.deckId)}
-                setBackToPage={this.props.setBackToPage}
                 redirectTo={this.props.redirectTo}
             />
         )
@@ -46,7 +45,7 @@ class Main extends React.Component {
                         if (!this.props.decks[match.params.deckId]) return ""
 
                         return (
-                            <LearnPage
+                            <ReviewPage
                                 decks={[this.props.decks[match.params.deckId]]}
                                 backTo={`/deck/${match.params.deckId}`}
                             />

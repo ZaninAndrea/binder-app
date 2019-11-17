@@ -1,43 +1,7 @@
 import React from "react"
-import Markdown from "./Markdown"
+import Markdown, { split } from "./Markdown"
 import ClickAwayListener from "@material-ui/core/ClickAwayListener"
 import TextareaAutosize from "@material-ui/core/TextareaAutosize"
-
-function split(text) {
-    let lines = text.split("\n")
-    let paragraphs = []
-
-    // group latex blocks in a single paragraph
-    let accumulatingLatex = false
-    let accumulatedLine = ""
-
-    for (let line of lines) {
-        if (!accumulatingLatex && !line.startsWith("$$")) {
-            paragraphs.push(line)
-
-            continue
-        } else if (!accumulatingLatex && line.startsWith("$$")) {
-            accumulatedLine = line
-            accumulatingLatex = true
-            continue
-        } else if (accumulatingLatex && !line.startsWith("$$")) {
-            accumulatedLine += "\n" + line
-            continue
-        } else if (accumulatingLatex && line.startsWith("$$")) {
-            accumulatedLine += "\n" + line
-            accumulatingLatex = false
-            paragraphs.push(accumulatedLine)
-            accumulatedLine = ""
-            continue
-        }
-    }
-
-    if (accumulatingLatex) {
-        paragraphs.push(accumulatedLine)
-    }
-
-    return paragraphs
-}
 
 class Editor extends React.Component {
     state = {
@@ -83,14 +47,27 @@ class Editor extends React.Component {
     onKeyUp = e => {
         if (e.key === "Enter") {
             let paragraphs = split(this.state.text)
-            paragraphs[this.state.curParagraph] = this.getText()
+            const curText = this.getText()
+            paragraphs[this.state.curParagraph] = curText
+
+            const isOpenLatexBlock = text =>
+                text.trim().startsWith("$$") &&
+                (!text.trim().endsWith("$$") || text.trim() === "$$")
+
+            // Enter inside a latex block should not split the paragraph
+            const paragraphIncrease = !isOpenLatexBlock(curText)
+
             const newText = paragraphs.join("\n")
             this.props.onTextUpdate(newText)
 
-            this.setState(({ curParagraph }) => ({
+            this.setState(({ curParagraph, curSelection }) => ({
                 text: newText,
-                curParagraph: curParagraph + 1,
-                curSelection: 0,
+                curParagraph: paragraphIncrease
+                    ? curParagraph + 1
+                    : curParagraph,
+                curSelection: paragraphIncrease
+                    ? 0
+                    : this.textarea.selectionStart + 1,
             }))
             this.setSelection = true
         }
@@ -141,7 +118,7 @@ class Editor extends React.Component {
             this.setSelection = true
             e.preventDefault()
         } else if (
-            e.key === "ArrowLeft" &&
+            (e.key === "ArrowLeft" || e.key === "ArrowUp") &&
             this.textarea.selectionEnd === 0 &&
             this.state.curParagraph !== 0
         ) {
@@ -161,7 +138,7 @@ class Editor extends React.Component {
 
             e.preventDefault()
         } else if (
-            e.key === "ArrowRight" &&
+            (e.key === "ArrowRight" || e.key === "ArrowDown") &&
             this.textarea.selectionStart === this.textarea.value.length &&
             this.state.curParagraph !== split(this.state.text).length - 1
         ) {

@@ -1,3 +1,9 @@
+html,
+body,
+div[id="root"] {
+    height: 100%;
+}
+
 body {
     margin: 0;
     overflow: hidden;
@@ -31,7 +37,7 @@ textarea {
     grid-template-columns: 270px auto;
     grid-template-rows: auto;
     grid-template-areas: "sidebar main";
-    height: 100vh;
+    height: 100%;
 }
 
 .sidebar {
@@ -41,7 +47,7 @@ textarea {
 }
 
 .drawer {
-    height: 100vh;
+    height: 100%;
     width: 240px;
 }
 
@@ -81,7 +87,27 @@ textarea {
     display: grid;
     grid-template-rows: 13px auto 13px;
     grid-template-columns: 12px 24px 8px auto 44px;
-    grid-template-areas: ". . . . ." ". icon . bar ." ". . . . .";
+    grid-template-areas: ". . . . ." ". icon . title ." ". . . bar .";
+}
+
+.learn-header .review-deck-title {
+    grid-area: title;
+    vertical-align: middle;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.learn-header .review-bar {
+    grid-area: bar;
+    margin-bottom: 10px;
+    height: 6px;
+    border-radius: 3px;
+    background: rgb(0, 0, 0, 0.15);
+}
+.learn-header .review-bar .fill {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--primary-color);
 }
 
 .learn-header .icon {
@@ -96,7 +122,7 @@ textarea {
 
 .card {
     width: 100%;
-    min-height: calc(100vh - 146px);
+    min-height: calc(100% - 146px);
     padding: 0 30px;
     display: flex;
     flex-direction: column;
@@ -168,7 +194,7 @@ a {
     align-content: flex-start;
     flex-wrap: wrap;
     width: 100%;
-    height: calc(100vh - 81px - 51px);
+    height: calc(100% - 81px - 51px);
     overflow: auto;
     padding: 0 calc((100vw - 270px - 890px) / 2);
 }
@@ -240,7 +266,7 @@ a {
 .modalClickAway {
     position: absolute;
     width: 100vw;
-    height: 100vh;
+    height: 100%;
     z-index: 1000;
     left: 0;
     top: 0;
@@ -252,10 +278,10 @@ a {
     left: 0;
     top: 0;
     width: 60vw;
-    height: 80vh;
+    height: 80%;
     color: var(--secondary-text-color);
     background: var(--secondary-color);
-    margin: 10vh 20vw;
+    margin: 10% 20vw;
     z-index: 2000;
     padding: 20px;
     border-radius: 10px;
@@ -272,7 +298,7 @@ a {
     }
 
     .card {
-        min-height: calc(100vh - 96px - 52px - 50px);
+        min-height: calc(100% - 96px - 50px);
     }
 
     .cardsList {
@@ -289,7 +315,7 @@ a {
 
     .modal {
         width: 80vw;
-        margin: 10vh 10vw;
+        margin: 10% 10vw;
     }
 }
 
@@ -304,9 +330,11 @@ a {
 .editor .paragraph {
     margin: 0;
     padding: 0;
+    min-height: 1.3em;
 }
 
 .editor .paragraph textarea {
+    display: block;
     margin: 0;
     padding: 0;
     border: none;
@@ -429,4 +457,8 @@ a {
 
 .MuiListItem-root svg {
     margin-right: 6px;
+}
+
+.markdownRender {
+    min-height: 1.3em;
 }

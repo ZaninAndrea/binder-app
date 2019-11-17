@@ -5,7 +5,7 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack"
 import { NavLink } from "react-router-dom"
 import { Desktop } from "../utils/MobileDesktop"
 
-export default class LearnPage extends React.Component {
+export default class CramPage extends React.Component {
     state = {
         flipped: false,
         card: null,

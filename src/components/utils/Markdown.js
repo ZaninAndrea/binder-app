@@ -6,6 +6,42 @@ const remark2rehype = require("remark-rehype")
 const katex = require("rehype-katex")
 const stringify = require("rehype-stringify")
 
+export function split(text) {
+    let lines = text.split("\n")
+    let paragraphs = []
+
+    // group latex blocks in a single paragraph
+    let accumulatingLatex = false
+    let accumulatedLine = ""
+
+    for (let line of lines) {
+        if (!accumulatingLatex && !line.startsWith("$$")) {
+            paragraphs.push(line)
+
+            continue
+        } else if (!accumulatingLatex && line.startsWith("$$")) {
+            accumulatedLine = line
+            accumulatingLatex = true
+            continue
+        } else if (accumulatingLatex && !line.startsWith("$$")) {
+            accumulatedLine += "\n" + line
+            continue
+        } else if (accumulatingLatex && line.startsWith("$$")) {
+            accumulatedLine += "\n" + line
+            accumulatingLatex = false
+            paragraphs.push(accumulatedLine)
+            accumulatedLine = ""
+            continue
+        }
+    }
+
+    if (accumulatingLatex) {
+        paragraphs.push(accumulatedLine)
+    }
+
+    return paragraphs
+}
+
 function memoize(f) {
     const memory = {}
 
@@ -29,11 +65,19 @@ function renderPipeline(source) {
 const renderMarkdown = memoize(renderPipeline)
 
 export default ({ source }) => {
+    let blocks = split(source)
+
     return (
-        <div
-            dangerouslySetInnerHTML={{
-                __html: renderMarkdown(source),
-            }}
-        />
+        <div>
+            {blocks.map((block, i) => (
+                <div
+                    className="markdownRender"
+                    key={i}
+                    dangerouslySetInnerHTML={{
+                        __html: renderMarkdown(block),
+                    }}
+                />
+            ))}
+        </div>
     )
 }

@@ -47,6 +47,10 @@ class Deck {
             card.factor
         )
 
+        // add a bit of randomness to the scheduling to decluster the repetitions
+        const jitter = 1 + (Math.random() - 0.5) * 0.2
+        schedule = Math.round(schedule * jitter)
+
         this.cards = this.cards.map(entry =>
             entry.id === card.id
                 ? {

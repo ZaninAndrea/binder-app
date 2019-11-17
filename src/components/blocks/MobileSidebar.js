@@ -28,7 +28,7 @@ export default class MobileSidebar extends React.Component {
                         activeClassName="active"
                         onClick={() => this.props.onClose()}
                     >
-                        <InboxIcon /> Review ( {cardsToReview} )
+                        <InboxIcon /> Smart Review ( {cardsToReview} )
                     </NavLink>
                     <NavLink
                         to="/learn"
@@ -38,7 +38,7 @@ export default class MobileSidebar extends React.Component {
                         <SchoolIcon /> Learn ( {cardsToLearn} )
                     </NavLink>
                     <br />
-                    <p className="title">DECKS</p>
+                    <p className="title">BINDERS</p>
                     {this.props.decks.map(deck => (
                         <NavLink
                             to={"/deck/" + deck.id}
@@ -56,7 +56,7 @@ export default class MobileSidebar extends React.Component {
                             this.props.onClose()
                         }}
                     >
-                        <LibraryAddIcon /> New Deck
+                        <LibraryAddIcon /> New Binder
                     </a>
                 </div>
             </Drawer>
