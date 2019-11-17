@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/flipcards-app/static/css/main.fd61d849.chunk.css",
-    "main.js": "/flipcards-app/static/js/main.b1445759.chunk.js",
-    "main.js.map": "/flipcards-app/static/js/main.b1445759.chunk.js.map",
-    "runtime~main.js": "/flipcards-app/static/js/runtime~main.d8ac67d8.js",
-    "runtime~main.js.map": "/flipcards-app/static/js/runtime~main.d8ac67d8.js.map",
-    "static/js/2.92d97d23.chunk.js": "/flipcards-app/static/js/2.92d97d23.chunk.js",
-    "static/js/2.92d97d23.chunk.js.map": "/flipcards-app/static/js/2.92d97d23.chunk.js.map",
-    "index.html": "/flipcards-app/index.html",
-    "precache-manifest.d30f0f91801dc4f152b5f268577a210d.js": "/flipcards-app/precache-manifest.d30f0f91801dc4f152b5f268577a210d.js",
-    "service-worker.js": "/flipcards-app/service-worker.js",
-    "static/css/main.fd61d849.chunk.css.map": "/flipcards-app/static/css/main.fd61d849.chunk.css.map"
+    "main.css": "/static/css/main.2d88db25.chunk.css",
+    "main.js": "/static/js/main.50b07199.chunk.js",
+    "main.js.map": "/static/js/main.50b07199.chunk.js.map",
+    "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
+    "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
+    "static/js/2.859cd593.chunk.js": "/static/js/2.859cd593.chunk.js",
+    "static/js/2.859cd593.chunk.js.map": "/static/js/2.859cd593.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.8ae1db86ab841019be0cb97b2a2d05d8.js": "/precache-manifest.8ae1db86ab841019be0cb97b2a2d05d8.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/main.2d88db25.chunk.css.map": "/static/css/main.2d88db25.chunk.css.map"
   }
 }
