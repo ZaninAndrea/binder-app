@@ -3,6 +3,7 @@ import ReviewPage from "../pages/ReviewPage"
 import LearnPage from "../pages/LearnPage"
 import CramPage from "../pages/CramPage"
 import DeckPage from "../pages/DeckPage"
+import HomePage from "../pages/HomePage"
 import { Route } from "react-router-dom"
 
 class Main extends React.Component {
@@ -19,9 +20,11 @@ class Main extends React.Component {
                 redirectTo={this.props.redirectTo}
             />
         )
+        const homeComponent = () => <HomePage decks={this.props.decks} />
 
         return (
             <div className="main">
+                <Route path="/" component={homeComponent} exact />
                 <Route path="/review" component={reviewPathComponent} exact />
                 <Route path="/learn" component={learnPathComponent} exact />
                 <Route path="/deck/:deckId" component={deckPage} exact />

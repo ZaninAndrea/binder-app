@@ -9,6 +9,7 @@
         "dotenv": "^8.1.0",
         "katex": "^0.11.0",
         "react": "^16.8.6",
+        "react-calendar-heatmap": "^1.8.1",
         "react-dom": "^16.8.6",
         "react-router-dom": "^5.0.1",
         "react-scripts": "3.0.1",
