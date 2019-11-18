@@ -8,7 +8,7 @@ export default class Header extends React.Component {
             <div id="flipcardHeader">
                 <Menu id="hamburger" onClick={this.props.openSidebar} />
 
-                <span id="flipcardTitle">Binder</span>
+                <img src="/full_logo.png" id="flipcardTitle" />
                 <ExitToApp id="logoutButton" onClick={this.props.logout} />
             </div>
         )

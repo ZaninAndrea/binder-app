@@ -19,7 +19,7 @@ class Sidebar extends React.Component {
         return (
             <div className="sidebar">
                 <div id="flipcardHeader">
-                    <span id="flipcardTitle">Binder</span>
+                    <img src="/full_logo.png" id="flipcardTitle" />
                     <ExitToApp id="logoutButton" onClick={this.props.logout} />
                 </div>
                 <NavLink to="/review" activeClassName="active">

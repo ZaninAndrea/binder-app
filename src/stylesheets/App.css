@@ -8,10 +8,12 @@ body {
     margin: 0;
     overflow: hidden;
     font-family: "Montserrat", sans-serif;
-    --primary-color: hsl(5, 100%, 65%);
+    /* --primary-color: hsl(5, 100%, 65%); */
+    --primary-color: #0d0d0d;
     --secondary-color: #fdfdfd;
     --primary-text-color: rgba(0, 0, 0, 0.9);
     --secondary-text-color: rgba(0, 0, 0, 0.9);
+    --light-text-color: rgba(255, 255, 255, 0.8);
 }
 
 h1 {
@@ -85,9 +87,9 @@ textarea {
 .learn-header {
     height: 50px;
     display: grid;
-    grid-template-rows: 13px auto 13px;
+    grid-template-rows: 8px 13px auto 5px;
     grid-template-columns: 12px 24px 8px auto 44px;
-    grid-template-areas: ". . . . ." ". icon . title ." ". . . bar .";
+    grid-template-areas: ". . . . ." ". . . bar ." ". icon . title ." ". . . . .";
 }
 
 .learn-header .review-deck-title {
@@ -113,11 +115,11 @@ textarea {
 .learn-header .icon {
     grid-area: icon;
     padding: 0;
-    color: rgba(0, 0, 0, 0.8);
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .learn-header .icon:hover {
-    color: rgba(0, 0, 0, 0.4);
+    color: rgba(255, 255, 255, 0.4);
 }
 
 .card {
@@ -149,6 +151,7 @@ textarea {
     color: rgba(0, 0, 0, 0.6);
 }
 .card .back.hidden:hover {
+    color: rgba(255, 255, 255, 0.6);
     background: var(--primary-color);
 }
 
@@ -169,19 +172,18 @@ a {
 .sidebar p.title {
     font-family: "Karla", sans-serif;
     margin: 3px 0;
-    color: rgba(0, 0, 0, 0.6);
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .sidebar a {
     font-family: "Montserrat", sans-serif;
-    color: rgba(0, 0, 0, 0.8);
+    color: rgba(255, 255, 255, 0.8);
 }
 .sidebar a:hover {
-    background: rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.15);
 }
 .sidebar a.active {
-    color: black;
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .sidebar .indented {
@@ -226,6 +228,7 @@ a {
     align-items: center;
 }
 .cardsList div:hover {
+    color: var(--light-text-color);
     background: var(--primary-color);
 }
 
@@ -239,13 +242,15 @@ a {
     font-family: "Karla", sans-serif;
     font-size: 22px;
     grid-area: title;
+    height: 100%;
 }
 
 #logoutButton {
+    color: rgba(255, 255, 255, 1);
     grid-area: logout;
 }
 #logoutButton:hover {
-    color: rgba(0, 0, 0, 0.5);
+    color: rgba(255, 255, 255, 0.5);
 }
 
 #flipcardHeader {
@@ -253,14 +258,15 @@ a {
     display: grid;
     grid-template-columns: 14px auto 8px 24px 8px;
     grid-template-rows: 13px auto 13px;
-    grid-template-areas: ". . . . ." ". title . logout ." ". . . . .";
+    grid-template-areas: ". title . . ." ". title . logout ." ". title . . .";
 }
 
 #hamburger {
     grid-area: hamburger;
+    color: rgba(255, 255, 255, 1);
 }
 #hamburger:hover {
-    color: rgba(0, 0, 0, 0.5);
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .modalClickAway {
@@ -270,7 +276,7 @@ a {
     z-index: 1000;
     left: 0;
     top: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
 .modal {
@@ -281,7 +287,7 @@ a {
     height: 80%;
     color: var(--secondary-text-color);
     background: var(--secondary-color);
-    margin: 10% 20vw;
+    margin: 5% 20vw;
     z-index: 2000;
     padding: 20px;
     border-radius: 10px;
@@ -308,9 +314,13 @@ a {
 
     #flipcardHeader {
         grid-template-columns: 14px 24px 14px auto 8px 24px 8px;
-        grid-template-areas: ". . . . . . ." ". hamburger. title . logout ." ". . . . . . .";
+        grid-template-areas: ". . . title . . ." ". hamburger . title . logout ." ". . . title . . .";
         color: var(--primary-text-color);
         background-color: var(--primary-color);
+    }
+
+    #flipcardTitle {
+        margin: auto;
     }
 
     .modal {
@@ -452,7 +462,7 @@ a {
     font-family: "Montserrat", sans-serif !important;
 }
 .MuiListItem-root:hover {
-    background: rgba(0, 0, 0, 0.1) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
 }
 
 .MuiListItem-root svg {
