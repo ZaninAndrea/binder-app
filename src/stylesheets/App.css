@@ -1,510 +1,587 @@
 html,
 body,
 div[id="root"] {
-    height: 100%;
+  height: 100%;
 }
 
 body {
-    margin: 0;
-    overflow: hidden;
-    font-family: "Montserrat", sans-serif;
-    /* --primary-color: hsl(5, 100%, 65%); */
-    --primary-color: #0d0d0d;
-    --secondary-color: #fdfdfd;
-    --primary-text-color: rgba(0, 0, 0, 0.9);
-    --secondary-text-color: rgba(0, 0, 0, 0.9);
-    --light-text-color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  overflow: hidden;
+  font-family: "Montserrat", sans-serif;
+  /* --primary-color: hsl(5, 100%, 65%); */
+  --primary-color: #0d0d0d;
+  --secondary-color: #fdfdfd;
+  --primary-text-color: rgba(0, 0, 0, 0.9);
+  --secondary-text-color: rgba(0, 0, 0, 0.9);
+  --light-text-color: rgba(255, 255, 255, 0.8);
 }
 
 h1 {
-    font-family: "Karla", sans-serif;
+  font-family: "Karla", sans-serif;
 }
 
 div,
 p {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 p {
-    margin: unset;
+  margin: unset;
 }
 
 button,
 input,
 textarea {
-    outline: none;
+  outline: none;
 }
 
 .App {
-    display: grid;
-    grid-template-columns: 270px auto;
-    grid-template-rows: auto;
-    grid-template-areas: "sidebar main";
-    height: 100%;
+  display: grid;
+  grid-template-columns: 270px auto;
+  grid-template-rows: auto;
+  grid-template-areas: "sidebar main";
+  height: 100%;
 }
 
 .sidebar {
-    grid-area: sidebar;
-    color: var(--primary-text-color);
-    background-color: var(--primary-color);
+  grid-area: sidebar;
+  color: var(--primary-text-color);
+  background-color: var(--primary-color);
 }
 
 .drawer {
-    height: 100%;
-    width: 240px;
+  height: 100%;
+  width: 240px;
 }
 
 .main {
-    grid-area: main;
-    color: var(--secondary-text-color);
-    background: var(--secondary-color);
-    overflow: auto;
+  grid-area: main;
+  color: var(--secondary-text-color);
+  background: var(--secondary-color);
+  overflow: auto;
 }
 
 .footer {
-    height: 96px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .footer button {
-    display: inline-block;
-    border: none;
-    box-shadow: none;
-    height: 64px;
-    width: 64px;
-    margin: 16px 4px;
-    color: var(--secondary-text-color);
-    background: none;
-    font-size: 18px;
+  display: inline-block;
+  border: none;
+  box-shadow: none;
+  height: 64px;
+  width: 64px;
+  margin: 16px 4px;
+  color: var(--secondary-text-color);
+  background: none;
+  font-size: 18px;
 }
 
 .footer button:hover {
-    border-radius: 32px;
-    background: var(--primary-color);
-    color: var(--light-text-color);
+  border-radius: 32px;
+  background: var(--primary-color);
+  color: var(--light-text-color);
 }
 
 .learn-header {
-    height: 50px;
-    display: grid;
-    grid-template-rows: 8px 13px auto 5px;
-    grid-template-columns: 12px 24px 8px auto 44px;
-    grid-template-areas: ". . . . ." ". . . bar ." ". icon . title ." ". . . . .";
+  height: 50px;
+  display: grid;
+  grid-template-rows: 8px 13px auto 5px;
+  grid-template-columns: 12px 24px 8px auto 44px;
+  grid-template-areas: ". . . . ." ". . . bar ." ". icon . title ." ". . . . .";
 }
 
 .learn-header .review-deck-title {
-    grid-area: title;
-    vertical-align: middle;
-    text-align: center;
-    color: rgba(0, 0, 0, 0.6);
+  grid-area: title;
+  vertical-align: middle;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.6);
 }
 
 .learn-header .review-bar {
-    grid-area: bar;
-    margin-bottom: 10px;
-    height: 6px;
-    border-radius: 3px;
-    background: rgb(0, 0, 0, 0.15);
+  grid-area: bar;
+  margin-bottom: 10px;
+  height: 6px;
+  border-radius: 3px;
+  background: rgb(0, 0, 0, 0.15);
 }
 .learn-header .review-bar .fill {
-    height: 6px;
-    border-radius: 3px;
-    background: var(--primary-color);
+  height: 6px;
+  border-radius: 3px;
+  background: var(--primary-color);
 }
 
 .learn-header .icon {
-    grid-area: icon;
-    padding: 0;
-    color: rgba(255, 255, 255, 0.8);
+  grid-area: icon;
+  padding: 0;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .learn-header .icon:hover {
-    color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .card {
-    width: 100%;
-    min-height: calc(100% - 146px);
-    padding: 0 30px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 18px;
+  width: 100%;
+  min-height: calc(100% - 146px);
+  padding: 0 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
 }
 
 .card .front,
 .card .back {
-    width: 100%;
-    max-width: 600px;
-    padding: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: 100%;
+  max-width: 600px;
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .card .front {
-    border-bottom: 3px dashed var(--primary-color);
+  border-bottom: 3px dashed var(--primary-color);
 }
 
 .card .back.hidden {
-    color: rgba(0, 0, 0, 0.6);
+  color: rgba(0, 0, 0, 0.6);
 }
 .card .back.hidden:hover {
-    color: rgba(255, 255, 255, 0.6);
-    background: var(--primary-color);
+  color: rgba(255, 255, 255, 0.6);
+  background: var(--primary-color);
 }
 
 .sidebar p,
 a {
-    font-size: 18px;
-    line-height: 28px;
-    padding: 7px 14px;
-    display: block;
-    text-decoration: none;
+  font-size: 18px;
+  line-height: 28px;
+  padding: 7px 14px;
+  display: block;
+  text-decoration: none;
 }
 
 .sidebar a svg {
-    vertical-align: middle;
-    margin-right: 8px;
+  vertical-align: middle;
+  margin-right: 8px;
 }
 
 .sidebar p.title {
-    font-family: "Karla", sans-serif;
-    margin: 3px 0;
-    color: rgba(255, 255, 255, 0.6);
+  font-family: "Karla", sans-serif;
+  margin: 3px 0;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .sidebar a {
-    font-family: "Montserrat", sans-serif;
-    color: rgba(255, 255, 255, 0.8);
+  font-family: "Montserrat", sans-serif;
+  color: rgba(255, 255, 255, 0.8);
 }
 .sidebar a:hover {
-    background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.15);
 }
 .sidebar a.active {
-    background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .sidebar .indented {
-    padding-left: 32px;
+  padding-left: 32px;
 }
 
 .cardsList {
-    display: flex;
-    justify-content: center;
-    align-content: flex-start;
-    flex-wrap: wrap;
-    width: 100%;
-    height: calc(100% - 81px - 51px);
-    overflow: auto;
-    padding: 0 calc((100vw - 270px - 890px) / 2);
+  display: flex;
+  justify-content: center;
+  align-content: flex-start;
+  flex-wrap: wrap;
+  width: 100%;
+  height: calc(100% - 81px - 51px);
+  overflow: auto;
+  padding: 0 calc((100vw - 270px - 890px) / 2);
 }
 
 .cardsList > div {
-    width: 250px;
-    margin: 20px;
-    height: 120px;
-    border: 2px solid var(--primary-color);
-    padding: 5px 10px;
-    flex-grow: 0;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    border-radius: 10px;
-    overflow: hidden;
+  width: 250px;
+  margin: 20px;
+  height: 120px;
+  border: 2px solid var(--primary-color);
+  padding: 5px 10px;
+  flex-grow: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .cardsList > div > div {
-    min-height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 #new-card {
-    border-style: dashed;
-    align-items: center;
+  border-style: dashed;
+  align-items: center;
 }
 .cardsList div:hover {
-    color: var(--light-text-color);
-    background: var(--primary-color);
+  color: var(--light-text-color);
+  background: var(--primary-color);
 }
 
 .deckName {
-    margin: 0.67em auto;
-    max-width: 850px;
-    width: calc(100% - 60px);
+  margin: 0.67em auto;
+  max-width: 850px;
+  width: calc(100% - 60px);
 }
 
 #flipcardTitle {
-    font-family: "Karla", sans-serif;
-    font-size: 22px;
-    grid-area: title;
-    height: 100%;
-    margin: auto;
-    padding: 0;
+  font-family: "Karla", sans-serif;
+  font-size: 22px;
+  grid-area: title;
+  height: 100%;
+  margin: auto;
+  padding: 0;
 }
 
 #logoutButton {
-    color: rgba(255, 255, 255, 1);
-    grid-area: logout;
+  color: rgba(255, 255, 255, 1);
+  grid-area: logout;
 }
 #logoutButton:hover {
-    color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 #flipcardHeader {
-    height: 52px;
-    display: grid;
-    grid-template-columns: 14px auto 8px 24px 8px;
-    grid-template-rows: 16px auto 10px;
-    grid-template-areas: ". title . . ." ". title . logout ." ". title . . .";
+  height: 52px;
+  display: grid;
+  grid-template-columns: 14px auto 8px 24px 8px;
+  grid-template-rows: 16px auto 10px;
+  grid-template-areas: ". title . . ." ". title . logout ." ". title . . .";
 }
 
 #hamburger {
-    grid-area: hamburger;
-    color: rgba(255, 255, 255, 1);
+  grid-area: hamburger;
+  color: rgba(255, 255, 255, 1);
 }
 #hamburger:hover {
-    color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .modalClickAway {
-    position: absolute;
-    width: 100vw;
-    height: 100%;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    background-color: rgba(255, 255, 255, 0.5);
+  position: absolute;
+  width: 100vw;
+  height: 100%;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  background-color: rgba(255, 255, 255, 0.5);
 }
 
 .modal {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 60vw;
-    height: 80%;
-    color: var(--secondary-text-color);
-    background: var(--secondary-color);
-    margin: 5% 20vw;
-    z-index: 2000;
-    padding: 20px;
-    border-radius: 10px;
-    -webkit-box-shadow: 0px 3px 2px 2px rgba(84, 84, 84, 0.61);
-    -moz-box-shadow: 0px 3px 2px 2px rgba(84, 84, 84, 0.61);
-    box-shadow: 0px 3px 2px 2px rgba(84, 84, 84, 0.61);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 60vw;
+  height: 80%;
+  color: var(--secondary-text-color);
+  background: var(--secondary-color);
+  margin: 5% 20vw;
+  z-index: 2000;
+  padding: 20px;
+  border-radius: 10px;
+  -webkit-box-shadow: 0px 3px 2px 2px rgba(84, 84, 84, 0.61);
+  -moz-box-shadow: 0px 3px 2px 2px rgba(84, 84, 84, 0.61);
+  box-shadow: 0px 3px 2px 2px rgba(84, 84, 84, 0.61);
+}
+
+#loginForm {
+  width: 100vw;
+  height: 100vh;
+  background: var(--primary-color);
+  color: var(--light-text-color);
+  font-size: 22px;
+  margin: 0;
+}
+
+#loginPassword,
+#loginEmail {
+  border: none;
+  overflow: auto;
+  outline: none;
+  padding: 0 4px;
+  width: 100%;
+  margin: 6px 0 0 0;
+  font-size: 22px;
+  color: var(--primary-color);
+  background: #fff;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+
+  resize: none;
+}
+
+#gotoSignupText {
+  position: absolute;
+  bottom: 32px;
+  left: calc(50vw - 160px);
+  color: rgba(255, 255, 255, 0.6);
+  width: 320px;
+  font-size: 18px;
+  text-align: center;
+}
+
+#loginButton {
+  display: inline-block;
+  border: none;
+  margin: 0;
+  text-decoration: none;
+  background: var(--secondary-color);
+  color: var(--primary-color);
+  cursor: pointer;
+  text-align: center;
+  transition: background 250ms ease-in-out, transform 150ms ease;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 320px;
+  height: 48px;
+  position: absolute;
+  bottom: 64px;
+  left: calc(50vw - 160px);
+  font-size: 22px;
+  line-height: 48px;
+  border-radius: 24px;
+}
+
+#loginButton:hover,
+#loginButton:focus {
+  background: var(--secondary-color);
+}
+
+#loginLogo {
+  width: 80%;
+  margin: 0 10%;
+}
+
+#mainLoginBody {
+  height: 100%;
+  width: 100%;
+  max-width: 600px;
+  padding: 32px;
+  margin: 0 auto;
 }
 
 @media only screen and (max-width: 866px) {
-    .App {
-        grid-template-columns: auto;
-        grid-template-rows: 52px auto;
-        grid-template-areas: "header" "main";
-    }
+  .App {
+    grid-template-columns: auto;
+    grid-template-rows: 52px auto;
+    grid-template-areas: "header" "main";
+  }
 
-    .card {
-        min-height: calc(100% - 96px - 50px);
-    }
+  .card {
+    min-height: calc(100% - 96px - 50px);
+  }
 
-    .cardsList {
-        overflow: unset;
-        height: unset;
-    }
+  .cardsList {
+    overflow: unset;
+    height: unset;
+  }
 
-    #flipcardHeader {
-        grid-template-columns: 14px 24px 14px auto 8px 24px 8px;
-        grid-template-areas: ". . . title . . ." ". hamburger . title . logout ." ". . . title . . .";
-        color: var(--primary-text-color);
-        background-color: var(--primary-color);
-    }
+  #flipcardHeader {
+    grid-template-columns: 14px 24px 14px auto 8px 24px 8px;
+    grid-template-areas: ". . . title . . ." ". hamburger . title . logout ." ". . . title . . .";
+    color: var(--primary-text-color);
+    background-color: var(--primary-color);
+  }
 
-    .modal {
-        width: 80vw;
-        margin: 10% 10vw;
-    }
+  .modal {
+    width: 80vw;
+    margin: 10% 10vw;
+  }
 }
 
 .editor {
-    width: 100%;
-    min-height: 100px;
-    font-family: "Montserrat", sans-serif;
-    font-size: 22px;
-    padding-top: 1px;
+  width: 100%;
+  min-height: 100px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 22px;
+  padding-top: 1px;
 }
 
 .editor .paragraph {
-    margin: 0;
-    padding: 0;
-    min-height: 1.3em;
+  margin: 0;
+  padding: 0;
+  min-height: 1.3em;
 }
 
 .editor .paragraph textarea {
-    display: block;
-    margin: 0;
-    padding: 0;
-    border: none;
-    width: 100%;
-    resize: none;
-    font: inherit;
-    background: inherit;
-    color: inherit;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: none;
+  width: 100%;
+  resize: none;
+  font: inherit;
+  background: inherit;
+  color: inherit;
 }
 
 .modal .topBar {
-    height: 24px;
-    margin: -14px -20px 8px -20px;
-    line-height: 24px;
-    display: grid;
-    grid-template-columns: 20px auto 28px 12px;
-    grid-template-areas: ". . delete .";
+  height: 24px;
+  margin: -14px -20px 8px -20px;
+  line-height: 24px;
+  display: grid;
+  grid-template-columns: 20px auto 28px 12px;
+  grid-template-areas: ". . delete .";
 }
 
 .modal .topBar .delete {
-    grid-area: delete;
+  grid-area: delete;
 }
 
 .editor-container {
-    width: calc(100% + 40px);
-    height: calc(100% + 4px);
-    margin: 0 -20px;
-    padding: 0 20px;
-    overflow: auto;
+  width: calc(100% + 40px);
+  height: calc(100% + 4px);
+  margin: 0 -20px;
+  padding: 0 20px;
+  overflow: auto;
 }
 
 .editor-container .front,
 .editor-container .back {
-    width: 100%;
-    min-height: 50%;
+  width: 100%;
+  min-height: 50%;
 }
 
 .editor-container .front {
-    padding: 0 0 30px 0;
-    border-bottom: 3px dashed var(--primary-color);
+  padding: 0 0 30px 0;
+  border-bottom: 3px dashed var(--primary-color);
 }
 .editor-container .back {
-    padding: 30px 0 0 0;
+  padding: 30px 0 0 0;
 }
 
 .deckName {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .deckName input {
-    font: inherit;
-    background: unset;
-    box-shadow: unset;
-    border: 0;
-    color: inherit;
-    padding: 0;
-    flex-grow: 1;
-    min-width: 50px;
+  font: inherit;
+  background: unset;
+  box-shadow: unset;
+  border: 0;
+  color: inherit;
+  padding: 0;
+  flex-grow: 1;
+  min-width: 50px;
 }
 
 .deckName div {
-    font-weight: 300;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    box-shadow: none;
-    height: 38px;
-    width: 38px;
-    color: var(--secondary-text-color);
-    background: none;
-    font-size: 18px;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  box-shadow: none;
+  height: 38px;
+  width: 38px;
+  color: var(--secondary-text-color);
+  background: none;
+  font-size: 18px;
 }
 
 .deckName div:hover {
-    border-radius: 19px;
-    background: var(--primary-color);
+  border-radius: 19px;
+  background: var(--primary-color);
 }
 
 .stats {
-    margin: 0 auto 15px auto;
-    max-width: 850px;
-    width: calc(100% - 60px);
-    height: 36px;
-    display: flex;
-    color: rgb(0, 0, 0, 0.65);
+  margin: 0 auto 15px auto;
+  max-width: 850px;
+  width: calc(100% - 60px);
+  height: 36px;
+  display: flex;
+  color: rgb(0, 0, 0, 0.65);
 }
 
 .stats-learned,
 .stats-recall {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: calc(50% - 10px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: calc(50% - 10px);
 }
 .stats-recall {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 .stats-learned {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .bar {
-    width: 100%;
-    margin-bottom: 10px;
-    height: 6px;
-    border-radius: 3px;
-    background: rgb(0, 0, 0, 0.15);
+  width: 100%;
+  margin-bottom: 10px;
+  height: 6px;
+  border-radius: 3px;
+  background: rgb(0, 0, 0, 0.15);
 }
 .bar .fill {
-    height: 6px;
-    border-radius: 3px;
+  height: 6px;
+  border-radius: 3px;
 }
 .stats-learned .bar .fill {
-    background: var(--primary-color);
+  background: var(--primary-color);
 }
 
 .stats-recall .bar .fill {
-    background: var(--primary-color);
+  background: var(--primary-color);
 }
 
 .MuiMenu-list,
 .MuiMenu-paper {
-    background: var(--secondary-color) !important;
-    color: var(--secondary-text-color) !important;
+  background: var(--secondary-color) !important;
+  color: var(--secondary-text-color) !important;
 }
 
 .MuiListItem-root {
-    font-family: "Montserrat", sans-serif !important;
+  font-family: "Montserrat", sans-serif !important;
 }
 .MuiListItem-root:hover {
-    background: rgba(255, 255, 255, 0.1) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
 }
 
 .MuiListItem-root svg {
-    margin-right: 6px;
+  margin-right: 6px;
 }
 
 .markdownRender {
-    min-height: 1.3em;
+  min-height: 1.3em;
 }
 
 .home {
-    width: calc(100% - 36px);
-    height: 100%;
-    margin: 18px;
+  width: calc(100% - 36px);
+  height: calc(100% - 36px);
+  margin: 18px;
 }
 
 #streak-calendar {
-    width: 100%;
-    max-width: 1000px;
-    margin: auto;
+  width: 100%;
+  max-width: 1000px;
+  margin: auto;
 }
 
 #streak-calendar .color-scale-low {
-    fill: #bbb;
+  fill: #bbb;
 }
 #streak-calendar .color-scale-medium {
-    fill: #565656;
+  fill: #565656;
 }
 #streak-calendar .color-scale-high {
-    fill: #000;
+  fill: #000;
 }

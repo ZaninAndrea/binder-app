@@ -1,14 +1,14 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-export default class LoginPage extends React.Component {
+export default class SignupPage extends React.Component {
   state = {
     email: "",
     password: ""
   };
 
-  login = async () => {
-    const res = await fetch("https://flipcards-server.herokuapp.com/login", {
+  signup = async () => {
+    const res = await fetch("https://flipcards-server.herokuapp.com/signup", {
       body: JSON.stringify({
         email: this.state.email,
         password: this.state.password
@@ -48,11 +48,12 @@ export default class LoginPage extends React.Component {
             onChange={e => this.setState({ password: e.target.value })}
           />
           <br />
-          <button onClick={this.login} id="loginButton">
-            Log In
+          <button onClick={this.signup} id="loginButton">
+            Sign Up
           </button>
-          <NavLink to="/signup">
-            <span id="gotoSignupText">Or sign up instead</span>
+
+          <NavLink to="/login">
+            <span id="gotoSignupText">Or log in instead</span>
           </NavLink>
         </div>
       </div>
