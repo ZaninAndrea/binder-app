@@ -1,6 +1,17 @@
 const supermemo2 = require("./supermemo2.js")
 const dayjs = require("dayjs")
 
+function shuffle(a) {
+    var j, x, i
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1))
+        x = a[i]
+        a[i] = a[j]
+        a[j] = x
+    }
+    return a
+}
+
 const maskArray = (arr, indexes) => [...new Set(indexes)].map(id => arr[id])
 
 class Deck {
@@ -12,17 +23,21 @@ class Deck {
         this.archived = !!deck.archived
         this.updateDecks = updateDecks
 
-        this.indexesToReview = this.cards
-            .filter(
-                ({ nextRepeat, isRepeatAgain }) =>
-                    (nextRepeat !== null && new Date(nextRepeat) <= now) ||
-                    isRepeatAgain
-            )
-            .map(card => card.id)
+        this.indexesToReview = shuffle(
+            this.cards
+                .filter(
+                    ({ nextRepeat, isRepeatAgain }) =>
+                        (nextRepeat !== null && new Date(nextRepeat) <= now) ||
+                        isRepeatAgain
+                )
+                .map(card => card.id)
+        )
 
-        this.indexesToLearn = this.cards
-            .filter(({ nextRepeat }) => nextRepeat === null)
-            .map(card => card.id)
+        this.indexesToLearn = shuffle(
+            this.cards
+                .filter(({ nextRepeat }) => nextRepeat === null)
+                .map(card => card.id)
+        )
 
         this.currentIndex = null
     }
