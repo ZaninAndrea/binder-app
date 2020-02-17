@@ -40,13 +40,13 @@ class Main extends React.Component {
 
         return (
             <div className="main">
-                <Route path="/" component={homeComponent} exact />
-                <Route path="/review" component={reviewPathComponent} exact />
-                <Route path="/learn" component={learnPathComponent} exact />
-                <Route path="/deck/:deckId" component={deckPage} exact />
+                <Route path="/" render={homeComponent} exact />
+                <Route path="/review" render={reviewPathComponent} exact />
+                <Route path="/learn" render={learnPathComponent} exact />
+                <Route path="/deck/:deckId" render={deckPage} exact />
                 <Route
                     path="/deck/:deckId/learn"
-                    component={({ match }) => {
+                    render={({ match }) => {
                         if (!this.props.decks[match.params.deckId]) return ""
 
                         return (
@@ -60,7 +60,7 @@ class Main extends React.Component {
                 />
                 <Route
                     path="/deck/:deckId/review"
-                    component={({ match }) => {
+                    render={({ match }) => {
                         if (!this.props.decks[match.params.deckId]) return ""
 
                         return (
@@ -74,7 +74,7 @@ class Main extends React.Component {
                 />
                 <Route
                     path="/deck/:deckId/cram"
-                    component={({ match }) => {
+                    render={({ match }) => {
                         if (!this.props.decks[match.params.deckId]) return ""
 
                         return (

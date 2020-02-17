@@ -16,11 +16,16 @@ export default class DeckPage extends React.Component {
         editCard: null,
         anchorEl: null,
         wantsToDelete: false,
+        name: "",
     }
 
     onCloseEditModal = () => {
         this.setState({ editCard: null })
         this.props.updateDecks()
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.deck) this.setState({ name: nextProps.deck.name })
     }
 
     render() {
@@ -63,9 +68,10 @@ export default class DeckPage extends React.Component {
                 )}
                 <h1 className="deckName">
                     <input
-                        defaultValue={this.props.deck.name}
+                        value={this.state.name}
+                        onChange={e => this.setState({ name: e.target.value })}
                         onBlur={e => {
-                            deck.name = e.target.value
+                            deck.name = this.state.name
                             this.props.updateDecks()
                         }}
                     />

@@ -183,13 +183,13 @@ class App extends React.Component {
                 <Router>
                     <div className="App">
                         {!this.state.bearer && <Redirect to="/login" />}
-                        <Route path="/" exact component={loggedInComponent} />
+                        <Route path="/" exact render={loggedInComponent} />
                         <Route
                             path={["/review", "/learn", "/settings", "/deck"]}
-                            component={loggedInComponent}
+                            render={loggedInComponent}
                         />
-                        <Route path="/login" component={logInPage} />
-                        <Route path="/signup" component={signUpPage} />
+                        <Route path="/login" render={logInPage} />
+                        <Route path="/signup" render={signUpPage} />
                     </div>
                 </Router>
             </ThemeProvider>
