@@ -9,7 +9,9 @@ import { Route } from "react-router-dom"
 class Main extends React.Component {
     render() {
         const reviewPathComponent = () => (
-            <ReviewPage decks={this.props.decks} />
+            <ReviewPage
+                decks={this.props.decks.filter(deck => !deck.archived)}
+            />
         )
         const learnPathComponent = () => (
             <LearnPage

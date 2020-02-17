@@ -142,7 +142,7 @@ class App extends React.Component {
             <>
                 <Desktop>
                     <Sidebar
-                        decks={this.state.decks.filter(deck => !deck.archived)}
+                        decks={this.state.decks}
                         updateDecks={this.updateDecks}
                         logout={this.logout}
                         createNewDeck={this.createNewDeck}
@@ -157,7 +157,7 @@ class App extends React.Component {
                         }
                     />
                     <MobileSidebar
-                        decks={this.state.decks.filter(deck => !deck.archived)}
+                        decks={this.state.decks}
                         updateDecks={this.updateDecks}
                         createNewDeck={this.createNewDeck}
                         open={this.state.open}

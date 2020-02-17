@@ -122,12 +122,12 @@ export default class DeckPage extends React.Component {
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
-                                deck.archived = true
-                                this.props.updateDecks()
+                                deck.archived = !deck.archived
+                                this.props.updateDecks(true)
                             }}
                         >
                             <Archive />
-                            Archive
+                            {deck.archived ? "Restore" : "Archive"}
                         </MenuItem>
                         <MenuItem
                             onClick={() => {

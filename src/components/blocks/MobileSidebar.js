@@ -58,6 +58,20 @@ export default class MobileSidebar extends React.Component {
                     >
                         <LibraryAddIcon /> New Binder
                     </a>
+
+                    <p className="title">ARCHIVED BINDERS</p>
+                    {this.props.decks
+                        .filter(deck => !!deck.archived)
+                        .map(deck => (
+                            <NavLink
+                                to={"/deck/" + deck.id}
+                                activeClassName="active"
+                                key={deck.id}
+                                className="deck"
+                            >
+                                <LibraryBooksIcon /> {deck.name}
+                            </NavLink>
+                        ))}
                 </div>
             </Drawer>
         )
