@@ -11,10 +11,24 @@ class Main extends React.Component {
         const reviewPathComponent = () => (
             <ReviewPage decks={this.props.decks} />
         )
-        const learnPathComponent = () => <LearnPage decks={this.props.decks} />
+        const learnPathComponent = () => (
+            <LearnPage
+                decks={this.props.decks.filter(deck => !deck.archived)}
+            />
+        )
+
+        const getCurrentDeck = match => {
+            let currentDeck = this.props.decks.filter(
+                deck => deck.id === match.params.deckId
+            )
+            currentDeck = currentDeck.length === 0 ? null : currentDeck[0]
+
+            return currentDeck
+        }
+
         const deckPage = ({ match }) => (
             <DeckPage
-                deck={this.props.decks[match.params.deckId]}
+                deck={getCurrentDeck(match)}
                 updateDecks={this.props.updateDecks}
                 deleteDeck={this.props.deleteDeck(match.params.deckId)}
                 redirectTo={this.props.redirectTo}

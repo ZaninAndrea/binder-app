@@ -35,16 +35,18 @@ class Sidebar extends React.Component {
                 </NavLink>
                 <br />
                 <p className="title">BINDERS</p>
-                {this.props.decks.map(deck => (
-                    <NavLink
-                        to={"/deck/" + deck.id}
-                        activeClassName="active"
-                        key={deck.id}
-                        className="deck"
-                    >
-                        <LibraryBooksIcon /> {deck.name}
-                    </NavLink>
-                ))}
+                {this.props.decks
+                    .filter(deck => !deck.archived)
+                    .map(deck => (
+                        <NavLink
+                            to={"/deck/" + deck.id}
+                            activeClassName="active"
+                            key={deck.id}
+                            className="deck"
+                        >
+                            <LibraryBooksIcon /> {deck.name}
+                        </NavLink>
+                    ))}
                 <a onClick={this.props.createNewDeck}>
                     <LibraryAddIcon /> New Binder
                 </a>

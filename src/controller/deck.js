@@ -9,6 +9,7 @@ class Deck {
         this.cards = deck.cards
         this.id = deck.id
         this.name = deck.name
+        this.archived = !!deck.archived
         this.updateDecks = updateDecks
 
         this.indexesToReview = this.cards
@@ -35,6 +36,7 @@ class Deck {
             id: this.id,
             name: this.name,
             cards: this.cards,
+            archived: this.archived,
         }
     }
 

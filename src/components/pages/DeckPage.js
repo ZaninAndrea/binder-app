@@ -9,6 +9,7 @@ import InboxIcon from "@material-ui/icons/Inbox"
 import SchoolIcon from "@material-ui/icons/School"
 import WarningIcon from "@material-ui/icons/Warning"
 import Loop from "@material-ui/icons/Loop"
+import Archive from "@material-ui/icons/Archive"
 
 export default class DeckPage extends React.Component {
     state = {
@@ -118,6 +119,15 @@ export default class DeckPage extends React.Component {
                         >
                             <Loop />
                             Cram review
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                deck.archived = true
+                                this.props.updateDecks()
+                            }}
+                        >
+                            <Archive />
+                            Archive
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
