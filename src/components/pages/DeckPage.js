@@ -10,13 +10,51 @@ import SchoolIcon from "@material-ui/icons/School"
 import WarningIcon from "@material-ui/icons/Warning"
 import Loop from "@material-ui/icons/Loop"
 import Archive from "@material-ui/icons/Archive"
+import fileDialog from "file-dialog"
+
+class MinimalLoader extends React.Component {
+    constructor() {
+        super()
+
+        this.state = { counter: 0 }
+        this.interval = setInterval(
+            () =>
+                this.setState(({ counter }) => ({
+                    counter: (counter + 1) % 3,
+                })),
+            700
+        )
+    }
+
+    componentWillUnmount = () => {
+        clearInterval(this.interval)
+    }
+
+    render() {
+        switch (this.state.counter) {
+            case 0:
+                return ".  "
+            case 1:
+                return ".. "
+            case 2:
+                return "..."
+            default:
+                return ""
+        }
+    }
+}
 
 export default class DeckPage extends React.Component {
-    state = {
-        editCard: null,
-        anchorEl: null,
-        wantsToDelete: false,
-        name: "",
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            editCard: null,
+            anchorEl: null,
+            wantsToDelete: false,
+            name: this.props.deck && this.props.deck.name,
+            loadingDeck: false,
+        }
     }
 
     onCloseEditModal = () => {
@@ -26,6 +64,37 @@ export default class DeckPage extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.deck) this.setState({ name: nextProps.deck.name })
+    }
+
+    loadDeck = () => {
+        fileDialog({ accept: "application/json" }).then(files => {
+            this.setState({ loadingDeck: true })
+
+            const file = files[0]
+            const reader = new FileReader()
+            reader.onload = e => {
+                try {
+                    let loaded = JSON.parse(e.target.result)
+
+                    if (!loaded.length) {
+                        throw new Error("not array")
+                    }
+
+                    for (let card of loaded) {
+                        this.props.deck.addCard(card.front, card.back)
+                    }
+
+                    this.props.updateDecks()
+
+                    this.setState({
+                        loadingDeck: false,
+                    })
+                } catch (e) {
+                    console.log(e)
+                }
+            }
+            reader.readAsText(file)
+        })
     }
 
     render() {
@@ -69,7 +138,11 @@ export default class DeckPage extends React.Component {
                 <h1 className="deckName">
                     <input
                         value={this.state.name}
-                        onChange={e => this.setState({ name: e.target.value })}
+                        onChange={e =>
+                            this.setState({
+                                name: e.target.value,
+                            })
+                        }
                         onBlur={e => {
                             deck.name = this.state.name
                             this.props.updateDecks()
@@ -142,8 +215,13 @@ export default class DeckPage extends React.Component {
                                     ({ wantsToDelete }) => {
                                         if (wantsToDelete) {
                                             shouldDelete = true
-                                            return { anchorEl: null }
-                                        } else return { wantsToDelete: true }
+                                            return {
+                                                anchorEl: null,
+                                            }
+                                        } else
+                                            return {
+                                                wantsToDelete: true,
+                                            }
                                     },
                                     () => {
                                         if (shouldDelete)
@@ -153,7 +231,9 @@ export default class DeckPage extends React.Component {
                             }}
                             style={
                                 this.state.wantsToDelete
-                                    ? { color: "var(--primary-color)" }
+                                    ? {
+                                          color: "var(--primary-color)",
+                                      }
                                     : {}
                             }
                         >
@@ -220,15 +300,25 @@ export default class DeckPage extends React.Component {
                         id="new-card"
                         onClick={() =>
                             this.setState({
-                                editCard: deck.addCard({
-                                    front: "",
-                                    back: "",
-                                }),
+                                editCard: deck.addCard("", ""),
                             })
                         }
                     >
                         New Card
-                    </div>
+                    </div>{" "}
+                    {deck.cards.length === 0 && (
+                        <div
+                            key="load-deck"
+                            id="new-card"
+                            onClick={this.loadDeck}
+                        >
+                            {this.state.loadingDeck ? (
+                                <MinimalLoader />
+                            ) : (
+                                "Load Deck"
+                            )}
+                        </div>
+                    )}
                 </div>
             </>
         )

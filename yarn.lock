@@ -899,6 +899,18 @@
     lodash "^4.17.11"
     to-fast-properties "^2.0.0"
 
+"@bit/chriso.validator-js..internal.assert-string@10.11.0":
+  version "10.11.0"
+  resolved "https://node.bit.dev/chriso.validator-js..internal.assert-string/-/chriso.validator-js..internal.assert-string-10.11.0.tgz#f1335635dc76e9658380780f77b450a92a8a0e00"
+  integrity sha1-8TNWNdx26WWDgHgPd7RQqSqKDgA=
+
+"@bit/chriso.validator-js.equals@^10.11.0":
+  version "10.11.0"
+  resolved "https://node.bit.dev/chriso.validator-js.equals/-/chriso.validator-js.equals-10.11.0.tgz#c9c9b8076e71c1f0e59e1b402e9c7bb518e8f9e9"
+  integrity sha1-ycm4B25xwfDlnhtALpx7tRjo+ek=
+  dependencies:
+    "@bit/chriso.validator-js..internal.assert-string" "10.11.0"
+
 "@cnakazawa/watch@^1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@cnakazawa/watch/-/watch-1.0.3.tgz#099139eaec7ebf07a27c1786a3ff64f39464d2ef"
@@ -4097,6 +4109,11 @@ figures@^2.0.0:
   integrity sha1-OrGi0qYsi/tDGgyUy3l6L84nyWI=
   dependencies:
     escape-string-regexp "^1.0.5"
+
+file-dialog@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/file-dialog/-/file-dialog-0.0.8.tgz#9137155ffe4abf4e1546aba3ed17e395fbf92aba"
+  integrity sha512-KnYitqNf/rANEhUxWzkINAaMVc7SshejwA5HEd5Wr8lEJQX1Js1LCndectS44SXTnXWK+jbHQYs4R6CaG+7Jkg==
 
 file-entry-cache@^5.0.1:
   version "5.0.1"

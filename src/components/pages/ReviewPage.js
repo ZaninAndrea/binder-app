@@ -129,7 +129,6 @@ export default class ReviewPage extends React.Component {
     }
 
     render() {
-        console.log(this.state.reviewedCardsCount)
         const reviewRate =
             this.state.cardsToReview === 0
                 ? 1

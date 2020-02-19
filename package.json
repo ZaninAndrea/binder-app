@@ -3,10 +3,12 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "@bit/chriso.validator-js.equals": "^10.11.0",
         "@material-ui/core": "^4.3.3",
         "@material-ui/icons": "^4.2.1",
         "dayjs": "^1.8.15",
         "dotenv": "^8.1.0",
+        "file-dialog": "^0.0.8",
         "katex": "^0.11.0",
         "react": "^16.8.6",
         "react-calendar-heatmap": "^1.8.1",

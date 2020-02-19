@@ -138,7 +138,7 @@ class Deck {
         return { ...this.getCurrentCard(), isNew: true }
     }
 
-    addCard() {
+    addCard(front = "", back = "") {
         const newCard = {
             id: this.cards.length,
             repetitions: [],
@@ -146,6 +146,8 @@ class Deck {
             nextRepeat: null,
             factor: 2.5,
             isRepeatAgain: false,
+            front,
+            back,
         }
         this.cards.push(newCard)
 
