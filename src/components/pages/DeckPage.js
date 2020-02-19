@@ -10,7 +10,15 @@ import SchoolIcon from "@material-ui/icons/School"
 import WarningIcon from "@material-ui/icons/Warning"
 import Loop from "@material-ui/icons/Loop"
 import Archive from "@material-ui/icons/Archive"
+import Download from "@material-ui/icons/SaveAlt"
 import fileDialog from "file-dialog"
+
+function downloadJson(name, cards) {
+    let a = document.createElement("a")
+    a.download = name + ".json"
+    a.href = "data:application/json;base64," + btoa(JSON.stringify(cards))
+    a.click()
+}
 
 class MinimalLoader extends React.Component {
     constructor() {
@@ -207,6 +215,19 @@ export default class DeckPage extends React.Component {
                         >
                             <Archive />
                             {deck.archived ? "Restore" : "Archive"}
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                downloadJson(
+                                    this.state.name,
+                                    this.props.deck.cards.map(
+                                        ({ front, back }) => ({ front, back })
+                                    )
+                                )
+                            }}
+                        >
+                            <Download />
+                            Download
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
