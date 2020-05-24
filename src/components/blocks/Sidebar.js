@@ -9,11 +9,13 @@ import ExitToApp from "@material-ui/icons/ExitToApp"
 class Sidebar extends React.Component {
     render() {
         const cardsToReview = this.props.decks
-            .map(deck => deck.cardsToReview().length)
+            .filter((deck) => !deck.archived)
+            .map((deck) => deck.cardsToReview().length)
             .reduce((a, b) => a + b, 0)
 
         const cardsToLearn = this.props.decks
-            .map(deck => deck.cardsToLearn().length)
+            .filter((deck) => !deck.archived)
+            .map((deck) => deck.cardsToLearn().length)
             .reduce((a, b) => a + b, 0)
 
         return (
@@ -36,8 +38,8 @@ class Sidebar extends React.Component {
                 <br />
                 <p className="title">BINDERS</p>
                 {this.props.decks
-                    .filter(deck => !deck.archived)
-                    .map(deck => (
+                    .filter((deck) => !deck.archived)
+                    .map((deck) => (
                         <NavLink
                             to={"/deck/" + deck.id}
                             activeClassName="active"
@@ -53,8 +55,8 @@ class Sidebar extends React.Component {
 
                 <p className="title">ARCHIVED BINDERS</p>
                 {this.props.decks
-                    .filter(deck => !!deck.archived)
-                    .map(deck => (
+                    .filter((deck) => !!deck.archived)
+                    .map((deck) => (
                         <NavLink
                             to={"/deck/" + deck.id}
                             activeClassName="active"

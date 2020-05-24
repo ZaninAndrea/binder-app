@@ -10,11 +10,13 @@ import Close from "@material-ui/icons/Close"
 export default class MobileSidebar extends React.Component {
     render() {
         const cardsToReview = this.props.decks
-            .map(deck => deck.cardsToReview().length)
+            .filter((deck) => !deck.archived)
+            .map((deck) => deck.cardsToReview().length)
             .reduce((a, b) => a + b, 0)
 
         const cardsToLearn = this.props.decks
-            .map(deck => deck.cardsToLearn().length)
+            .filter((deck) => !deck.archived)
+            .map((deck) => deck.cardsToLearn().length)
             .reduce((a, b) => a + b, 0)
 
         return (
@@ -39,7 +41,7 @@ export default class MobileSidebar extends React.Component {
                     </NavLink>
                     <br />
                     <p className="title">BINDERS</p>
-                    {this.props.decks.map(deck => (
+                    {this.props.decks.map((deck) => (
                         <NavLink
                             to={"/deck/" + deck.id}
                             activeClassName="active"
@@ -61,8 +63,8 @@ export default class MobileSidebar extends React.Component {
 
                     <p className="title">ARCHIVED BINDERS</p>
                     {this.props.decks
-                        .filter(deck => !!deck.archived)
-                        .map(deck => (
+                        .filter((deck) => !!deck.archived)
+                        .map((deck) => (
                             <NavLink
                                 to={"/deck/" + deck.id}
                                 activeClassName="active"
