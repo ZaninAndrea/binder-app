@@ -56,6 +56,8 @@ export default class LearnPage extends React.Component {
                 : this.props.decks[deckIndex].nextCardToLearn()
         }
 
+        if (_done) new Audio("./completed.wav").play()
+
         this.setState({
             card: nextCard,
             deckIndex: _deckIndex,

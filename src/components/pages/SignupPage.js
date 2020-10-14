@@ -1,62 +1,66 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React from "react"
+import { NavLink } from "react-router-dom"
 
 export default class SignupPage extends React.Component {
-  state = {
-    email: "",
-    password: ""
-  };
+    state = {
+        email: "",
+        password: "",
+    }
 
-  signup = async () => {
-    const res = await fetch("https://flipcards-server.herokuapp.com/signup", {
-      body: JSON.stringify({
-        email: this.state.email,
-        password: this.state.password
-      }),
-      headers: {
-        "content-type": "application/json"
-      },
-      method: "POST"
-    });
+    signup = async () => {
+        const res = await fetch("https://binder.caprover.baida.dev/signup", {
+            body: JSON.stringify({
+                email: this.state.email,
+                password: this.state.password,
+            }),
+            headers: {
+                "content-type": "application/json",
+            },
+            method: "POST",
+        })
 
-    if (res.status === 200) this.props.setBearer(await res.text());
-  };
+        if (res.status === 200) this.props.setBearer(await res.text())
+    }
 
-  render() {
-    return (
-      <div id="loginForm">
-        <div id="mainLoginBody">
-          <img src="/full_logo.png" id="loginLogo" />
-          <br />
-          <br />
-          <span id="loginEmailText">Email</span>
-          <br />
-          <input
-            value={this.state.email}
-            id="loginEmail"
-            type="email"
-            onChange={e => this.setState({ email: e.target.value })}
-          />
-          <br />
-          <br />
-          <span id="loginPasswordText">Password</span>
-          <br />
-          <input
-            id="loginPassword"
-            value={this.state.password}
-            type="password"
-            onChange={e => this.setState({ password: e.target.value })}
-          />
-          <br />
-          <button onClick={this.signup} id="loginButton">
-            Sign Up
-          </button>
+    render() {
+        return (
+            <div id="loginForm">
+                <div id="mainLoginBody">
+                    <img src="/full_logo.png" id="loginLogo" />
+                    <br />
+                    <br />
+                    <span id="loginEmailText">Email</span>
+                    <br />
+                    <input
+                        value={this.state.email}
+                        id="loginEmail"
+                        type="email"
+                        onChange={(e) =>
+                            this.setState({ email: e.target.value })
+                        }
+                    />
+                    <br />
+                    <br />
+                    <span id="loginPasswordText">Password</span>
+                    <br />
+                    <input
+                        id="loginPassword"
+                        value={this.state.password}
+                        type="password"
+                        onChange={(e) =>
+                            this.setState({ password: e.target.value })
+                        }
+                    />
+                    <br />
+                    <button onClick={this.signup} id="loginButton">
+                        Sign Up
+                    </button>
 
-          <NavLink to="/login">
-            <span id="gotoSignupText">Or log in instead</span>
-          </NavLink>
-        </div>
-      </div>
-    );
-  }
+                    <NavLink to="/login">
+                        <span id="gotoSignupText">Or log in instead</span>
+                    </NavLink>
+                </div>
+            </div>
+        )
+    }
 }

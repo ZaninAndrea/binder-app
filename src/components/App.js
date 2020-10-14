@@ -44,17 +44,14 @@ class App extends React.Component {
         this.setState({ bearer, redirectTo })
         localStorage.setItem("bearer", bearer)
 
-        let { decks } = await fetch(
-            "https://flipcards-server.herokuapp.com/user",
-            {
-                headers: {
-                    Authorization: "Bearer " + bearer,
-                },
-            }
-        ).then(res => res.json())
+        let { decks } = await fetch("https://binder.caprover.baida.dev/user", {
+            headers: {
+                Authorization: "Bearer " + bearer,
+            },
+        }).then((res) => res.json())
 
         if (!decks) {
-            await fetch("https://flipcards-server.herokuapp.com/user", {
+            await fetch("https://binder.caprover.baida.dev/user", {
                 body: JSON.stringify({
                     decks: [],
                 }),
@@ -69,7 +66,7 @@ class App extends React.Component {
         }
 
         this.setState({
-            decks: decks.map(deck => new Deck(deck, this.updateDecks)),
+            decks: decks.map((deck) => new Deck(deck, this.updateDecks)),
         })
     }
 
@@ -79,7 +76,7 @@ class App extends React.Component {
     }
 
     updateDecks = (refresh = true) => {
-        fetch("https://flipcards-server.herokuapp.com/user", {
+        fetch("https://binder.caprover.baida.dev/user", {
             body: JSON.stringify({
                 decks: this.state.decks,
             }),
@@ -93,7 +90,7 @@ class App extends React.Component {
         if (refresh) this.forceUpdate()
     }
 
-    deleteDeck = deletedId => () => {
+    deleteDeck = (deletedId) => () => {
         this.setState(
             ({ decks }) => ({
                 decks: decks.filter(
@@ -152,7 +149,7 @@ class App extends React.Component {
                     <Header
                         logout={this.logout}
                         openSidebar={() => this.setState({ open: true })}
-                        redirectTo={location =>
+                        redirectTo={(location) =>
                             this.setState({ redirectTo: location })
                         }
                     />
@@ -169,7 +166,7 @@ class App extends React.Component {
                     updateDecks={this.updateDecks}
                     isMobile={false}
                     deleteDeck={this.deleteDeck}
-                    redirectTo={location =>
+                    redirectTo={(location) =>
                         this.setState({ redirectTo: location })
                     }
                 />

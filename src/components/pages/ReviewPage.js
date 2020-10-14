@@ -5,7 +5,7 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack"
 import { NavLink } from "react-router-dom"
 import { Desktop } from "../utils/MobileDesktop"
 
-const isToday = someDate => {
+const isToday = (someDate) => {
     const today = new Date()
     someDate = new Date(someDate)
     return (
@@ -29,9 +29,9 @@ export default class ReviewPage extends React.Component {
 
         const reviewedCardsCount = this.props.decks
             .map(
-                deck =>
+                (deck) =>
                     deck.cards.filter(
-                        card =>
+                        (card) =>
                             card.repetitions.length > 0 &&
                             isToday(
                                 card.repetitions[card.repetitions.length - 1]
@@ -43,7 +43,7 @@ export default class ReviewPage extends React.Component {
 
         const cardsToReview =
             this.props.decks
-                .map(deck => deck.cardsToReview().length)
+                .map((deck) => deck.cardsToReview().length)
                 .reduce((a, b) => a + b, 0) + reviewedCardsCount
 
         this.state = {
@@ -87,6 +87,8 @@ export default class ReviewPage extends React.Component {
                 : this.props.decks[deckIndex].nextCardToReview()
         }
 
+        if (_done) new Audio("./completed.wav").play()
+
         this.setState(({ reviewedCardsCount }) => ({
             card: nextCard,
             deckIndex: _deckIndex,
@@ -97,7 +99,7 @@ export default class ReviewPage extends React.Component {
         }))
     }
 
-    onGrade = quality => {
+    onGrade = (quality) => {
         this.props.decks[this.state.deckIndex].grade(quality)
         this.nextCard()
     }
