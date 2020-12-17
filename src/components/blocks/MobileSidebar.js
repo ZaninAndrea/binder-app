@@ -41,17 +41,19 @@ export default class MobileSidebar extends React.Component {
                     </NavLink>
                     <br />
                     <p className="title">BINDERS</p>
-                    {this.props.decks.map((deck) => (
-                        <NavLink
-                            to={"/deck/" + deck.id}
-                            activeClassName="active"
-                            key={deck.id}
-                            className="deck"
-                            onClick={() => this.props.onClose()}
-                        >
-                            <LibraryBooksIcon /> {deck.name}
-                        </NavLink>
-                    ))}
+                    {this.props.decks
+                        .filter((deck) => !deck.archived)
+                        .map((deck) => (
+                            <NavLink
+                                to={"/deck/" + deck.id}
+                                activeClassName="active"
+                                key={deck.id}
+                                className="deck"
+                                onClick={() => this.props.onClose()}
+                            >
+                                <LibraryBooksIcon /> {deck.name}
+                            </NavLink>
+                        ))}
                     <a
                         onClick={() => {
                             this.props.createNewDeck()

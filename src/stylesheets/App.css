@@ -46,6 +46,7 @@ textarea {
     grid-area: sidebar;
     color: var(--primary-text-color);
     background-color: var(--primary-color);
+    overflow: auto;
 }
 
 .drawer {
@@ -585,4 +586,33 @@ a {
 }
 #streak-calendar .color-scale-high {
     fill: #000;
+}
+
+.toolbar {
+    display: grid;
+    width: 100%;
+    height: 16px;
+    grid-template-columns: 300px auto 42px 42px;
+    grid-template-areas: "stats . showhide delete";
+}
+
+.toolbar button {
+    border: none;
+    box-shadow: none;
+    color: var(--secondary-text-color);
+    background: none;
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
+    opacity: 0.75;
+}
+
+.toolbar .stats-tool {
+    grid-area: stats;
+    line-height: 30px;
+}
+.toolbar .show-hide {
+    grid-area: showhide;
+}
+.toolbar .delete {
+    grid-area: delete;
 }

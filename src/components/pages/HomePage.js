@@ -10,9 +10,9 @@ function computeStreakValues(decks) {
     }
 
     const repetitions = decks
-        .map(deck => deck.cards)
+        .map((deck) => deck.cards)
         .flat()
-        .map(card => card.repetitions)
+        .map((card) => card.repetitions)
         .flat()
 
     const map = {}
@@ -30,7 +30,7 @@ function computeStreakValues(decks) {
         streakArray.push({ date: new Date(day).toUTCString(), value: map[day] })
     }
 
-    const counts = streakArray.map(day => day.value).sort()
+    const counts = streakArray.map((day) => day.value).sort()
     const medium = counts[Math.floor(counts.length / 3)]
     const high = counts[Math.floor((2 * counts.length) / 3)]
 
@@ -40,6 +40,19 @@ function computeStreakValues(decks) {
 export default class HomePage extends Component {
     render() {
         const { streak, high, medium } = computeStreakValues(this.props.decks)
+        const totalCards = this.props.decks.reduce(
+            (acc, deck) => acc + deck.cards.length,
+            0
+        )
+        const totalRepetitions = this.props.decks.reduce(
+            (acc, deck) =>
+                acc +
+                deck.cards.reduce(
+                    (acc2, card) => acc2 + card.repetitions.length,
+                    0
+                ),
+            0
+        )
 
         return (
             <div className="home">
@@ -51,12 +64,12 @@ export default class HomePage extends Component {
                                 .toDate()}
                             endDate={new Date()}
                             values={streak}
-                            titleForValue={data =>
+                            titleForValue={(data) =>
                                 data
                                     ? `${data.value} repetitions`
                                     : `0 repetitions`
                             }
-                            classForValue={data => {
+                            classForValue={(data) => {
                                 if (!data) {
                                     return "color-empty"
                                 } else if (data.value > high) {
@@ -70,6 +83,14 @@ export default class HomePage extends Component {
                                 }
                             }}
                         />
+                        <div className="home-stats">
+                            <div className="total-cards">
+                                {totalCards} Cards
+                            </div>
+                            <div className="total-repetitions">
+                                {totalRepetitions} Repetitions
+                            </div>
+                        </div>
                     </Desktop>
                     <Mobile>
                         <CalendarHeatmap
@@ -78,12 +99,12 @@ export default class HomePage extends Component {
                                 .toDate()}
                             endDate={new Date()}
                             values={streak}
-                            titleForValue={data =>
+                            titleForValue={(data) =>
                                 data
                                     ? `${data.value} repetitions`
                                     : `0 repetitions`
                             }
-                            classForValue={data => {
+                            classForValue={(data) => {
                                 if (!data) {
                                     return "color-empty"
                                 } else if (data.value > high) {

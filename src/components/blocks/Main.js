@@ -10,18 +10,18 @@ class Main extends React.Component {
     render() {
         const reviewPathComponent = () => (
             <ReviewPage
-                decks={this.props.decks.filter(deck => !deck.archived)}
+                decks={this.props.decks.filter((deck) => !deck.archived)}
             />
         )
         const learnPathComponent = () => (
             <LearnPage
-                decks={this.props.decks.filter(deck => !deck.archived)}
+                decks={this.props.decks.filter((deck) => !deck.archived)}
             />
         )
 
-        const getCurrentDeck = match => {
+        const getCurrentDeck = (match) => {
             let currentDeck = this.props.decks.filter(
-                deck => deck.id === match.params.deckId
+                (deck) => deck.id === match.params.deckId
             )
             currentDeck = currentDeck.length === 0 ? null : currentDeck[0]
 
@@ -47,44 +47,50 @@ class Main extends React.Component {
                 <Route
                     path="/deck/:deckId/learn"
                     render={({ match }) => {
-                        if (!this.props.decks[match.params.deckId]) return ""
+                        const deck = this.props.decks.filter(
+                            (deck) => deck.id === match.params.deckId
+                        )
+                        if (deck.length === 0) return ""
 
                         return (
                             <LearnPage
-                                decks={[this.props.decks[match.params.deckId]]}
+                                decks={deck}
                                 backTo={`/deck/${match.params.deckId}`}
                             />
                         )
                     }}
-                    exact
                 />
                 <Route
                     path="/deck/:deckId/review"
                     render={({ match }) => {
-                        if (!this.props.decks[match.params.deckId]) return ""
+                        const deck = this.props.decks.filter(
+                            (deck) => deck.id === match.params.deckId
+                        )
+                        if (deck.length === 0) return ""
 
                         return (
                             <ReviewPage
-                                decks={[this.props.decks[match.params.deckId]]}
+                                decks={deck}
                                 backTo={`/deck/${match.params.deckId}`}
                             />
                         )
                     }}
-                    exact
                 />
                 <Route
                     path="/deck/:deckId/cram"
                     render={({ match }) => {
-                        if (!this.props.decks[match.params.deckId]) return ""
+                        const deck = this.props.decks.filter(
+                            (deck) => deck.id === match.params.deckId
+                        )
+                        if (deck.length === 0) return ""
 
                         return (
                             <CramPage
-                                decks={[this.props.decks[match.params.deckId]]}
+                                decks={deck}
                                 backTo={`/deck/${match.params.deckId}`}
                             />
                         )
                     }}
-                    exact
                 />
             </div>
         )

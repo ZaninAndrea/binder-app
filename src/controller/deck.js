@@ -12,7 +12,7 @@ function shuffle(a) {
     return a
 }
 
-const maskArray = (arr, indexes) => [...new Set(indexes)].map(id => arr[id])
+const maskArray = (arr, indexes) => [...new Set(indexes)].map((id) => arr[id])
 
 class Deck {
     constructor(deck, updateDecks) {
@@ -26,17 +26,20 @@ class Deck {
         this.indexesToReview = shuffle(
             this.cards
                 .filter(
-                    ({ nextRepeat, isRepeatAgain }) =>
-                        (nextRepeat !== null && new Date(nextRepeat) <= now) ||
-                        isRepeatAgain
+                    ({ nextRepeat, isRepeatAgain, paused }) =>
+                        ((nextRepeat !== null && new Date(nextRepeat) <= now) ||
+                            isRepeatAgain) &&
+                        !paused
                 )
-                .map(card => card.id)
+                .map((card) => card.id)
         )
 
         this.indexesToLearn = shuffle(
             this.cards
-                .filter(({ nextRepeat }) => nextRepeat === null)
-                .map(card => card.id)
+                .filter(
+                    ({ nextRepeat, paused }) => nextRepeat === null && !paused
+                )
+                .map((card) => card.id)
         )
 
         this.currentIndex = null
@@ -68,7 +71,7 @@ class Deck {
         const jitter = 1 + (Math.random() - 0.5) * 0.2
         schedule = Math.round(schedule * jitter)
 
-        this.cards = this.cards.map(entry =>
+        this.cards = this.cards.map((entry) =>
             entry.id === card.id
                 ? {
                       ...entry,
@@ -140,7 +143,11 @@ class Deck {
 
     addCard(front = "", back = "") {
         const newCard = {
-            id: this.cards.length,
+            id:
+                this.cards.reduce(
+                    (acc, curr) => Math.max(acc, parseInt(curr.id)),
+                    0
+                ) + 1,
             repetitions: [],
             lastSchedule: null,
             nextRepeat: null,
@@ -148,12 +155,47 @@ class Deck {
             isRepeatAgain: false,
             front,
             back,
+            paused: false,
         }
         this.cards.push(newCard)
 
         this.indexesToLearn.push(this.cards.length - 1)
 
         return newCard
+    }
+
+    deleteCard(id) {
+        this.cards = this.cards.filter(
+            (card) => card.id.toString() !== id.toString()
+        )
+
+        this.indexesToLearn = this.indexesToLearn.filter(
+            (index) => index.toString() !== id.toString()
+        )
+        this.indexesToReview = this.indexesToReview.filter(
+            (index) => index.toString() !== id.toString()
+        )
+    }
+
+    togglePause(id) {
+        let card = this.cards.filter(
+            (card) => card.id.toString() === id.toString()
+        )
+
+        if (card.length === 0) return
+
+        card = card[0]
+        card.paused = !card.paused
+
+        const now = new Date()
+        if (card.nextRepeat === null && !card.paused)
+            this.indexesToLearn.push(card.id)
+        if (
+            ((card.nextRepeat !== null && new Date(card.nextRepeat) <= now) ||
+                card.isRepeatAgain) &&
+            !card.paused
+        )
+            this.indexesToReview.push(card.id)
     }
 }
 

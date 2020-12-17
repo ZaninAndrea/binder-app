@@ -69,18 +69,29 @@ export default class DeckPage extends React.Component {
         this.setState({ editCard: null })
         this.props.updateDecks()
     }
+    onTogglePaused = () => {
+        this.props.deck.togglePause(this.state.editCard.id)
+        this.props.updateDecks()
+    }
+    onDeleteCard = () => {
+        const id = this.state.editCard.id
+        this.setState({ editCard: null })
+
+        this.props.deck.deleteCard(id)
+        this.props.updateDecks()
+    }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.deck) this.setState({ name: nextProps.deck.name })
     }
 
     loadDeck = () => {
-        fileDialog({ accept: "application/json" }).then(files => {
+        fileDialog({ accept: "application/json" }).then((files) => {
             this.setState({ loadingDeck: true })
 
             const file = files[0]
             const reader = new FileReader()
-            reader.onload = e => {
+            reader.onload = (e) => {
                 try {
                     let loaded = JSON.parse(e.target.result)
 
@@ -141,23 +152,26 @@ export default class DeckPage extends React.Component {
                     <EditCardModal
                         card={this.state.editCard}
                         onClose={this.onCloseEditModal}
+                        updateDecks={this.props.updateDecks}
+                        onDelete={this.onDeleteCard}
+                        onTogglePaused={this.onTogglePaused}
                     />
                 )}
                 <h1 className="deckName">
                     <input
                         value={this.state.name}
-                        onChange={e =>
+                        onChange={(e) =>
                             this.setState({
                                 name: e.target.value,
                             })
                         }
-                        onBlur={e => {
+                        onBlur={(e) => {
                             deck.name = this.state.name
                             this.props.updateDecks()
                         }}
                     />
                     <div
-                        onClick={e =>
+                        onClick={(e) =>
                             this.setState({
                                 anchorEl: e.currentTarget,
                             })
@@ -301,7 +315,7 @@ export default class DeckPage extends React.Component {
                     </div>
                 </div>
                 <div className="cardsList">
-                    {deck.cards.map(card => (
+                    {deck.cards.map((card) => (
                         <div
                             key={card.id}
                             onClick={() => this.setState({ editCard: card })}

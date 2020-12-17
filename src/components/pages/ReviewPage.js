@@ -33,6 +33,7 @@ export default class ReviewPage extends React.Component {
                     deck.cards.filter(
                         (card) =>
                             card.repetitions.length > 0 &&
+                            !card.paused &&
                             isToday(
                                 card.repetitions[card.repetitions.length - 1]
                                     .date
@@ -68,7 +69,7 @@ export default class ReviewPage extends React.Component {
         })
     }
 
-    nextCard = () => {
+    nextCard = (quality) => {
         const currentDeck = this.props.decks[this.state.deckIndex]
 
         let nextCard, _deckIndex, _done
@@ -95,13 +96,14 @@ export default class ReviewPage extends React.Component {
             done: _done,
             flipped: false,
             showFooter: false,
-            reviewedCardsCount: reviewedCardsCount + 1,
+            reviewedCardsCount:
+                quality >= 4 ? reviewedCardsCount + 1 : reviewedCardsCount,
         }))
     }
 
     onGrade = (quality) => {
         this.props.decks[this.state.deckIndex].grade(quality)
-        this.nextCard()
+        this.nextCard(quality)
     }
 
     nextDeckState = () => {
