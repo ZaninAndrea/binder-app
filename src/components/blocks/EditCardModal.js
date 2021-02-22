@@ -11,8 +11,9 @@ export default class EditCardModal extends React.Component {
             (acc, curr) => (curr.quality >= 4 ? acc + 1 : acc),
             0
         )
-        const percentage =
-            totalReviews === 0 ? 100 : (100 * totalReviews) / correctReviews
+        const percentage = Math.round(
+            totalReviews === 0 ? 100 : (100 * correctReviews) / totalReviews
+        )
         return (
             <>
                 <div className="modalClickAway" onClick={this.props.onClose} />

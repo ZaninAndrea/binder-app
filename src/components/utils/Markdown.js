@@ -45,7 +45,7 @@ export function split(text) {
 function memoize(f) {
     const memory = {}
 
-    return source => {
+    return (source) => {
         if (!(source in memory)) memory[source] = f(source)
 
         return memory[source]

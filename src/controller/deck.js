@@ -106,7 +106,11 @@ class Deck {
     }
 
     getCurrentCard() {
-        return this.currentIndex !== null ? this.cards[this.currentIndex] : null
+        return this.currentIndex !== null
+            ? this.cards.filter(
+                  (card) => card.id.toString() === this.currentIndex.toString()
+              )[0]
+            : null
     }
 
     cardsToReview() {
