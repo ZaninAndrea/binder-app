@@ -21,7 +21,7 @@ class Editor extends React.Component {
 
     getText = () => (this.textarea ? this.textarea.value : null)
 
-    selectParagraph = i => () => {
+    selectParagraph = (i) => () => {
         if (this.state.focused) {
             let paragraphs = split(this.state.text)
 
@@ -44,13 +44,13 @@ class Editor extends React.Component {
         }
     }
 
-    onKeyUp = e => {
+    onKeyUp = (e) => {
         if (e.key === "Enter") {
             let paragraphs = split(this.state.text)
             const curText = this.getText()
             paragraphs[this.state.curParagraph] = curText
 
-            const isOpenLatexBlock = text =>
+            const isOpenLatexBlock = (text) =>
                 text.trim().startsWith("$$") &&
                 (!text.trim().endsWith("$$") || text.trim() === "$$")
 
@@ -73,14 +73,14 @@ class Editor extends React.Component {
         }
     }
 
-    onKeyDown = e => {
+    onKeyDown = (e) => {
         if (
             e.key === "Backspace" &&
             this.textarea.selectionEnd === 0 &&
             this.state.curParagraph !== 0
         ) {
             let paragraphs = split(this.state.text)
-            paragraphs.splice(this.state.curParagraph)
+            let removedParagraph = paragraphs.splice(this.state.curParagraph, 1)
 
             let curSelection = paragraphs[this.state.curParagraph - 1].length
             paragraphs[this.state.curParagraph - 1] += this.getText()
@@ -197,14 +197,16 @@ class Editor extends React.Component {
                                 <TextareaAutosize
                                     defaultValue={text}
                                     key={text}
-                                    ref={el => {
+                                    ref={(el) => {
                                         this.textarea = el
                                         if (el !== null) {
                                             el.focus()
 
                                             if (this.setSelection) {
-                                                el.selectionStart = this.state.curSelection
-                                                el.selectionEnd = this.state.curSelection
+                                                el.selectionStart =
+                                                    this.state.curSelection
+                                                el.selectionEnd =
+                                                    this.state.curSelection
                                                 this.setSelection = false
                                             }
                                         }

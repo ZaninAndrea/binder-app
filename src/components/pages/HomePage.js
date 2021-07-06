@@ -31,8 +31,8 @@ function computeStreakValues(decks) {
     }
 
     const counts = streakArray.map((day) => day.value).sort()
-    const medium = counts[Math.floor(counts.length / 3)]
-    const high = counts[Math.floor((2 * counts.length) / 3)]
+    const high = counts[Math.floor(counts.length / 3)]
+    const medium = counts[Math.floor((2 * counts.length) / 3)]
 
     return { streak: streakArray, high, medium }
 }
@@ -53,9 +53,39 @@ export default class HomePage extends Component {
                 ),
             0
         )
+        const correctRepetitions = this.props.decks.reduce(
+            (acc, deck) =>
+                acc +
+                deck.cards.reduce(
+                    (acc2, card) =>
+                        acc2 +
+                        card.repetitions.filter(({ quality }) => quality >= 4)
+                            .length,
+                    0
+                ),
+            0
+        )
+        const recallAccuracy =
+            totalRepetitions === 0
+                ? 100
+                : Math.round((100 * correctRepetitions) / totalRepetitions)
 
         return (
             <div className="home">
+                <div className="home-stats">
+                    <div className="total-cards">
+                        {totalCards} <span className="unit">Cards</span>
+                    </div>
+                    <div className="total-repetitions">
+                        {totalRepetitions}{" "}
+                        <span className="unit">Repetitions</span>
+                    </div>
+                    <div className="total-repetitions">
+                        {recallAccuracy}
+                        {"% "}
+                        <span className="unit">Accuracy</span>
+                    </div>
+                </div>
                 <div id="streak-calendar">
                     <Desktop>
                         <CalendarHeatmap
@@ -72,25 +102,16 @@ export default class HomePage extends Component {
                             classForValue={(data) => {
                                 if (!data) {
                                     return "color-empty"
-                                } else if (data.value > high) {
+                                } else if (data.value >= high) {
                                     return `color-scale-high`
-                                } else if (data.value > medium) {
+                                } else if (data.value >= medium) {
                                     return `color-scale-medium`
-                                } else if (data.value > 1) {
-                                    return `color-scale-low`
                                 } else {
-                                    return "color-empty"
+                                    console.log(data.value)
+                                    return "color-scale-low"
                                 }
                             }}
                         />
-                        <div className="home-stats">
-                            <div className="total-cards">
-                                {totalCards} Cards
-                            </div>
-                            <div className="total-repetitions">
-                                {totalRepetitions} Repetitions
-                            </div>
-                        </div>
                     </Desktop>
                     <Mobile>
                         <CalendarHeatmap
@@ -111,7 +132,7 @@ export default class HomePage extends Component {
                                     return `color-scale-high`
                                 } else if (data.value > medium) {
                                     return `color-scale-medium`
-                                } else if (data.value > 1) {
+                                } else if (data.value > 0) {
                                     return `color-scale-low`
                                 } else {
                                     return "color-empty"

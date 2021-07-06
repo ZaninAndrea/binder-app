@@ -5,6 +5,7 @@ export default class LoginPage extends React.Component {
     state = {
         email: "",
         password: "",
+        error: "",
     }
 
     login = async () => {
@@ -20,6 +21,7 @@ export default class LoginPage extends React.Component {
         })
 
         if (res.status === 200) this.props.setBearer(await res.text())
+        else this.setState({ error: await res.text() })
     }
 
     render() {
@@ -52,6 +54,11 @@ export default class LoginPage extends React.Component {
                         }
                     />
                     <br />
+                    {this.state.error ? (
+                        <p className="login-error">{this.state.error}</p>
+                    ) : (
+                        ""
+                    )}
                     <button onClick={this.login} id="loginButton">
                         Log In
                     </button>

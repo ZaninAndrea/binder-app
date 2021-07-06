@@ -571,6 +571,22 @@ a {
     height: calc(100% - 36px);
     margin: 18px;
 }
+.home-stats {
+    max-width: 1000px;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 32px;
+}
+.home-stats div {
+    margin: 8px;
+    padding: 5px 10px;
+    font-size: 32px;
+}
+.home-stats div .unit {
+    color: rgba(0, 0, 0, 0.6);
+}
 
 #streak-calendar {
     width: 100%;
@@ -579,10 +595,10 @@ a {
 }
 
 #streak-calendar .color-scale-low {
-    fill: #bbb;
+    fill: #999;
 }
 #streak-calendar .color-scale-medium {
-    fill: #565656;
+    fill: #444;
 }
 #streak-calendar .color-scale-high {
     fill: #000;
@@ -592,6 +608,7 @@ a {
     display: grid;
     width: 100%;
     height: 16px;
+    margin-bottom: 12px;
     grid-template-columns: 300px auto 42px 42px;
     grid-template-areas: "stats . showhide delete";
 }
@@ -615,4 +632,13 @@ a {
 }
 .toolbar .delete {
     grid-area: delete;
+}
+
+image {
+    max-width: 100%;
+}
+
+.login-error {
+    margin-top: 16px;
+    color: #ff5e29;
 }
