@@ -86,9 +86,7 @@ class Deck {
                       isRepeatAgain,
                       nextRepeat: entry.isRepeatAgain
                           ? entry.nextRepeat
-                          : dayjs(entry.nextRepeat || new Date())
-                                .add(schedule, "days")
-                                .toDate(),
+                          : dayjs(new Date()).add(schedule, "days").toDate(),
                   }
                 : entry
         )

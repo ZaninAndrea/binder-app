@@ -7,9 +7,7 @@ import { Desktop } from "../utils/MobileDesktop"
 
 export default class LearnPage extends React.Component {
     state = {
-        flipped: false,
         card: null,
-        showFooter: false,
         deckIndex: -1,
         done: true,
     }
@@ -23,18 +21,8 @@ export default class LearnPage extends React.Component {
         }
 
         if (!this.state.done)
-            this.state.card = this.props.decks[
-                this.state.deckIndex
-            ].nextCardToLearn()
-    }
-
-    onFlip = () => {
-        this.setState(({ flipped }) => {
-            return {
-                flipped: true,
-                showFooter: true,
-            }
-        })
+            this.state.card =
+                this.props.decks[this.state.deckIndex].nextCardToLearn()
     }
 
     nextCard = () => {
@@ -62,8 +50,6 @@ export default class LearnPage extends React.Component {
             card: nextCard,
             deckIndex: _deckIndex,
             done: _done,
-            flipped: false,
-            showFooter: false,
         })
     }
 
@@ -126,31 +112,13 @@ export default class LearnPage extends React.Component {
                                 <div className="front">
                                     <Markdown source={this.state.card.front} />
                                 </div>
-                                <div
-                                    className={
-                                        this.state.flipped
-                                            ? "back"
-                                            : "back hidden"
-                                    }
-                                    onClick={this.onFlip}
-                                >
-                                    {this.state.flipped ? (
-                                        <Markdown
-                                            source={this.state.card.back}
-                                        />
-                                    ) : (
-                                        "show"
-                                    )}
+                                <div className="back">
+                                    <Markdown source={this.state.card.back} />
                                 </div>
                             </div>
                         </>
                     )}
-                    {this.state.showFooter && (
-                        <Footer
-                            onOk={this.onOk}
-                            isNew={this.state.card.isNew}
-                        />
-                    )}
+                    <Footer onOk={this.onOk} isNew={this.state.card.isNew} />
                 </>
             )
     }

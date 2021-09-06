@@ -215,6 +215,8 @@ a {
     justify-content: center;
     border-radius: 10px;
     overflow: hidden;
+    user-select: none;
+    cursor: pointer;
 }
 
 .cardsList > div > div {
@@ -447,7 +449,7 @@ a {
 
 .editor-container {
     width: calc(100% + 40px);
-    height: calc(100% + 4px);
+    height: calc(100% - 8px);
     margin: 0 -20px;
     padding: 0 20px;
     overflow: auto;
