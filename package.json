@@ -19,7 +19,7 @@
         "react-scripts": "3.0.1",
         "rehype-katex": "^1.2.0",
         "rehype-stringify": "^6.0.0",
-        "remark-html": "^10.0.0",
+        "remark-html": "^13.0.2",
         "remark-math": "^1.0.6",
         "remark-parse": "^7.0.1",
         "remark-rehype": "^5.0.0",
