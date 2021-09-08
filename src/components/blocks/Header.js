@@ -1,5 +1,5 @@
 import React from "react"
-import ExitToApp from "@material-ui/icons/ExitToApp"
+import SettingsIcon from "@material-ui/icons/Settings"
 import Menu from "@material-ui/icons/Menu"
 import { NavLink } from "react-router-dom"
 
@@ -15,7 +15,10 @@ export default class Header extends React.Component {
                         style={{ maxWidth: "100%", maxHeight: "100%" }}
                     />
                 </NavLink>
-                <ExitToApp id="logoutButton" onClick={this.props.logout} />
+                <SettingsIcon
+                    id="logoutButton"
+                    onClick={this.props.openSettings}
+                />
             </div>
         )
     }

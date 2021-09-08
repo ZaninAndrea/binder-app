@@ -17,28 +17,25 @@ export default class EditCardModal extends React.Component {
         return (
             <>
                 <div className="modalClickAway" onClick={this.props.onClose} />
+                <div className="toolbar">
+                    <span className="stats-tool">
+                        {percentage}% correct reviews out of {totalReviews}
+                    </span>
+                    <button
+                        className="show-hide"
+                        onClick={this.props.onTogglePaused}
+                    >
+                        {this.props.card.paused ? (
+                            <VisibilityIcon />
+                        ) : (
+                            <VisibilityOffIcon />
+                        )}
+                    </button>
+                    <button className="delete" onClick={this.props.onDelete}>
+                        <DeleteIcon />
+                    </button>
+                </div>
                 <div className="modal">
-                    <div className="toolbar">
-                        <span className="stats-tool">
-                            {percentage}% correct reviews out of {totalReviews}
-                        </span>
-                        <button
-                            className="show-hide"
-                            onClick={this.props.onTogglePaused}
-                        >
-                            {this.props.card.paused ? (
-                                <VisibilityIcon />
-                            ) : (
-                                <VisibilityOffIcon />
-                            )}
-                        </button>
-                        <button
-                            className="delete"
-                            onClick={this.props.onDelete}
-                        >
-                            <DeleteIcon />
-                        </button>
-                    </div>
                     <div className="editor-container">
                         <div className="front">
                             <Editor

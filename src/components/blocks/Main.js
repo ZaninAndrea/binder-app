@@ -4,6 +4,7 @@ import LearnPage from "../pages/LearnPage"
 import CramPage from "../pages/CramPage"
 import DeckPage from "../pages/DeckPage"
 import HomePage from "../pages/HomePage"
+import SettingsPage from "../pages/SettingsPage"
 import { Route } from "react-router-dom"
 
 class Main extends React.Component {
@@ -13,6 +14,10 @@ class Main extends React.Component {
                 decks={this.props.decks.filter((deck) => !deck.archived)}
             />
         )
+        const settingsComponent = () => (
+            <SettingsPage logOut={this.props.logOut} />
+        )
+
         const learnPathComponent = () => (
             <LearnPage
                 decks={this.props.decks.filter((deck) => !deck.archived)}
@@ -42,6 +47,7 @@ class Main extends React.Component {
             <div className="main">
                 <Route path="/" render={homeComponent} exact />
                 <Route path="/review" render={reviewPathComponent} exact />
+                <Route path="/settings" render={settingsComponent} exact />
                 <Route path="/learn" render={learnPathComponent} exact />
                 <Route path="/deck/:deckId" render={deckPage} exact />
                 <Route

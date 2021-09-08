@@ -4,7 +4,7 @@ import InboxIcon from "@material-ui/icons/Inbox"
 import LibraryBooksIcon from "@material-ui/icons/LibraryBooks"
 import LibraryAddIcon from "@material-ui/icons/LibraryAdd"
 import SchoolIcon from "@material-ui/icons/School"
-import ExitToApp from "@material-ui/icons/ExitToApp"
+import SettingsIcon from "@material-ui/icons/Settings"
 
 class Sidebar extends React.Component {
     render() {
@@ -27,7 +27,10 @@ class Sidebar extends React.Component {
                             style={{ maxWidth: "100%", maxHeight: "100%" }}
                         />
                     </NavLink>
-                    <ExitToApp id="logoutButton" onClick={this.props.logout} />
+                    <SettingsIcon
+                        id="logoutButton"
+                        onClick={this.props.openSettings}
+                    />
                 </div>
                 <NavLink to="/review" activeClassName="active">
                     <InboxIcon /> Smart Review ( {cardsToReview} )

@@ -9,18 +9,19 @@ export default class LoginPage extends React.Component {
     }
 
     login = async () => {
-        const res = await fetch("https://binder.caprover.baida.dev/login", {
-            body: JSON.stringify({
-                email: this.state.email,
-                password: this.state.password,
-            }),
-            headers: {
-                "content-type": "application/json",
-            },
-            method: "POST",
-        })
+        const res = await fetch(
+            `https://binderv2.caprover.baida.dev/login?email=${encodeURIComponent(
+                this.state.email
+            )}&password=${encodeURIComponent(this.state.password)}`,
+            {
+                headers: {
+                    "content-type": "application/json",
+                },
+                method: "POST",
+            }
+        )
 
-        if (res.status === 200) this.props.setBearer(await res.text())
+        if (res.status === 200) this.props.setBearer((await res.json()).token)
         else this.setState({ error: await res.text() })
     }
 

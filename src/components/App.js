@@ -11,6 +11,8 @@ import SignupPage from "./pages/SignupPage"
 import { Mobile, Desktop } from "./utils/MobileDesktop"
 import { createMuiTheme } from "@material-ui/core"
 import { ThemeProvider } from "@material-ui/styles"
+import { create as jsondifferCreate, formatters } from "jsondiffpatch"
+import clonedeep from "lodash.clonedeep"
 
 const theme = createMuiTheme({
     props: {
@@ -20,13 +22,68 @@ const theme = createMuiTheme({
             disableRipple: true, // No more ripple, on the whole application 💣!
         },
     },
-    transitions: {
-        // So we have `transition: none;` everywhere
-        create: () => "none",
-    },
 })
 
-let starterDB = require("../controller/db")
+class PatchDispatcher {
+    constructor(serverUrl, token) {
+        if (!window.navigator)
+            alert(
+                "Your browser is not supported, you may have issues with synchronization"
+            )
+        this.queue = []
+        this.emptying = false
+        this.token = token
+        this.serverUrl = serverUrl
+        this.offline = !window.navigator.onLine
+
+        this.unloadListener = window.addEventListener("beforeunload", (e) => {
+            if (this.queue.length !== 0) {
+                e.preventDefault()
+                e.returnValue = ""
+            }
+        })
+        this.onlineListener = window.addEventListener("online", () => {
+            this.offline = false
+
+            if (this.queue.length !== 0) this.empty()
+        })
+        this.offlineListener = window.addEventListener("offline", () => {
+            this.offline = true
+        })
+    }
+
+    extend(arr) {
+        this.queue = this.queue.concat(arr)
+
+        if (this.queue.length !== 0 && !this.emptying && !this.offline)
+            this.empty()
+    }
+
+    async empty() {
+        this.emptying = true
+
+        if (this.queue.length === 0) {
+            this.emptying = false
+            return
+        }
+
+        const patch = this.queue.shift()
+
+        await fetch(`${this.serverUrl}/user`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + this.token,
+            },
+            body: JSON.stringify([patch]),
+        }).catch((e) => {
+            if (e.message === "Failed to fetch") this.queue.unshift(patch)
+            else throw e
+        })
+
+        if (!this.offline) this.empty()
+    }
+}
 
 class App extends React.Component {
     state = {
@@ -36,37 +93,41 @@ class App extends React.Component {
     }
 
     componentWillMount() {
-        const bearer = localStorage.getItem("bearer")
-        if (bearer) this.setBearer(bearer, window.location.pathname)
+        let bearer = localStorage.getItem("bearer")
+        let version = localStorage.getItem("version")
+        if (!version) {
+            bearer = null
+            localStorage.removeItem("bearer")
+        }
+
+        if (bearer) {
+            this.setBearer(bearer, window.location.pathname)
+        }
+        localStorage.setItem("version", "v2")
     }
 
     setBearer = async (bearer, redirectTo = "/") => {
         this.setState({ bearer, redirectTo })
         localStorage.setItem("bearer", bearer)
 
-        let { decks } = await fetch("https://binder.caprover.baida.dev/user", {
+        let data = await fetch("https://binderv2.caprover.baida.dev/user", {
             headers: {
                 Authorization: "Bearer " + bearer,
             },
         }).then((res) => res.json())
 
-        if (!decks) {
-            await fetch("https://binder.caprover.baida.dev/user", {
-                body: JSON.stringify({
-                    decks: [],
-                }),
-                headers: {
-                    "content-type": "application/json",
-                    Authorization: "Bearer " + bearer,
-                },
-                method: "POST",
-            })
+        this.differ = jsondifferCreate({
+            arrays: { detectMove: false },
+            textDiff: { minLength: Infinity },
+        })
+        this.dispatcher = new PatchDispatcher(
+            "https://binderv2.caprover.baida.dev",
+            bearer
+        )
 
-            decks = starterDB.decks
-        }
-
+        this.cloudData = data
         this.setState({
-            decks: decks.map((deck) => new Deck(deck, this.updateDecks)),
+            decks: data.decks.map((deck) => new Deck(deck, this.updateDecks)),
         })
     }
 
@@ -76,16 +137,16 @@ class App extends React.Component {
     }
 
     updateDecks = (refresh = true) => {
-        fetch("https://binder.caprover.baida.dev/user", {
-            body: JSON.stringify({
+        const current = JSON.parse(
+            JSON.stringify({
                 decks: this.state.decks,
-            }),
-            headers: {
-                "content-type": "application/json",
-                Authorization: "Bearer " + this.state.bearer,
-            },
-            method: "POST",
-        })
+            })
+        )
+        const delta = this.differ.diff(this.cloudData, current)
+        const patch = formatters.jsonpatch.format(delta)
+
+        this.dispatcher.extend(patch)
+        this.cloudData = clonedeep(current)
 
         if (refresh) this.forceUpdate()
     }
@@ -141,13 +202,17 @@ class App extends React.Component {
                     <Sidebar
                         decks={this.state.decks}
                         updateDecks={this.updateDecks}
-                        logout={this.logout}
                         createNewDeck={this.createNewDeck}
+                        openSettings={() =>
+                            this.setState({ redirectTo: "/settings" })
+                        }
                     />
                 </Desktop>
                 <Mobile>
                     <Header
-                        logout={this.logout}
+                        openSettings={() =>
+                            this.setState({ redirectTo: "/settings" })
+                        }
                         openSidebar={() => this.setState({ open: true })}
                         redirectTo={(location) =>
                             this.setState({ redirectTo: location })
@@ -169,6 +234,7 @@ class App extends React.Component {
                     redirectTo={(location) =>
                         this.setState({ redirectTo: location })
                     }
+                    logout={this.logout}
                 />
             </>
         )
