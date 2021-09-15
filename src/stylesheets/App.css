@@ -450,7 +450,11 @@ a {
 
     .modal {
         width: 80vw;
-        margin: 10% 10vw;
+        margin: calc(3% + 48px + 24px) 10vw;
+    }
+    .toolbar {
+        width: 80vw;
+        margin: 3% 10vw;
     }
 }
 

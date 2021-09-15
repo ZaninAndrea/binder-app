@@ -131,7 +131,7 @@ class App extends React.Component {
         })
     }
 
-    logout = () => {
+    logOut = () => {
         localStorage.removeItem("bearer")
         this.setState({ bearer: null, redirectTo: "/login", decks: [] })
     }
@@ -234,7 +234,7 @@ class App extends React.Component {
                     redirectTo={(location) =>
                         this.setState({ redirectTo: location })
                     }
-                    logout={this.logout}
+                    logOut={this.logOut}
                 />
             </>
         )

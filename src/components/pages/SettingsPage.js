@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import { Mobile, Desktop } from "../utils/MobileDesktop"
 
-export default class HomePage extends Component {
+export default class SettingsPage extends Component {
     render() {
         return (
             <div className="settings">
