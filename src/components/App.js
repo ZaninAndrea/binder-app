@@ -95,7 +95,7 @@ class App extends React.Component {
     componentWillMount() {
         let bearer = localStorage.getItem("bearer")
         let version = localStorage.getItem("version")
-        if (!version) {
+        if (version !== "v3") {
             bearer = null
             localStorage.removeItem("bearer")
         }
@@ -103,14 +103,14 @@ class App extends React.Component {
         if (bearer) {
             this.setBearer(bearer, window.location.pathname)
         }
-        localStorage.setItem("version", "v2")
+        localStorage.setItem("version", "v3")
     }
 
     setBearer = async (bearer, redirectTo = "/") => {
         this.setState({ bearer, redirectTo })
         localStorage.setItem("bearer", bearer)
 
-        let data = await fetch("https://binderv2.caprover.baida.dev/user", {
+        let data = await fetch("https://binderbackend.baida.dev:8080/user", {
             headers: {
                 Authorization: "Bearer " + bearer,
             },
@@ -121,7 +121,7 @@ class App extends React.Component {
             textDiff: { minLength: Infinity },
         })
         this.dispatcher = new PatchDispatcher(
-            "https://binderv2.caprover.baida.dev",
+            "https://binderbackend.baida.dev:8080",
             bearer
         )
 
