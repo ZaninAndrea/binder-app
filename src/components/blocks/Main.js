@@ -15,7 +15,11 @@ class Main extends React.Component {
             />
         )
         const settingsComponent = () => (
-            <SettingsPage logOut={this.props.logOut} />
+            <SettingsPage
+                logOut={this.props.logOut}
+                metadata={this.props.metadata}
+                deleteUser={this.props.deleteUser}
+            />
         )
 
         const learnPathComponent = () => (

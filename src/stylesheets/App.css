@@ -501,9 +501,14 @@ a {
     width: calc(100% + 40px);
     height: calc(100% + 40px);
     margin: -20px;
-    padding: 0 20px;
+    padding: 20px;
     overflow: auto;
 }
+
+.editor-container .editor {
+    min-height: calc(40vh - 55px);
+}
+
 ::-webkit-scrollbar {
     width: 14px;
 }
@@ -635,6 +640,10 @@ a {
 
 .markdownRender {
     min-height: 1.3em;
+}
+
+.markdownRender img {
+    max-width: 100%;
 }
 
 .home {

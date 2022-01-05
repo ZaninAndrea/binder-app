@@ -115,6 +115,14 @@ class App extends React.Component {
                 Authorization: "Bearer " + bearer,
             },
         }).then((res) => res.json())
+        let metadata = await fetch(
+            "https://binderbackend.baida.dev:8080/user/metadata",
+            {
+                headers: {
+                    Authorization: "Bearer " + bearer,
+                },
+            }
+        ).then((res) => res.json())
 
         this.differ = jsondifferCreate({
             arrays: { detectMove: false },
@@ -128,12 +136,24 @@ class App extends React.Component {
         this.cloudData = clonedeep(data)
         this.setState({
             decks: data.decks.map((deck) => new Deck(deck, this.updateDecks)),
+            metadata: metadata,
         })
     }
 
     logOut = () => {
         localStorage.removeItem("bearer")
         this.setState({ bearer: null, redirectTo: "/login", decks: [] })
+    }
+
+    deleteUser = async () => {
+        await fetch("https://binderbackend.baida.dev:8080/user", {
+            method: "DELETE",
+            headers: {
+                Authorization: "Bearer " + this.state.bearer,
+            },
+        })
+
+        this.logOut()
     }
 
     updateDecks = (refresh = true) => {
@@ -236,6 +256,8 @@ class App extends React.Component {
                         this.setState({ redirectTo: location })
                     }
                     logOut={this.logOut}
+                    metadata={this.state.metadata}
+                    deleteUser={this.deleteUser}
                 />
             </>
         )
