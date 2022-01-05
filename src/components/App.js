@@ -125,7 +125,7 @@ class App extends React.Component {
             bearer
         )
 
-        this.cloudData = data
+        this.cloudData = clonedeep(data)
         this.setState({
             decks: data.decks.map((deck) => new Deck(deck, this.updateDecks)),
         })
@@ -142,6 +142,7 @@ class App extends React.Component {
                 decks: this.state.decks,
             })
         )
+
         const delta = this.differ.diff(this.cloudData, current)
         const patch = formatters.jsonpatch.format(delta)
 
