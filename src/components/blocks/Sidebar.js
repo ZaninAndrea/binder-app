@@ -38,7 +38,6 @@ class Sidebar extends React.Component {
                 <NavLink to="/learn" activeClassName="active">
                     <SchoolIcon /> Learn ( {cardsToLearn} )
                 </NavLink>
-                <br />
                 <p className="title">BINDERS</p>
                 {this.props.decks
                     .filter((deck) => !deck.archived)

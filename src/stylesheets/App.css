@@ -8,12 +8,12 @@ body {
     margin: 0;
     overflow: hidden;
     font-family: "Montserrat", sans-serif;
-    /* --primary-color: hsl(5, 100%, 65%); */
-    --primary-color: #0d0d0d;
-    --secondary-color: #fdfdfd;
-    --primary-text-color: rgba(0, 0, 0, 0.9);
-    --secondary-text-color: rgba(0, 0, 0, 0.9);
-    --light-text-color: rgba(255, 255, 255, 0.8);
+    --primary-highlight-color: #ce96ff;
+    --primary-text-color: #222831;
+    --primary-background-color: #fff;
+    --secondary-background-color: #393e46;
+    --secondary-text-color: #eee;
+    --light-text-color: #393e46;
 }
 
 h1,
@@ -45,20 +45,20 @@ textarea {
 
 .sidebar {
     grid-area: sidebar;
-    color: var(--primary-text-color);
-    background-color: var(--primary-color);
+    color: var(--secondary-text-color);
+    background-color: var(--secondary-background-color);
     overflow: auto;
 }
 
 .drawer {
     height: 100%;
-    width: 240px;
+    width: 260px;
 }
 
 .main {
     grid-area: main;
-    color: var(--secondary-text-color);
-    background: var(--secondary-color);
+    color: var(--primary-text-color);
+    background: var(--primary-background-color);
     overflow: auto;
 }
 
@@ -76,15 +76,15 @@ textarea {
     height: 64px;
     width: 64px;
     margin: 16px 4px;
-    color: var(--secondary-text-color);
+    color: var(--primary-text-color);
     background: none;
     font-size: 18px;
 }
 
 .footer button:hover {
     border-radius: 32px;
-    background: var(--primary-color);
-    color: var(--light-text-color);
+    background: var(--primary-highlight-color);
+    color: var(--secondary-text-color);
 }
 
 .learn-header {
@@ -112,7 +112,7 @@ textarea {
 .learn-header .review-bar .fill {
     height: 6px;
     border-radius: 3px;
-    background: var(--primary-color);
+    background: var(--primary-highlight-color);
 }
 
 .learn-header .icon {
@@ -147,7 +147,7 @@ textarea {
 }
 
 .card .front {
-    border-bottom: 3px dashed var(--primary-color);
+    border-bottom: 3px dashed var(--primary-text-color);
 }
 
 .card .back.hidden {
@@ -155,7 +155,7 @@ textarea {
 }
 .card .back.hidden:hover {
     color: rgba(255, 255, 255, 0.6);
-    background: var(--primary-color);
+    background: var(--secondary-background-color);
 }
 
 .sidebar p,
@@ -165,6 +165,7 @@ a {
     padding: 7px 14px;
     display: block;
     text-decoration: none;
+    letter-spacing: 0.03em;
 }
 
 .sidebar a svg {
@@ -176,6 +177,10 @@ a {
     font-family: "Karla", sans-serif;
     margin: 3px 0;
     color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 0.05em;
+    text-align: center;
+    padding-top: 16px;
+    padding-bottom: 0px;
 }
 
 .sidebar a {
@@ -208,7 +213,7 @@ a {
     width: 250px;
     margin: 20px;
     height: 120px;
-    border: 2px solid var(--primary-color);
+    border: 2px solid var(--primary-text-color);
     padding: 5px 10px;
     flex-grow: 0;
     display: flex;
@@ -233,8 +238,8 @@ a {
     align-items: center;
 }
 .cardsList div:hover {
-    color: var(--light-text-color);
-    background: var(--primary-color);
+    color: var(--primary-highlight-color);
+    border-color: var(--primary-highlight-color);
 }
 
 .deckName {
@@ -250,14 +255,15 @@ a {
     height: 52px;
     margin: auto;
     padding: 0;
+    background-color: unset;
 }
 
 #logoutButton {
-    color: rgba(255, 255, 255, 1);
+    color: var(--secondary-text-color);
     grid-area: logout;
 }
 #logoutButton:hover {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 1);
 }
 
 #flipcardHeader {
@@ -270,7 +276,7 @@ a {
 
 #hamburger {
     grid-area: hamburger;
-    color: rgba(255, 255, 255, 1);
+    color: var(--secondary-text-color);
 }
 #hamburger:hover {
     color: rgba(255, 255, 255, 0.5);
@@ -292,8 +298,8 @@ a {
     top: 0;
     width: 60vw;
     height: 80%;
-    color: var(--secondary-text-color);
-    background: var(--secondary-color);
+    color: var(--primary-text-color);
+    background: var(--primary-background-color);
     margin: calc(3% + 48px + 24px) 20vw;
     z-index: 2000;
     padding: 20px;
@@ -315,8 +321,8 @@ a {
     line-height: 52px;
     vertical-align: middle;
 
-    color: var(--secondary-text-color);
-    background: var(--secondary-color);
+    color: var(--primary-text-color);
+    background: var(--primary-background-color);
     border-radius: 10px;
     -webkit-box-shadow: 0px 3px 2px 2px rgba(84, 84, 84, 0.61);
     -moz-box-shadow: 0px 3px 2px 2px rgba(84, 84, 84, 0.61);
@@ -330,7 +336,7 @@ a {
 .toolbar button {
     border: none;
     box-shadow: none;
-    color: var(--secondary-text-color);
+    color: var(--primary-text-color);
     background: none;
     font-family: "Montserrat", sans-serif;
     font-size: 14px;
@@ -351,8 +357,8 @@ a {
 #loginForm {
     width: 100vw;
     height: 100vh;
-    background: var(--primary-color);
-    color: var(--light-text-color);
+    background: var(--secondary-background-color);
+    color: var(--secondary-text-color);
     font-size: 22px;
     margin: 0;
 }
@@ -366,7 +372,7 @@ a {
     width: 100%;
     margin: 6px 0 0 0;
     font-size: 22px;
-    color: var(--primary-color);
+    color: var(--primary-text-color);
     background: #fff;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
@@ -390,8 +396,8 @@ a {
     border: none;
     margin: 0;
     text-decoration: none;
-    background: var(--secondary-color);
-    color: var(--primary-color);
+    background: var(--primary-background-color);
+    color: var(--primary-text-color);
     cursor: pointer;
     text-align: center;
     transition: background 250ms ease-in-out, transform 150ms ease;
@@ -409,7 +415,8 @@ a {
 
 #loginButton:hover,
 #loginButton:focus {
-    background: var(--secondary-color);
+    background: var(--primary-highlight-color);
+    color: var(--primary-background-color);
 }
 
 #loginLogo {
@@ -444,8 +451,8 @@ a {
     #flipcardHeader {
         grid-template-columns: 14px 24px 14px auto 8px 24px 8px;
         grid-template-areas: ". . . title . . ." ". hamburger . title . logout ." ". . . title . . .";
-        color: var(--primary-text-color);
-        background-color: var(--primary-color);
+        color: var(--secondary-text-color);
+        background-color: var(--secondary-background-color);
     }
 
     .modal {
@@ -537,7 +544,7 @@ a {
 
 .editor-container .front {
     padding: 0 0 30px 0;
-    border-bottom: 3px dashed var(--primary-color);
+    border-bottom: 3px dashed var(--primary-text-color);
 }
 .editor-container .back {
     padding: 30px 0 0 0;
@@ -568,15 +575,14 @@ a {
     box-shadow: none;
     height: 38px;
     width: 38px;
-    color: var(--secondary-text-color);
+    color: var(--primary-text-color);
     background: none;
     font-size: 18px;
-}
-
-.deckName div:hover {
     border-radius: 19px;
-    background: var(--primary-color);
-    color: var(--secondary-color);
+}
+.deckName div:hover {
+    color: var(--primary-background-color);
+    background: var(--primary-highlight-color);
 }
 
 .stats {
@@ -585,7 +591,7 @@ a {
     width: calc(100% - 60px);
     height: 36px;
     display: flex;
-    color: rgb(0, 0, 0, 0.65);
+    color: var(--light-text-color);
 }
 
 .stats-learned,
@@ -614,17 +620,17 @@ a {
     border-radius: 3px;
 }
 .stats-learned .bar .fill {
-    background: var(--primary-color);
+    background: var(--primary-highlight-color);
 }
 
 .stats-recall .bar .fill {
-    background: var(--primary-color);
+    background: var(--primary-highlight-color);
 }
 
 .MuiMenu-list,
 .MuiMenu-paper {
-    background: var(--secondary-color) !important;
-    color: var(--secondary-text-color) !important;
+    background: var(--primary-background-color) !important;
+    color: var(--primary-text-color) !important;
 }
 
 .MuiListItem-root {
@@ -663,9 +669,10 @@ a {
     margin: 8px;
     padding: 5px 10px;
     font-size: 32px;
+    color: var(--primary-highlight-color);
 }
 .home-stats div .unit {
-    color: rgba(0, 0, 0, 0.6);
+    color: var(--light-text-color);
 }
 
 #streak-calendar {
@@ -675,13 +682,13 @@ a {
 }
 
 #streak-calendar .color-scale-low {
-    fill: #999;
+    fill: #ead1ff;
 }
 #streak-calendar .color-scale-medium {
-    fill: #444;
+    fill: #dbb3ff;
 }
 #streak-calendar .color-scale-high {
-    fill: #000;
+    fill: #ce96ff;
 }
 
 image {
@@ -690,7 +697,7 @@ image {
 
 .login-error {
     margin-top: 16px;
-    color: #ff5e29;
+    color: var(--primary-highlight-color);
 }
 
 .settings {
@@ -709,9 +716,9 @@ button.full-width {
     width: 100%;
     margin: 16px 0;
     display: block;
-    color: var(--primary-color);
+    color: var(--primary-text-color);
     background: white;
-    border: 2px solid var(--primary-color);
+    border: 2px solid var(--primary-text-color);
     border-radius: 10px;
     height: 42px;
     font-family: "Montserrat", sans-serif;

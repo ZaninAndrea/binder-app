@@ -39,7 +39,6 @@ export default class MobileSidebar extends React.Component {
                     >
                         <SchoolIcon /> Learn ( {cardsToLearn} )
                     </NavLink>
-                    <br />
                     <p className="title">BINDERS</p>
                     {this.props.decks
                         .filter((deck) => !deck.archived)

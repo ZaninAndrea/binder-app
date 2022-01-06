@@ -31,8 +31,8 @@ function computeStreakValues(decks) {
     }
 
     const counts = streakArray.map((day) => day.value).sort()
-    const high = counts[Math.floor(counts.length / 3)]
-    const medium = counts[Math.floor((2 * counts.length) / 3)]
+    const medium = counts[Math.floor(counts.length / 3)]
+    const high = counts[Math.floor((2 * counts.length) / 3)]
 
     return { streak: streakArray, high, medium }
 }
@@ -107,7 +107,6 @@ export default class HomePage extends Component {
                                 } else if (data.value >= medium) {
                                     return `color-scale-medium`
                                 } else {
-                                    console.log(data.value)
                                     return "color-scale-low"
                                 }
                             }}
