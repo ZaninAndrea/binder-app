@@ -50,6 +50,11 @@ export default class LoginPage extends React.Component {
                         id="loginPassword"
                         value={this.state.password}
                         type="password"
+                        onKeyPress={(e) => {
+                            if (e.key === "Enter") {
+                                this.login()
+                            }
+                        }}
                         onChange={(e) =>
                             this.setState({ password: e.target.value })
                         }

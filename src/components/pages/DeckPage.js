@@ -16,7 +16,9 @@ import fileDialog from "file-dialog"
 function downloadJson(name, cards) {
     let a = document.createElement("a")
     a.download = name + ".json"
-    a.href = "data:application/json;base64," + btoa(JSON.stringify(cards))
+    a.href =
+        "data:application/json;base64," +
+        Buffer.from(JSON.stringify(cards)).toString("base64")
     a.click()
 }
 
