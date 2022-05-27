@@ -12,6 +12,7 @@ import Loop from "@material-ui/icons/Loop"
 import Archive from "@material-ui/icons/Archive"
 import Download from "@material-ui/icons/SaveAlt"
 import fileDialog from "file-dialog"
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom"
 
 function downloadJson(name, cards) {
     let a = document.createElement("a")
@@ -64,23 +65,23 @@ export default class DeckPage extends React.Component {
             wantsToDelete: false,
             name: this.props.deck && this.props.deck.name,
             loadingDeck: false,
+            redirectTo: "",
         }
     }
 
     onCloseEditModal = () => {
-        this.setState({ editCard: null })
+        this.props.updateDecks()
+        this.setState({ redirectTo: "/deck/" + this.props.deck.id })
+    }
+    onTogglePaused = (cardId) => {
+        this.props.deck.togglePause(cardId)
         this.props.updateDecks()
     }
-    onTogglePaused = () => {
-        this.props.deck.togglePause(this.state.editCard.id)
+    onDeleteCard = (cardId) => {
+        this.props.deck.deleteCard(cardId)
         this.props.updateDecks()
-    }
-    onDeleteCard = () => {
-        const id = this.state.editCard.id
-        this.setState({ editCard: null })
 
-        this.props.deck.deleteCard(id)
-        this.props.updateDecks()
+        this.setState({ redirectTo: "/deck/" + this.props.deck.id })
     }
 
     componentWillReceiveProps(nextProps) {
@@ -119,6 +120,16 @@ export default class DeckPage extends React.Component {
     }
 
     render() {
+        if (this.state.redirectTo) {
+            let address = this.state.redirectTo
+            this.setState({ redirectTo: "" })
+            return (
+                <Router>
+                    <Redirect push to={address} />
+                </Router>
+            )
+        }
+
         if (!this.props.deck) return ""
 
         const { deck } = this.props
@@ -148,17 +159,8 @@ export default class DeckPage extends React.Component {
         const nCardsToReview = deck.cardsToReview().length
         const nCardsToLearn = deck.cardsToLearn().length
 
-        return (
+        const deckComponent = () => (
             <>
-                {this.state.editCard && (
-                    <EditCardModal
-                        card={this.state.editCard}
-                        onClose={this.onCloseEditModal}
-                        updateDecks={this.props.updateDecks}
-                        onDelete={this.onDeleteCard}
-                        onTogglePaused={this.onTogglePaused}
-                    />
-                )}
                 <h1 className="deckName">
                     <input
                         value={this.state.name}
@@ -320,7 +322,11 @@ export default class DeckPage extends React.Component {
                     {deck.cards.map((card) => (
                         <div
                             key={card.id}
-                            onClick={() => this.setState({ editCard: card })}
+                            onClick={() =>
+                                this.setState({
+                                    redirectTo: `/deck/${deck.id}/edit/${card.id}`,
+                                })
+                            }
                         >
                             {card.front && (
                                 <Markdown
@@ -337,7 +343,9 @@ export default class DeckPage extends React.Component {
                         id="new-card"
                         onClick={() =>
                             this.setState({
-                                editCard: deck.addCard("", ""),
+                                redirectTo: `/deck/${deck.id}/edit/${
+                                    deck.addCard("", "").id
+                                }`,
                             })
                         }
                     >
@@ -357,6 +365,46 @@ export default class DeckPage extends React.Component {
                         </div>
                     )}
                 </div>
+            </>
+        )
+
+        const editModal = ({
+            match: {
+                params: { deckId, cardId },
+            },
+        }) => {
+            cardId = parseInt(cardId)
+            const card = deck.cards.filter(({ id }) => id === cardId)[0]
+
+            // Close dialog if
+            if (card === undefined) {
+                this.setState({ redirectTo: "/deck/" + deck.id })
+                return ""
+            }
+
+            return (
+                <>
+                    <EditCardModal
+                        card={card}
+                        onClose={this.onCloseEditModal}
+                        updateDecks={this.props.updateDecks}
+                        onDelete={() => this.onDeleteCard(cardId)}
+                        onTogglePaused={() => this.onTogglePaused(cardId)}
+                    />
+                    {deckComponent()}
+                </>
+            )
+        }
+
+        return (
+            <>
+                <Router>
+                    <Route path="/deck/:deckId" exact render={deckComponent} />
+                    <Route
+                        path={"/deck/:deckId/edit/:cardId"}
+                        render={editModal}
+                    />
+                </Router>
             </>
         )
     }

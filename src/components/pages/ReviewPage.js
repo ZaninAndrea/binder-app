@@ -24,10 +24,8 @@ export default class ReviewPage extends React.Component {
         done: true,
     }
 
-    constructor(props) {
-        super(props)
-
-        const reviewedCardsCount = this.props.decks
+    static getDerivedStateFromProps(newProps, oldState) {
+        const reviewedCardsCount = newProps.decks
             .map(
                 (deck) =>
                     deck.cards.filter(
@@ -43,21 +41,36 @@ export default class ReviewPage extends React.Component {
             .reduce((a, b) => a + b, 0)
 
         const cardsToReview =
-            this.props.decks
+            newProps.decks
                 .map((deck) => deck.cardsToReview().length)
                 .reduce((a, b) => a + b, 0) + reviewedCardsCount
 
-        this.state = {
-            ...this.state,
-            ...this.nextDeckState(),
+        let deckIndex = 0
+        // skip decks with no cards to review until you run out of decks
+        while (
+            deckIndex < newProps.decks.length &&
+            !newProps.decks[deckIndex].hasCardsToReview()
+        ) {
+            deckIndex++
+        }
+
+        let done
+        if (deckIndex === newProps.decks.length) {
+            done = true
+        } else {
+            done = false
+        }
+
+        let newState = {
+            deckIndex,
+            done,
             cardsToReview,
             reviewedCardsCount,
         }
 
-        if (!this.state.done)
-            this.state.card = this.props.decks[
-                this.state.deckIndex
-            ].nextCardToReview()
+        if (!done) newState.card = newProps.decks[deckIndex].nextCardToReview()
+
+        return newState
     }
 
     onFlip = () => {
@@ -107,9 +120,7 @@ export default class ReviewPage extends React.Component {
     }
 
     nextDeckState = () => {
-        let deckIndex = this.state.deckIndex
-        // advance to next deck
-        deckIndex++
+        let deckIndex = this.state.deckIndex + 1
 
         // skip decks with no cards to review until you run out of decks
         while (
@@ -133,6 +144,7 @@ export default class ReviewPage extends React.Component {
     }
 
     render() {
+        console.log(this.props.decks)
         const reviewRate =
             this.state.cardsToReview === 0
                 ? 1

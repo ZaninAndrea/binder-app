@@ -12,17 +12,31 @@ export default class LearnPage extends React.Component {
         done: true,
     }
 
-    constructor(props) {
-        super(props)
-
-        this.state = {
-            ...this.state,
-            ...this.nextDeckState(),
+    static getDerivedStateFromProps(newProps, oldState) {
+        let deckIndex = 0
+        // skip decks with no cards to review until you run out of decks
+        while (
+            deckIndex < newProps.decks.length &&
+            !newProps.decks[deckIndex].hasCardsToLearn()
+        ) {
+            deckIndex++
         }
 
-        if (!this.state.done)
-            this.state.card =
-                this.props.decks[this.state.deckIndex].nextCardToLearn()
+        let done
+        if (deckIndex === newProps.decks.length) {
+            done = true
+        } else {
+            done = false
+        }
+
+        const newState = {
+            deckIndex,
+            done,
+        }
+
+        if (!done) newState.card = newProps.decks[deckIndex].nextCardToLearn()
+
+        return newState
     }
 
     nextCard = () => {
@@ -45,6 +59,7 @@ export default class LearnPage extends React.Component {
         }
 
         if (_done) new Audio("./completed.wav").play()
+        document.getElementsByClassName("main")[0].scrollTo(0, 0)
 
         this.setState({
             card: nextCard,
@@ -59,9 +74,7 @@ export default class LearnPage extends React.Component {
     }
 
     nextDeckState = () => {
-        let deckIndex = this.state.deckIndex
-        // advance to next deck
-        deckIndex++
+        let deckIndex = this.state.deckIndex + 1
 
         // skip decks with no cards to review until you run out of decks
         while (

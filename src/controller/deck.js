@@ -193,15 +193,24 @@ class Deck {
         card = card[0]
         card.paused = !card.paused
 
-        const now = new Date()
-        if (card.nextRepeat === null && !card.paused)
-            this.indexesToLearn.push(card.id)
+        if (card.nextRepeat === null) {
+            if (card.paused) {
+                this.indexesToLearn = this.indexesToLearn.filter(
+                    (id) => id !== card.id
+                )
+            } else this.indexesToLearn.push(card.id)
+        }
+
         if (
-            ((card.nextRepeat !== null && new Date(card.nextRepeat) <= now) ||
-                card.isRepeatAgain) &&
-            !card.paused
+            (card.nextRepeat !== null &&
+                new Date(card.nextRepeat) <= new Date()) ||
+            card.isRepeatAgain
         )
-            this.indexesToReview.push(card.id)
+            if (card.paused) {
+                this.indexesToReview = this.indexesToReview.filter(
+                    (id) => id !== card.id
+                )
+            } else this.indexesToReview.push(card.id)
     }
 }
 

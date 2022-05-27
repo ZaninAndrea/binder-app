@@ -36,12 +36,6 @@ class PatchDispatcher {
         this.serverUrl = serverUrl
         this.offline = !window.navigator.onLine
 
-        this.unloadListener = window.addEventListener("beforeunload", (e) => {
-            if (this.queue.length !== 0) {
-                e.preventDefault()
-                e.returnValue = ""
-            }
-        })
         this.onlineListener = window.addEventListener("online", () => {
             this.offline = false
 
@@ -138,11 +132,26 @@ class App extends React.Component {
             decks: data.decks.map((deck) => new Deck(deck, this.updateDecks)),
             metadata: metadata,
         })
+
+        this.unloadListener = window.addEventListener(
+            "beforeunload",
+            (e) => {
+                if (this.dispatcher.emptying) {
+                    e.preventDefault()
+                    e.returnValue =
+                        "Binder is still synchronizing, if you leave now some changes will be lost"
+                }
+            },
+            {
+                capture: true,
+            }
+        )
     }
 
     logOut = () => {
         localStorage.removeItem("bearer")
         this.setState({ bearer: null, redirectTo: "/login", decks: [] })
+        window.removeEventListener("beforeunload", this.unloadListener)
     }
 
     deleteUser = async () => {

@@ -53,7 +53,11 @@ class Main extends React.Component {
                 <Route path="/review" render={reviewPathComponent} exact />
                 <Route path="/settings" render={settingsComponent} exact />
                 <Route path="/learn" render={learnPathComponent} exact />
-                <Route path="/deck/:deckId" render={deckPage} exact />
+                <Route
+                    path={["/deck/:deckId", "/deck/:deckId/edit/:cardId"]}
+                    render={deckPage}
+                    exact
+                />
                 <Route
                     path="/deck/:deckId/learn"
                     render={({ match }) => {

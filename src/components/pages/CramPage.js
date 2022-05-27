@@ -12,15 +12,13 @@ export default class CramPage extends React.Component {
         showFooter: false,
     }
 
-    constructor(props) {
-        super(props)
-
-        const cards = this.props.decks
-            .map(deck => deck.cards)
+    static getDerivedStateFromProps(props) {
+        const cards = props.decks
+            .map((deck) => deck.cards)
             .reduce((acc, arr) => [...acc, ...arr], [])
-            .map(card => ({ ...card, score: 0, tries: 1 })) // this generates new cards so that we do not edit the original deck
+            .map((card) => ({ ...card, score: 0, tries: 1 })) // this generates new cards so that we do not edit the original deck
 
-        this.state = {
+        return {
             cards,
             card: cards.length !== 0 && cards[0],
         }
@@ -32,7 +30,7 @@ export default class CramPage extends React.Component {
             showFooter: true,
         })
 
-    onGrade = grade => {
+    onGrade = (grade) => {
         // We are scoring the cards by average grade giving a malus to cards
         // reviewed less times
 
