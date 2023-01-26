@@ -12,6 +12,7 @@ class Main extends React.Component {
         const reviewPathComponent = () => (
             <ReviewPage
                 decks={this.props.decks.filter((deck) => !deck.archived)}
+                trackAction={this.props.trackAction}
             />
         )
         const settingsComponent = () => (
@@ -25,6 +26,7 @@ class Main extends React.Component {
         const learnPathComponent = () => (
             <LearnPage
                 decks={this.props.decks.filter((deck) => !deck.archived)}
+                trackAction={this.props.trackAction}
             />
         )
 
@@ -43,9 +45,16 @@ class Main extends React.Component {
                 updateDecks={this.props.updateDecks}
                 deleteDeck={this.props.deleteDeck(match.params.deckId)}
                 redirectTo={this.props.redirectTo}
+                trackAction={this.props.trackAction}
             />
         )
-        const homeComponent = () => <HomePage decks={this.props.decks} />
+        const homeComponent = () => (
+            <HomePage
+                decks={this.props.decks}
+                achievements={this.props.achievements}
+                stats={this.props.stats}
+            />
+        )
 
         return (
             <div className="main">
@@ -70,6 +79,7 @@ class Main extends React.Component {
                             <LearnPage
                                 decks={deck}
                                 backTo={`/deck/${match.params.deckId}`}
+                                trackAction={this.props.trackAction}
                             />
                         )
                     }}
@@ -86,6 +96,7 @@ class Main extends React.Component {
                             <ReviewPage
                                 decks={deck}
                                 backTo={`/deck/${match.params.deckId}`}
+                                trackAction={this.props.trackAction}
                             />
                         )
                     }}
@@ -102,6 +113,7 @@ class Main extends React.Component {
                             <CramPage
                                 decks={deck}
                                 backTo={`/deck/${match.params.deckId}`}
+                                trackAction={this.props.trackAction}
                             />
                         )
                     }}

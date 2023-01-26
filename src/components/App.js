@@ -13,6 +13,8 @@ import { createMuiTheme } from "@material-ui/core"
 import { ThemeProvider } from "@material-ui/styles"
 import { create as jsondifferCreate, formatters } from "jsondiffpatch"
 import clonedeep from "lodash.clonedeep"
+import dayjs from "dayjs"
+import { updateAchievements } from "../controller/achievements"
 
 const theme = createMuiTheme({
     props: {
@@ -82,8 +84,66 @@ class PatchDispatcher {
 class App extends React.Component {
     state = {
         decks: [],
+        stats: {
+            repetitions: 0,
+            correctRepetitions: 0,
+            activeDays: 0,
+            dailyRepetitionsCleared: 0,
+            today: {
+                date: null,
+                repetitions: 0,
+                correctRepetitions: 0,
+                active: false,
+                repetitionsCleared: false,
+            },
+        },
+        achievements: {
+            TOTAL_REPETITIONS: 0,
+            SINGLE_DAY_REPETITIONS: 0,
+            ACTIVE_DAYS: 0,
+        },
         bearer: null,
         open: false,
+    }
+
+    trackAction = (name, data) => {
+        this.setState((oldState) => {
+            let stats = clonedeep(oldState.stats)
+
+            if (stats.today.date !== dayjs().format("DD-MM-YYYY")) {
+                stats.today = {
+                    date: dayjs().format("DD-MM-YYYY"),
+                    repetitions: 0,
+                    correctRepetitions: 0,
+                    active: false,
+                    repetitionsCleared: false,
+                }
+            }
+
+            if (name === "learnedCard" || name === "reviewedCard") {
+                stats.repetitions++
+                stats.today.repetitions++
+
+                if (data.correct) {
+                    stats.correctRepetitions++
+                    stats.today.correctRepetitions++
+                }
+
+                if (!stats.today.active) {
+                    stats.today.active = true
+                    stats.activeDays++
+                }
+            } else if (
+                name === "clearedRepetitions" &&
+                !stats.today.repetitionsCleared
+            ) {
+                stats.today.repetitionsCleared = true
+                stats.dailyRepetitionsCleared++
+            }
+
+            let achievements = updateAchievements(stats, oldState.achievements)
+            return { stats, achievements }
+        })
     }
 
     componentWillMount() {
@@ -258,6 +318,8 @@ class App extends React.Component {
                 </Mobile>
                 <Main
                     decks={this.state.decks}
+                    achievements={this.state.achievements}
+                    stats={this.state.stats}
                     updateDecks={this.updateDecks}
                     isMobile={false}
                     deleteDeck={this.deleteDeck}
@@ -267,6 +329,7 @@ class App extends React.Component {
                     logOut={this.logOut}
                     metadata={this.state.metadata}
                     deleteUser={this.deleteUser}
+                    trackAction={this.trackAction}
                 />
             </>
         )

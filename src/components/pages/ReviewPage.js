@@ -101,7 +101,9 @@ export default class ReviewPage extends React.Component {
                 : this.props.decks[deckIndex].nextCardToReview()
         }
 
-        if (_done) new Audio("./completed.wav").play()
+        if (_done) {
+            new Audio("./completed.wav").play()
+        }
 
         this.setState(({ reviewedCardsCount }) => ({
             card: nextCard,
@@ -112,6 +114,8 @@ export default class ReviewPage extends React.Component {
             reviewedCardsCount:
                 quality >= 4 ? reviewedCardsCount + 1 : reviewedCardsCount,
         }))
+
+        this.props.trackAction("reviewedCard", { correct: quality >= 4 })
     }
 
     onGrade = (quality) => {

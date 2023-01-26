@@ -66,6 +66,8 @@ export default class LearnPage extends React.Component {
             deckIndex: _deckIndex,
             done: _done,
         })
+
+        this.props.trackAction("learnedCard", { correct: true })
     }
 
     onOk = () => {
