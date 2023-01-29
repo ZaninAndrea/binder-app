@@ -266,7 +266,7 @@ class App extends React.Component {
                     ...decks,
                     new Deck(
                         { id: newId, name: "Unnamed deck", cards: [] },
-                        this.props.updateDecks
+                        this.updateDecks
                     ),
                 ],
                 redirectTo: "/deck/" + newId,

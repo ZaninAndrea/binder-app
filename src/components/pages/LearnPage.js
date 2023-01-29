@@ -5,136 +5,101 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack"
 import { NavLink } from "react-router-dom"
 import { Desktop } from "../utils/MobileDesktop"
 
+function getBatchFromDecks(decks) {
+    let batches = decks
+        .map((deck, i) => ({
+            deckIndex: i,
+            cards: deck.getBatchToLearn(),
+            strength: deck.getStrengthInNDays(7),
+        }))
+        .filter((batch) => batch.cards.length > 0)
+
+    if (batches.length === 0) {
+        return null
+    }
+
+    batches.sort((a, b) => b.strength - a.strength)
+
+    return batches[0]
+}
+
 export default class LearnPage extends React.Component {
     state = {
-        card: null,
+        cards: [],
+        cardIndex: -1,
         deckIndex: -1,
-        done: true,
     }
 
     static getDerivedStateFromProps(newProps, oldState) {
-        let deckIndex = 0
-        // skip decks with no cards to review until you run out of decks
-        while (
-            deckIndex < newProps.decks.length &&
-            !newProps.decks[deckIndex].hasCardsToLearn()
-        ) {
-            deckIndex++
-        }
+        let batch = getBatchFromDecks(newProps.decks)
 
-        let done
-        if (deckIndex === newProps.decks.length) {
-            done = true
-        } else {
-            done = false
-        }
+        if (batch === null) return { cards: [], cardIndex: -1 }
 
-        const newState = {
-            deckIndex,
-            done,
+        let newState = {
+            cards: batch.cards,
+            cardIndex: 0,
+            deckIndex: batch.deckIndex,
         }
-
-        if (!done) newState.card = newProps.decks[deckIndex].nextCardToLearn()
 
         return newState
     }
 
-    nextCard = () => {
-        const currentDeck = this.props.decks[this.state.deckIndex]
-
-        let nextCard, _deckIndex, _done
-
-        if (currentDeck.hasCardsToLearn()) {
-            nextCard = currentDeck.nextCardToLearn()
-            _deckIndex = this.state.deckIndex
-            _done = false
-        } else {
-            let { deckIndex, done } = this.nextDeckState()
-            _deckIndex = deckIndex
-            _done = done
-
-            nextCard = done
-                ? null
-                : this.props.decks[deckIndex].nextCardToLearn()
-        }
-
-        if (_done) new Audio("./completed.wav").play()
-        document.getElementsByClassName("main")[0].scrollTo(0, 0)
-
-        this.setState({
-            card: nextCard,
-            deckIndex: _deckIndex,
-            done: _done,
-        })
-
-        this.props.trackAction("learnedCard", { correct: true })
-    }
-
     onOk = () => {
-        this.props.decks[this.state.deckIndex].learn()
-        this.nextCard()
-    }
+        let reviewedCard = this.state.cards[this.state.cardIndex]
+        this.props.decks[this.state.deckIndex].learn(reviewedCard.id)
+        this.props.trackAction("learnedCard", { correct: true })
 
-    nextDeckState = () => {
-        let deckIndex = this.state.deckIndex + 1
-
-        // skip decks with no cards to review until you run out of decks
-        while (
-            deckIndex < this.props.decks.length &&
-            !this.props.decks[deckIndex].hasCardsToLearn()
-        ) {
-            deckIndex++
-        }
-
-        let done
-        if (deckIndex === this.props.decks.length) {
-            done = true
+        if (this.state.cardIndex < this.state.cards.length - 1) {
+            this.setState(({ cardIndex }) => ({
+                cardIndex: cardIndex + 1,
+            }))
         } else {
-            done = false
-        }
+            new Audio("./completed.wav").play()
 
-        return {
-            deckIndex,
-            done,
+            let batch = getBatchFromDecks(this.props.decks)
+            if (batch === null) this.setState({ cards: [] })
+            else
+                this.setState({
+                    cards: batch.cards,
+                    cardIndex: 0,
+                    deckIndex: batch.deckIndex,
+                })
         }
     }
 
     render() {
-        if (this.state.done) {
+        if (this.state.cards.length === 0) {
             return (
                 <div className="card">
                     <div className="front">You have no cards to learn</div>
                 </div>
             )
-        } else
-            return (
-                <>
-                    {this.state.card && (
-                        <>
-                            <div className="learn-header">
-                                <Desktop>
-                                    {this.props.backTo && (
-                                        <NavLink
-                                            to={this.props.backTo}
-                                            className="icon"
-                                        >
-                                            <ArrowBackIcon />
-                                        </NavLink>
-                                    )}
-                                </Desktop>
-                            </div>
-                            <div className="card">
-                                <div className="front">
-                                    <Markdown source={this.state.card.front} />
-                                </div>
-                                <div className="back">
-                                    <Markdown source={this.state.card.back} />
-                                </div>
-                            </div>
-                        </>
-                    )}
-                    <Footer onOk={this.onOk} isNew={this.state.card.isNew} />
-                </>
-            )
+        }
+
+        const card = this.state.cards[this.state.cardIndex]
+
+        return (
+            <>
+                <div className="learn-header">
+                    <Desktop>
+                        {this.props.backTo && (
+                            <NavLink to={this.props.backTo} className="icon">
+                                <ArrowBackIcon />
+                            </NavLink>
+                        )}
+                    </Desktop>
+                </div>
+                <div className="card">
+                    <div className="front">
+                        <Markdown source={card.front} />
+                    </div>
+                    <div className="back">
+                        <Markdown source={card.back} />
+                    </div>
+                </div>
+
+                <Footer onOk={this.onOk} isNew={true} />
+            </>
+        )
     }
 }

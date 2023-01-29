@@ -9,11 +9,6 @@ import Close from "@material-ui/icons/Close"
 
 export default class MobileSidebar extends React.Component {
     render() {
-        const cardsToReview = this.props.decks
-            .filter((deck) => !deck.archived)
-            .map((deck) => deck.cardsToReview().length)
-            .reduce((a, b) => a + b, 0)
-
         const cardsToLearn = this.props.decks
             .filter((deck) => !deck.archived)
             .map((deck) => deck.cardsToLearn().length)
@@ -30,7 +25,7 @@ export default class MobileSidebar extends React.Component {
                         activeClassName="active"
                         onClick={() => this.props.onClose()}
                     >
-                        <InboxIcon /> Smart Review ( {cardsToReview} )
+                        <InboxIcon /> Smart Review
                     </NavLink>
                     <NavLink
                         to="/learn"

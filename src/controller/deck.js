@@ -1,52 +1,82 @@
-const supermemo2 = require("./supermemo2.js")
 const dayjs = require("dayjs")
 
-function shuffle(a) {
-    var j, x, i
-    for (i = a.length - 1; i > 0; i--) {
-        j = Math.floor(Math.random() * (i + 1))
-        x = a[i]
-        a[i] = a[j]
-        a[j] = x
-    }
-    return a
+function lerp(a, b, t) {
+    return a * (1 - t) + b * t
 }
 
-const maskArray = (arr, indexes) => [...new Set(indexes)].map((id) => arr[id])
+function computeErrorProbability(previousRepetition, time, halfLife) {
+    let reviewDelay = time - previousRepetition
+
+    return 1 - Math.pow(2, -reviewDelay / halfLife)
+}
+
+function supermemo2(
+    quality,
+    reviewTime,
+    lastHalfLife,
+    lastFactor,
+    previousRepetition
+) {
+    if (previousRepetition === null) {
+        return { factor: 2.5, halfLife: 6.58 * 24 * 3600 * 1000 }
+    }
+
+    let errorProbability = computeErrorProbability(
+        previousRepetition,
+        reviewTime,
+        lastHalfLife
+    )
+    let reviewUsefulness = errorProbability * 10
+    reviewUsefulness = reviewUsefulness > 2 ? 2 : reviewUsefulness
+
+    let factorUpdate = 0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)
+    let newFac = lastFactor + factorUpdate * reviewUsefulness
+    if (newFac < 1.3) {
+        newFac = 1.3
+    } else if (newFac > 2.5) {
+        newFac = 2.5
+    }
+
+    let newHalfLife
+    if (quality < 3) {
+        newHalfLife = lastHalfLife / 2
+    } else {
+        newHalfLife = lastHalfLife * lerp(1, newFac * 2, reviewUsefulness)
+    }
+
+    return {
+        factor: newFac,
+        halfLife: newHalfLife,
+    }
+}
+
+function migrateToV2(cards) {
+    return cards.map((card) =>
+        card.halfLife === undefined
+            ? {
+                  id: card.id,
+                  repetitions: card.repetitions,
+                  halfLife: card.lastSchedule
+                      ? (-card.lastSchedule * 24 * 3600 * 1000) / Math.log2(0.9)
+                      : null,
+                  factor: card.factor,
+                  front: card.front,
+                  back: card.back,
+                  paused: card.paused,
+              }
+            : card
+    )
+}
 
 class Deck {
     constructor(deck, updateDecks) {
-        const now = new Date()
-        this.cards = deck.cards
+        this.cards = migrateToV2(deck.cards)
         this.id = deck.id
         this.name = deck.name
         this.archived = !!deck.archived
         this.updateDecks = updateDecks
 
-        this.indexesToReview = shuffle(
-            this.cards
-                .filter(
-                    ({ nextRepeat, isRepeatAgain, paused }) =>
-                        ((nextRepeat !== null && new Date(nextRepeat) <= now) ||
-                            isRepeatAgain) &&
-                        !paused
-                )
-                .map((card) => card.id)
-        )
-
-        this.indexesToLearn = shuffle(
-            this.cards
-                .filter(
-                    ({ nextRepeat, paused }) => nextRepeat === null && !paused
-                )
-                .map((card) => card.id)
-        )
-
         this.currentIndex = null
-    }
-
-    saveDB() {
-        this.updateDecks()
     }
 
     toJSON() {
@@ -58,18 +88,21 @@ class Deck {
         }
     }
 
-    grade(quality) {
-        let card = this.getCurrentCard()
-        this.indexesToReview.shift()
-        let { isRepeatAgain, factor, schedule } = supermemo2(
-            quality,
-            card.lastSchedule,
-            card.factor
-        )
+    grade(quality, cardId) {
+        let card = this.cards.filter((card) => card.id === cardId)[0]
+        if (card === undefined) {
+            throw new Error("Could not find card by id")
+        }
 
-        // add a bit of randomness to the scheduling to decluster the repetitions
-        const jitter = 1 + (Math.random() - 0.5) * 0.2
-        schedule = Math.round(schedule * jitter)
+        let { factor, halfLife } = supermemo2(
+            quality,
+            new Date(),
+            card.halfLife,
+            card.factor,
+            card.repetitions.length > 0
+                ? new Date(card.repetitions[card.repetitions.length - 1].date)
+                : null
+        )
 
         this.cards = this.cards.map((entry) =>
             entry.id === card.id
@@ -80,71 +113,83 @@ class Deck {
                           { quality, date: new Date() },
                       ],
                       factor,
-                      lastSchedule: entry.isRepeatAgain
-                          ? entry.lastSchedule
-                          : schedule,
-                      isRepeatAgain,
-                      nextRepeat: entry.isRepeatAgain
-                          ? entry.nextRepeat
-                          : dayjs(new Date())
-                                .add(schedule, "days")
-                                .startOf("day")
-                                .add(3, "hours")
-                                .toDate(),
+                      halfLife,
                   }
                 : entry
         )
-        this.saveDB()
+        this.updateDecks()
+    }
 
-        if (isRepeatAgain) {
-            this.indexesToReview.push(this.currentIndex)
+    learn(cardId) {
+        this.grade(4, cardId)
+    }
+
+    getBatchToReview() {
+        let now = new Date()
+
+        let probabilities = []
+        for (let i in this.cards) {
+            if (this.cards[i].halfLife === null) {
+                continue
+            }
+
+            let previousRepetition = new Date(
+                this.cards[i].repetitions[
+                    this.cards[i].repetitions.length - 1
+                ].date
+            )
+            let errorProbability = computeErrorProbability(
+                previousRepetition,
+                now,
+                this.cards[i].halfLife
+            )
+
+            probabilities.push({ probability: errorProbability, index: i })
         }
+        probabilities.sort((a, b) => b.probability - a.probability)
+
+        probabilities = probabilities.slice(0, 10)
+        let cards = probabilities.map(({ index }) => this.cards[index])
+
+        return { cards, highestProbability: probabilities[0] }
     }
 
-    learn() {
-        // learning a card counts as a grade 4 recollection
-        this.indexesToReview.unshift(this.indexesToLearn.shift())
-        this.grade(4)
+    getBatchToLearn() {
+        return this.cards.filter((c) => c.halfLife === null).slice(0, 10)
     }
 
-    getCurrentCard() {
-        return this.currentIndex !== null
-            ? this.cards.filter(
-                  (card) => card.id.toString() === this.currentIndex.toString()
-              )[0]
-            : null
-    }
+    getStrengthInNDays(days) {
+        let time = dayjs().add(days, "day").toDate()
 
-    cardsToReview() {
-        return maskArray(this.cards, this.indexesToReview)
+        let probabilities = []
+        for (let i in this.cards) {
+            if (this.cards[i].halfLife === null) {
+                continue
+            }
+
+            let previousRepetition = new Date(
+                this.cards[i].repetitions[
+                    this.cards[i].repetitions.length - 1
+                ].date
+            )
+            let errorProbability = computeErrorProbability(
+                previousRepetition,
+                time,
+                this.cards[i].halfLife
+            )
+
+            probabilities.push(1 - errorProbability)
+        }
+
+        if (probabilities.length === 0) return 1
+
+        let meanProbability =
+            probabilities.reduce((a, b) => a + b, 0) / probabilities.length
+        return meanProbability
     }
 
     cardsToLearn() {
-        return maskArray(this.cards, this.indexesToLearn)
-    }
-
-    hasCardsToReview() {
-        return this.indexesToReview.length > 0
-    }
-
-    hasCardsToLearn() {
-        return this.indexesToLearn.length > 0
-    }
-
-    nextCardToReview() {
-        this.currentIndex = this.hasCardsToReview()
-            ? this.indexesToReview[0]
-            : null
-
-        return { ...this.getCurrentCard(), isNew: false }
-    }
-
-    nextCardToLearn() {
-        this.currentIndex = this.hasCardsToLearn()
-            ? this.indexesToLearn[0]
-            : null
-
-        return { ...this.getCurrentCard(), isNew: true }
+        return this.cards.filter((c) => c.halfLife === null)
     }
 
     addCard(front = "", back = "") {
@@ -155,17 +200,13 @@ class Deck {
                     0
                 ) + 1,
             repetitions: [],
-            lastSchedule: null,
-            nextRepeat: null,
+            halfLife: null,
             factor: 2.5,
-            isRepeatAgain: false,
             front,
             back,
             paused: false,
         }
         this.cards.push(newCard)
-
-        this.indexesToLearn.push(this.cards.length - 1)
 
         return newCard
     }
@@ -173,13 +214,6 @@ class Deck {
     deleteCard(id) {
         this.cards = this.cards.filter(
             (card) => card.id.toString() !== id.toString()
-        )
-
-        this.indexesToLearn = this.indexesToLearn.filter(
-            (index) => index.toString() !== id.toString()
-        )
-        this.indexesToReview = this.indexesToReview.filter(
-            (index) => index.toString() !== id.toString()
         )
     }
 
@@ -189,28 +223,7 @@ class Deck {
         )
 
         if (card.length === 0) return
-
-        card = card[0]
-        card.paused = !card.paused
-
-        if (card.nextRepeat === null) {
-            if (card.paused) {
-                this.indexesToLearn = this.indexesToLearn.filter(
-                    (id) => id !== card.id
-                )
-            } else this.indexesToLearn.push(card.id)
-        }
-
-        if (
-            (card.nextRepeat !== null &&
-                new Date(card.nextRepeat) <= new Date()) ||
-            card.isRepeatAgain
-        )
-            if (card.paused) {
-                this.indexesToReview = this.indexesToReview.filter(
-                    (id) => id !== card.id
-                )
-            } else this.indexesToReview.push(card.id)
+        card[0].paused = !card[0].paused
     }
 }
 

@@ -8,11 +8,6 @@ import SettingsIcon from "@material-ui/icons/Settings"
 
 class Sidebar extends React.Component {
     render() {
-        const cardsToReview = this.props.decks
-            .filter((deck) => !deck.archived)
-            .map((deck) => deck.cardsToReview().length)
-            .reduce((a, b) => a + b, 0)
-
         const cardsToLearn = this.props.decks
             .filter((deck) => !deck.archived)
             .map((deck) => deck.cardsToLearn().length)
@@ -33,10 +28,18 @@ class Sidebar extends React.Component {
                     />
                 </div>
                 <NavLink to="/review" activeClassName="active">
-                    <InboxIcon /> Smart Review ( {cardsToReview} )
+                    <InboxIcon /> Smart Review
                 </NavLink>
-                <NavLink to="/learn" activeClassName="active">
-                    <SchoolIcon /> Learn ( {cardsToLearn} )
+                <NavLink
+                    to="/learn"
+                    activeClassName="active"
+                    className={cardsToLearn ? "" : "disabled-link"}
+                    onClick={(e) => {
+                        if (cardsToLearn === 0) e.preventDefault()
+                    }}
+                >
+                    <SchoolIcon /> Learn
+                    {cardsToLearn ? `( ${cardsToLearn} )` : ""}
                 </NavLink>
                 <p className="title">BINDERS</p>
                 {this.props.decks

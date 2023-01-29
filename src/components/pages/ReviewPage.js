@@ -5,223 +5,140 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack"
 import { NavLink } from "react-router-dom"
 import { Desktop } from "../utils/MobileDesktop"
 
-const isToday = (someDate) => {
-    const today = new Date()
-    someDate = new Date(someDate)
-    return (
-        someDate.getDate() == today.getDate() &&
-        someDate.getMonth() == today.getMonth() &&
-        someDate.getFullYear() == today.getFullYear()
-    )
+function getBatchFromDecks(decks) {
+    let batches = decks
+        .map((deck, i) => ({
+            deckIndex: i,
+            ...deck.getBatchToReview(),
+        }))
+        .filter((batch) => batch.cards.length > 0)
+
+    if (batches.length === 0) {
+        return null
+    }
+
+    batches.sort((a, b) => b.highestProbability - a.highestProbability)
+
+    return batches[0]
 }
 
 export default class ReviewPage extends React.Component {
     state = {
         flipped: false,
-        card: null,
-        showFooter: false,
+        cards: [],
+        cardIndex: -1,
         deckIndex: -1,
-        done: true,
     }
 
     static getDerivedStateFromProps(newProps, oldState) {
-        const reviewedCardsCount = newProps.decks
-            .map(
-                (deck) =>
-                    deck.cards.filter(
-                        (card) =>
-                            card.repetitions.length > 0 &&
-                            !card.paused &&
-                            isToday(
-                                card.repetitions[card.repetitions.length - 1]
-                                    .date
-                            )
-                    ).length
-            )
-            .reduce((a, b) => a + b, 0)
+        if (oldState.cards.length > 0) return {}
 
-        const cardsToReview =
-            newProps.decks
-                .map((deck) => deck.cardsToReview().length)
-                .reduce((a, b) => a + b, 0) + reviewedCardsCount
+        let batch = getBatchFromDecks(newProps.decks)
 
-        let deckIndex = 0
-        // skip decks with no cards to review until you run out of decks
-        while (
-            deckIndex < newProps.decks.length &&
-            !newProps.decks[deckIndex].hasCardsToReview()
-        ) {
-            deckIndex++
-        }
-
-        let done
-        if (deckIndex === newProps.decks.length) {
-            done = true
-        } else {
-            done = false
-        }
+        if (batch === null) return { cards: [], cardIndex: -1 }
 
         let newState = {
-            deckIndex,
-            done,
-            cardsToReview,
-            reviewedCardsCount,
+            cards: batch.cards,
+            cardIndex: 0,
+            deckIndex: batch.deckIndex,
+            flipped: false,
         }
-
-        if (!done) newState.card = newProps.decks[deckIndex].nextCardToReview()
 
         return newState
     }
 
-    onFlip = () => {
-        this.setState(({ flipped }) => {
-            return {
-                flipped: true,
-                showFooter: true,
-            }
-        })
-    }
-
-    nextCard = (quality) => {
-        const currentDeck = this.props.decks[this.state.deckIndex]
-
-        let nextCard, _deckIndex, _done
-
-        if (currentDeck.hasCardsToReview()) {
-            nextCard = currentDeck.nextCardToReview()
-            _deckIndex = this.state.deckIndex
-            _done = false
-        } else {
-            let { deckIndex, done } = this.nextDeckState()
-            _deckIndex = deckIndex
-            _done = done
-
-            nextCard = done
-                ? null
-                : this.props.decks[deckIndex].nextCardToReview()
-        }
-
-        if (_done) {
-            new Audio("./completed.wav").play()
-        }
-
-        this.setState(({ reviewedCardsCount }) => ({
-            card: nextCard,
-            deckIndex: _deckIndex,
-            done: _done,
-            flipped: false,
-            showFooter: false,
-            reviewedCardsCount:
-                quality >= 4 ? reviewedCardsCount + 1 : reviewedCardsCount,
-        }))
-
-        this.props.trackAction("reviewedCard", { correct: quality >= 4 })
-    }
-
     onGrade = (quality) => {
-        this.props.decks[this.state.deckIndex].grade(quality)
-        this.nextCard(quality)
-    }
+        let reviewedCard = this.state.cards[this.state.cardIndex]
+        this.props.decks[this.state.deckIndex].grade(quality, reviewedCard.id)
+        this.props.trackAction("reviewedCard", { correct: quality >= 4 })
 
-    nextDeckState = () => {
-        let deckIndex = this.state.deckIndex + 1
-
-        // skip decks with no cards to review until you run out of decks
-        while (
-            deckIndex < this.props.decks.length &&
-            !this.props.decks[deckIndex].hasCardsToReview()
-        ) {
-            deckIndex++
-        }
-
-        let done
-        if (deckIndex === this.props.decks.length) {
-            done = true
+        if (quality < 3) {
+            this.setState(({ cards, cardIndex }) => ({
+                cards: [...cards, reviewedCard],
+                flipped: false,
+                cardIndex: cardIndex + 1,
+            }))
+        } else if (this.state.cardIndex < this.state.cards.length - 1) {
+            this.setState(({ cardIndex }) => ({
+                flipped: false,
+                cardIndex: cardIndex + 1,
+            }))
         } else {
-            done = false
-        }
+            new Audio("/completed.wav").play()
 
-        return {
-            deckIndex,
-            done,
+            let batch = getBatchFromDecks(this.props.decks)
+            if (batch === null) this.setState({ cards: [] })
+            else
+                this.setState({
+                    cards: batch.cards,
+                    cardIndex: 0,
+                    deckIndex: batch.deckIndex,
+                    flipped: false,
+                })
         }
     }
 
     render() {
-        console.log(this.props.decks)
-        const reviewRate =
-            this.state.cardsToReview === 0
-                ? 1
-                : (100 * this.state.reviewedCardsCount) /
-                  this.state.cardsToReview
-
-        if (this.state.done) {
+        if (this.state.cards.length === 0) {
             return (
                 <div className="card">
-                    <div className="front">You have no cards to review</div>
+                    <div className="front">
+                        You have no cards to review, start by creating and
+                        learning some cards.
+                    </div>
                 </div>
             )
-        } else
-            return (
-                <>
-                    {this.state.card && (
-                        <>
-                            <div className="learn-header">
-                                <Desktop>
-                                    {this.props.backTo && (
-                                        <NavLink
-                                            to={this.props.backTo}
-                                            className="icon"
-                                        >
-                                            <ArrowBackIcon />
-                                        </NavLink>
-                                    )}
-                                </Desktop>
-                                <span className="review-deck-title">
-                                    {
-                                        this.props.decks[this.state.deckIndex]
-                                            .name
-                                    }
-                                </span>
-                                <div className="review-bar">
-                                    <div
-                                        className="fill"
-                                        style={{
-                                            width: `${reviewRate}%`,
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                            <div className="card">
-                                <div className="front">
-                                    <Markdown source={this.state.card.front} />
-                                </div>
-                                <div
-                                    className={
-                                        this.state.flipped
-                                            ? "back"
-                                            : "back hidden"
-                                    }
-                                    onClick={this.onFlip}
-                                >
-                                    {this.state.flipped ? (
-                                        <Markdown
-                                            source={this.state.card.back}
-                                        />
-                                    ) : (
-                                        "show"
-                                    )}
-                                </div>
-                            </div>
-                        </>
-                    )}
-                    {this.state.showFooter && (
-                        <Footer
-                            onGrade={this.onGrade}
-                            isNew={this.state.card.isNew}
+        }
+
+        const reviewRate =
+            (100 * this.state.cardIndex) / this.state.cards.length
+
+        const card = this.state.cards[this.state.cardIndex]
+        return (
+            <>
+                <div className="learn-header">
+                    <Desktop>
+                        {this.props.backTo && (
+                            <NavLink to={this.props.backTo} className="icon">
+                                <ArrowBackIcon />
+                            </NavLink>
+                        )}
+                    </Desktop>
+                    <span className="review-deck-title">
+                        {this.props.decks[this.state.deckIndex].name}
+                    </span>
+                    <div className="review-bar">
+                        <div
+                            className="fill"
+                            style={{
+                                width: `${reviewRate}%`,
+                            }}
                         />
-                    )}
-                </>
-            )
+                    </div>
+                </div>
+                <div className="card">
+                    <div className="front">
+                        <Markdown source={card.front} />
+                    </div>
+                    <div
+                        className={this.state.flipped ? "back" : "back hidden"}
+                        onClick={() => {
+                            this.setState({
+                                flipped: true,
+                            })
+                        }}
+                    >
+                        {this.state.flipped ? (
+                            <Markdown source={card.back} />
+                        ) : (
+                            "show"
+                        )}
+                    </div>
+                </div>
+                {this.state.flipped && (
+                    <Footer onGrade={this.onGrade} isNew={false} />
+                )}
+            </>
+        )
     }
 }

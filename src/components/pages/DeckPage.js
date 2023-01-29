@@ -8,7 +8,6 @@ import MenuItem from "@material-ui/core/MenuItem"
 import InboxIcon from "@material-ui/icons/Inbox"
 import SchoolIcon from "@material-ui/icons/School"
 import WarningIcon from "@material-ui/icons/Warning"
-import Loop from "@material-ui/icons/Loop"
 import Archive from "@material-ui/icons/Archive"
 import Download from "@material-ui/icons/SaveAlt"
 import fileDialog from "file-dialog"
@@ -156,7 +155,6 @@ export default class DeckPage extends React.Component {
         const recallAccuracy =
             reps === 0 ? 100 : Math.round((100 * correct) / reps)
 
-        const nCardsToReview = deck.cardsToReview().length
         const nCardsToLearn = deck.cardsToLearn().length
 
         const deckComponent = () => (
@@ -208,22 +206,9 @@ export default class DeckPage extends React.Component {
                                 )
                                 this.setState({ anchorEl: null })
                             }}
-                            disabled={!nCardsToReview}
                         >
                             <InboxIcon />
-                            Smart Review{" "}
-                            {!!nCardsToReview && `( ${nCardsToReview} )`}
-                        </MenuItem>
-                        <MenuItem
-                            onClick={() => {
-                                this.props.redirectTo(
-                                    `/deck/${this.props.deck.id}/cram`
-                                )
-                                this.setState({ anchorEl: null })
-                            }}
-                        >
-                            <Loop />
-                            Cram review
+                            Smart Review
                         </MenuItem>
                         <MenuItem
                             onClick={() => {

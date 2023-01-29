@@ -193,6 +193,13 @@ a {
 .sidebar a.active {
     background: rgba(255, 255, 255, 0.2);
 }
+.sidebar a.disabled-link {
+    color: rgba(255, 255, 255, 0.3);
+    cursor: default;
+}
+.sidebar a.disabled-link:not(.active):hover {
+    background: none;
+}
 
 .sidebar .indented {
     padding-left: 32px;

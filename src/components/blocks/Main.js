@@ -1,7 +1,6 @@
 import React from "react"
 import ReviewPage from "../pages/ReviewPage"
 import LearnPage from "../pages/LearnPage"
-import CramPage from "../pages/CramPage"
 import DeckPage from "../pages/DeckPage"
 import HomePage from "../pages/HomePage"
 import SettingsPage from "../pages/SettingsPage"
@@ -94,23 +93,6 @@ class Main extends React.Component {
 
                         return (
                             <ReviewPage
-                                decks={deck}
-                                backTo={`/deck/${match.params.deckId}`}
-                                trackAction={this.props.trackAction}
-                            />
-                        )
-                    }}
-                />
-                <Route
-                    path="/deck/:deckId/cram"
-                    render={({ match }) => {
-                        const deck = this.props.decks.filter(
-                            (deck) => deck.id === match.params.deckId
-                        )
-                        if (deck.length === 0) return ""
-
-                        return (
-                            <CramPage
                                 decks={deck}
                                 backTo={`/deck/${match.params.deckId}`}
                                 trackAction={this.props.trackAction}
