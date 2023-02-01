@@ -234,6 +234,7 @@ class App extends React.Component {
 
         const delta = this.differ.diff(this.cloudData, current)
         const patch = formatters.jsonpatch.format(delta)
+        console.log(this.state.decks, current, this.cloudData, delta)
 
         this.dispatcher.extend(patch)
         this.cloudData = clonedeep(current)

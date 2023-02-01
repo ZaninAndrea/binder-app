@@ -151,7 +151,7 @@ class Deck {
         probabilities = probabilities.slice(0, 10)
         let cards = probabilities.map(({ index }) => this.cards[index])
 
-        return { cards, highestProbability: probabilities[0] }
+        return { cards, highestProbability: probabilities[0].probability }
     }
 
     getBatchToLearn() {
