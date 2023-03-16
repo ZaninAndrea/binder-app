@@ -132,17 +132,17 @@ export default class DeckPage extends React.Component {
         if (!this.props.deck) return ""
 
         const { deck } = this.props
-        const cardsReapetedOnce = deck.cards.filter(
+        const cardsRepeatedOnce = deck.cards.filter(
             ({ repetitions }) => repetitions.length !== 0
         )
-        const learnedCards = cardsReapetedOnce.length
+        const activeCards = cardsRepeatedOnce.filter((c) => !c.paused).length
         const totalCards = deck.cards.length
-        const learnedRate =
+        const activeRate =
             totalCards === 0
                 ? 100
-                : Math.round((100 * learnedCards) / totalCards)
+                : Math.round((100 * activeCards) / totalCards)
 
-        const { reps, correct } = cardsReapetedOnce.reduce(
+        const { reps, correct } = cardsRepeatedOnce.reduce(
             ({ reps, correct }, { repetitions }) => ({
                 reps: reps + repetitions.length,
                 correct:
@@ -281,12 +281,12 @@ export default class DeckPage extends React.Component {
                             <div
                                 className="fill"
                                 style={{
-                                    width: `${learnedRate}%`,
+                                    width: `${activeRate}%`,
                                 }}
                             />
                         </div>
                         <span className="text">
-                            {learnedCards}/{totalCards} cards learned
+                            {activeCards}/{totalCards} cards active
                         </span>
                     </div>
                     <div className="stats-recall">
