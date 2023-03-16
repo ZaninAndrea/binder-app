@@ -19,8 +19,6 @@ function getBatchFromDecks(decks) {
 
     batches.sort((a, b) => b.highestProbability - a.highestProbability)
 
-    console.log(batches)
-
     return batches[0]
 }
 

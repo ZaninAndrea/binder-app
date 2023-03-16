@@ -129,7 +129,7 @@ class Deck {
 
         let probabilities = []
         for (let i in this.cards) {
-            if (this.cards[i].halfLife === null) {
+            if (this.cards[i].halfLife === null || this.cards[i].paused) {
                 continue
             }
 
@@ -151,11 +151,17 @@ class Deck {
         probabilities = probabilities.slice(0, 10)
         let cards = probabilities.map(({ index }) => this.cards[index])
 
-        return { cards, highestProbability: probabilities[0].probability }
+        return {
+            cards,
+            highestProbability:
+                probabilities.length > 0 ? probabilities[0].probability : 1,
+        }
     }
 
     getBatchToLearn() {
-        return this.cards.filter((c) => c.halfLife === null).slice(0, 10)
+        return this.cards
+            .filter((c) => c.halfLife === null && !c.paused)
+            .slice(0, 10)
     }
 
     getStrengthInNDays(days) {
@@ -163,7 +169,7 @@ class Deck {
 
         let probabilities = []
         for (let i in this.cards) {
-            if (this.cards[i].halfLife === null) {
+            if (this.cards[i].halfLife === null || this.cards[i].paused) {
                 continue
             }
 

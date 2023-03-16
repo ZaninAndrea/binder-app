@@ -10,20 +10,12 @@
         "dotenv": "^8.1.0",
         "file-dialog": "^0.0.8",
         "jsondiffpatch": "^0.4.1",
-        "katex": "^0.11.0",
         "lodash.clonedeep": "^4.5.0",
         "react": "^16.8.6",
         "react-calendar-heatmap": "^1.8.1",
         "react-dom": "^16.8.6",
         "react-router-dom": "^5.0.1",
-        "react-scripts": "3.0.1",
-        "rehype-katex": "^1.2.0",
-        "rehype-stringify": "^6.0.0",
-        "remark-html": "^10.0.0",
-        "remark-math": "^1.0.6",
-        "remark-parse": "^7.0.1",
-        "remark-rehype": "^5.0.0",
-        "unified": "^8.3.2"
+        "react-scripts": "3.0.1"
     },
     "scripts": {
         "start": "react-scripts start",
