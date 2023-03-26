@@ -61,7 +61,7 @@ class RepetitionsCalendar extends Component {
             day: dayjs().date(),
         }
 
-        let first_day = new Date(year, month - 1, 0)
+        let first_day = new Date(year, month - 1, 1)
         let first_day_num_week = this.props.sundayFirst
             ? dayjs(first_day).day()
             : monday_week[dayjs(first_day).day()]
@@ -272,7 +272,11 @@ class RepetitionsCalendar extends Component {
             <div
                 id={this.props.id}
                 key={"calendar_" + this.props.title}
-                className="commitmentCalendarContainer"
+                className={
+                    this.props.className
+                        ? "commitmentCalendarContainer " + this.props.className
+                        : "commitmentCalendarContainer"
+                }
             >
                 {this.calendar_table(this.props.values)}
             </div>

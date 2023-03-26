@@ -755,6 +755,25 @@ body {
     /* border: 2px solid red;
     border-top: none; */
 }
+.commitmentCalendarContainer {
+    margin-top: -18px;
+    margin-left: -18px;
+    margin-right: -18px;
+    padding-left: 18px;
+    padding-right: 18px;
+}
+@media only screen and (max-width: 420px) {
+    body {
+        --uiElementHeight: 40px;
+    }
+
+    .commitmentCalendarContainer {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+    .calendarDay {
+        font-size: 0.8em;
+    }
+}
 
 .calendarWeek {
     width: fit-content;
