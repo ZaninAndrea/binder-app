@@ -5,6 +5,9 @@ import VisibilityIcon from "@material-ui/icons/Visibility"
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff"
 
 export default class EditCardModal extends React.Component {
+    state = {
+        updated: false,
+    }
     render() {
         const totalReviews = this.props.card.repetitions.length
         const correctReviews = this.props.card.repetitions.reduce(
@@ -42,6 +45,7 @@ export default class EditCardModal extends React.Component {
                                 value={this.props.card.front}
                                 onTextUpdate={(newText) => {
                                     this.props.card.front = newText
+                                    this.setState({ updated: true })
                                 }}
                             />
                         </div>
@@ -50,6 +54,7 @@ export default class EditCardModal extends React.Component {
                                 value={this.props.card.back}
                                 onTextUpdate={(newText) => {
                                     this.props.card.back = newText
+                                    this.setState({ updated: true })
                                 }}
                             />
                         </div>

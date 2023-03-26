@@ -10,13 +10,15 @@ export default class LoginPage extends React.Component {
 
     login = async () => {
         const res = await fetch(
-            `https://binderbackend.baida.dev:8080/login?email=${encodeURIComponent(
-                this.state.email
-            )}&password=${encodeURIComponent(this.state.password)}`,
+            `https://binderbackend.baida.dev:8080/users/login`,
             {
                 headers: {
                     "content-type": "application/json",
                 },
+                body: JSON.stringify({
+                    email: this.state.email,
+                    password: this.state.password,
+                }),
                 method: "POST",
             }
         )

@@ -9,18 +9,16 @@ export default class SignupPage extends React.Component {
     }
 
     signup = async () => {
-        const res = await fetch(
-            `https://binderbackend.baida.dev:8080/user?email=${encodeURIComponent(
-                this.state.email
-            )}&password=${encodeURIComponent(this.state.password)}`,
-            {
-                body: JSON.stringify({ decks: [] }),
-                headers: {
-                    "content-type": "application/json",
-                },
-                method: "POST",
-            }
-        )
+        const res = await fetch(`https://binderbackend.baida.dev:8080/users`, {
+            body: JSON.stringify({
+                email: this.state.email,
+                password: this.state.password,
+            }),
+            headers: {
+                "content-type": "application/json",
+            },
+            method: "POST",
+        })
 
         if (res.status === 200) this.props.setBearer((await res.json()).token)
         else this.setState({ error: await res.text() })

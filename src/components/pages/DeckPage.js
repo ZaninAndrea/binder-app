@@ -68,18 +68,11 @@ export default class DeckPage extends React.Component {
         }
     }
 
-    onCloseEditModal = () => {
-        this.props.updateDecks()
-        this.setState({ redirectTo: "/deck/" + this.props.deck.id })
-    }
     onTogglePaused = (cardId) => {
         this.props.deck.togglePause(cardId)
-        this.props.updateDecks()
     }
     onDeleteCard = (cardId) => {
         this.props.deck.deleteCard(cardId)
-        this.props.updateDecks()
-
         this.setState({ redirectTo: "/deck/" + this.props.deck.id })
     }
 
@@ -93,7 +86,7 @@ export default class DeckPage extends React.Component {
 
             const file = files[0]
             const reader = new FileReader()
-            reader.onload = (e) => {
+            reader.onload = async (e) => {
                 try {
                     let loaded = JSON.parse(e.target.result)
 
@@ -102,10 +95,8 @@ export default class DeckPage extends React.Component {
                     }
 
                     for (let card of loaded) {
-                        this.props.deck.addCard(card.front, card.back)
+                        await this.props.deck.addCard(card.front, card.back)
                     }
-
-                    this.props.updateDecks()
 
                     this.setState({
                         loadingDeck: false,
@@ -167,9 +158,16 @@ export default class DeckPage extends React.Component {
                                 name: e.target.value,
                             })
                         }
-                        onBlur={(e) => {
+                        onBlur={() => {
                             deck.name = this.state.name
-                            this.props.updateDecks()
+
+                            this.dispatcher.fetch("/decks/" + deck.id, {
+                                method: "PUT",
+                                body: JSON.stringify({
+                                    name: this.state.name,
+                                }),
+                            })
+                            this.props.onDeckUpdate()
                         }}
                     />
                     <div
@@ -213,7 +211,14 @@ export default class DeckPage extends React.Component {
                         <MenuItem
                             onClick={() => {
                                 deck.archived = !deck.archived
-                                this.props.updateDecks(true)
+
+                                this.dispatcher.fetch("/decks/" + deck.id, {
+                                    method: "PUT",
+                                    body: JSON.stringify({
+                                        archived: deck.archived,
+                                    }),
+                                })
+                                this.props.onDeckUpdate()
                             }}
                         >
                             <Archive />
@@ -326,10 +331,10 @@ export default class DeckPage extends React.Component {
                     <div
                         key="new-card"
                         id="new-card"
-                        onClick={() =>
+                        onClick={async () =>
                             this.setState({
                                 redirectTo: `/deck/${deck.id}/edit/${
-                                    deck.addCard("", "").id
+                                    (await deck.addCard("", "")).id
                                 }`,
                             })
                         }
@@ -358,7 +363,6 @@ export default class DeckPage extends React.Component {
                 params: { deckId, cardId },
             },
         }) => {
-            cardId = parseInt(cardId)
             const card = deck.cards.filter(({ id }) => id === cardId)[0]
 
             // Close dialog if
@@ -371,8 +375,24 @@ export default class DeckPage extends React.Component {
                 <>
                     <EditCardModal
                         card={card}
-                        onClose={this.onCloseEditModal}
-                        updateDecks={this.props.updateDecks}
+                        onClose={(updated) => {
+                            if (updated) {
+                                this.props.dispatcher.fetch(
+                                    `/decks/${this.props.deck.id}/cards/${cardId}`,
+                                    {
+                                        method: "PUT",
+                                        body: JSON.stringify({
+                                            front: card.front,
+                                            back: card.back,
+                                        }),
+                                    }
+                                )
+                                this.props.onDeckUpdate()
+                            }
+                            this.setState({
+                                redirectTo: "/deck/" + this.props.deck.id,
+                            })
+                        }}
                         onDelete={() => this.onDeleteCard(cardId)}
                         onTogglePaused={() => this.onTogglePaused(cardId)}
                     />

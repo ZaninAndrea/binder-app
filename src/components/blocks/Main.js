@@ -41,7 +41,8 @@ class Main extends React.Component {
         const deckPage = ({ match }) => (
             <DeckPage
                 deck={getCurrentDeck(match)}
-                updateDecks={this.props.updateDecks}
+                dispatcher={this.props.dispatcher}
+                onDeckUpdate={this.props.onDeckUpdate}
                 deleteDeck={this.props.deleteDeck(match.params.deckId)}
                 redirectTo={this.props.redirectTo}
                 trackAction={this.props.trackAction}

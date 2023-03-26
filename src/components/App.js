@@ -18,15 +18,13 @@ import { updateAchievements } from "../controller/achievements"
 
 const theme = createMuiTheme({
     props: {
-        // Name of the component ⚛️
         MuiButtonBase: {
-            // The properties to apply
-            disableRipple: true, // No more ripple, on the whole application 💣!
+            disableRipple: true,
         },
     },
 })
 
-class PatchDispatcher {
+class BackgroundDispatcher {
     constructor(serverUrl, token) {
         if (!window.navigator)
             alert(
@@ -48,11 +46,16 @@ class PatchDispatcher {
         })
     }
 
-    extend(arr) {
-        this.queue = this.queue.concat(arr)
+    fetch(path, options = {}) {
+        return new Promise((resolve, reject) => {
+            options.headers = options.headers || {}
+            options.headers["Authorization"] = this.token
 
-        if (this.queue.length !== 0 && !this.emptying && !this.offline)
-            this.empty()
+            this.queue.push({ path, options, resolve, reject })
+
+            if (this.queue.length !== 0 && !this.emptying && !this.offline)
+                this.empty()
+        })
     }
 
     async empty() {
@@ -63,19 +66,16 @@ class PatchDispatcher {
             return
         }
 
-        const patch = this.queue.shift()
+        const request = this.queue.shift()
 
-        await fetch(`${this.serverUrl}/user`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + this.token,
-            },
-            body: JSON.stringify([patch]),
-        }).catch((e) => {
-            if (e.message === "Failed to fetch") this.queue.unshift(patch)
-            else throw e
+        let response = await fetch(
+            `${this.serverUrl}${request.path}`,
+            request.options
+        ).catch((e) => {
+            if (e.message === "Failed to fetch") this.queue.unshift(request)
+            else request.reject(e)
         })
+        request.resolve(response)
 
         if (!this.offline) this.empty()
     }
@@ -164,13 +164,16 @@ class App extends React.Component {
         this.setState({ bearer, redirectTo })
         localStorage.setItem("bearer", bearer)
 
-        let data = await fetch("https://binderbackend.baida.dev:8080/user", {
-            headers: {
-                Authorization: "Bearer " + bearer,
-            },
-        }).then((res) => res.json())
-        let metadata = await fetch(
-            "https://binderbackend.baida.dev:8080/user/metadata",
+        let userData = await fetch(
+            "https://binderbackend.baida.dev:8080/user",
+            {
+                headers: {
+                    Authorization: "Bearer " + bearer,
+                },
+            }
+        ).then((res) => res.json())
+        let decksData = await fetch(
+            "https://binderbackend.baida.dev:8080/decks",
             {
                 headers: {
                     Authorization: "Bearer " + bearer,
@@ -178,25 +181,21 @@ class App extends React.Component {
             }
         ).then((res) => res.json())
 
-        this.differ = jsondifferCreate({
-            arrays: { detectMove: false },
-            textDiff: { minLength: Infinity },
-        })
-        this.dispatcher = new PatchDispatcher(
+        this.dispatcher = new BackgroundDispatcher(
             "https://binderbackend.baida.dev:8080",
             bearer
         )
-
-        this.cloudData = clonedeep(data)
         this.setState({
-            decks: data.decks.map((deck) => new Deck(deck, this.updateDecks)),
-            metadata: metadata,
+            decks: decksData.map(
+                (deck) => new Deck(deck, this.dispatcher, this.onDeckUpdate)
+            ),
+            metadata: userData,
         })
 
         this.unloadListener = window.addEventListener(
             "beforeunload",
             (e) => {
-                if (this.dispatcher.emptying) {
+                if (this.queue.length !== 0) {
                     e.preventDefault()
                     e.returnValue =
                         "Binder is still synchronizing, if you leave now some changes will be lost"
@@ -210,8 +209,13 @@ class App extends React.Component {
 
     logOut = () => {
         localStorage.removeItem("bearer")
-        this.setState({ bearer: null, redirectTo: "/login", decks: [] })
-        window.removeEventListener("beforeunload", this.unloadListener)
+        this.dispatcher = null
+        this.setState({
+            bearer: null,
+            redirectTo: "/login",
+            decks: [],
+            metadata: null,
+        })
     }
 
     deleteUser = async () => {
@@ -225,55 +229,44 @@ class App extends React.Component {
         this.logOut()
     }
 
-    updateDecks = (refresh = true) => {
-        const current = JSON.parse(
-            JSON.stringify({
-                decks: this.state.decks,
-            })
-        )
-
-        const delta = this.differ.diff(this.cloudData, current)
-        const patch = formatters.jsonpatch.format(delta)
-        console.log(this.state.decks, current, this.cloudData, delta)
-
-        this.dispatcher.extend(patch)
-        this.cloudData = clonedeep(current)
-
-        if (refresh) this.forceUpdate()
-    }
-
     deleteDeck = (deletedId) => () => {
-        this.setState(
-            ({ decks }) => ({
-                decks: decks.filter(
-                    ({ id }) => id.toString() !== deletedId.toString()
-                ),
-                redirectTo: "/",
-            }),
-            () => this.updateDecks(false)
-        )
+        this.dispatcher.fetch("/decks/" + deletedId, {
+            method: "DELETE",
+        })
+
+        this.setState(({ decks }) => ({
+            decks: decks.filter(
+                ({ id }) => id.toString() !== deletedId.toString()
+            ),
+            redirectTo: "/",
+        }))
     }
 
-    createNewDeck = () => {
-        const newId = (
-            this.state.decks.reduce(
-                (acc, curr) => Math.max(acc, parseInt(curr.id)),
-                -1
-            ) + 1
-        ).toString()
-        this.setState(
-            ({ decks }) => ({
-                decks: [
-                    ...decks,
-                    new Deck(
-                        { id: newId, name: "Unnamed deck", cards: [] },
-                        this.updateDecks
-                    ),
-                ],
-                redirectTo: "/deck/" + newId,
-            }),
-            () => this.updateDecks(false)
-        )
+    createNewDeck = async () => {
+        const id = await this.dispatcher
+            .fetch("/decks", {
+                method: "POST",
+                body: JSON.stringify({
+                    name: "Unnamed deck",
+                }),
+            })
+            .then((res) => res.text())
+
+        this.setState(({ decks }) => ({
+            decks: [
+                ...decks,
+                new Deck(
+                    { id, name: "Unnamed deck", cards: [] },
+                    this.dispatcher,
+                    this.onDeckUpdate
+                ),
+            ],
+            redirectTo: "/deck/" + id,
+        }))
+    }
+
+    onDeckUpdate = () => {
+        this.forceUpdate()
     }
 
     render() {
@@ -292,7 +285,6 @@ class App extends React.Component {
                 <Desktop>
                     <Sidebar
                         decks={this.state.decks}
-                        updateDecks={this.updateDecks}
                         createNewDeck={this.createNewDeck}
                         openSettings={() =>
                             this.setState({ redirectTo: "/settings" })
@@ -311,7 +303,6 @@ class App extends React.Component {
                     />
                     <MobileSidebar
                         decks={this.state.decks}
-                        updateDecks={this.updateDecks}
                         createNewDeck={this.createNewDeck}
                         open={this.state.open}
                         onClose={() => this.setState({ open: false })}
@@ -321,7 +312,8 @@ class App extends React.Component {
                     decks={this.state.decks}
                     achievements={this.state.achievements}
                     stats={this.state.stats}
-                    updateDecks={this.updateDecks}
+                    dispatcher={this.dispatcher}
+                    onDeckUpdate={this.onDeckUpdate}
                     isMobile={false}
                     deleteDeck={this.deleteDeck}
                     redirectTo={(location) =>

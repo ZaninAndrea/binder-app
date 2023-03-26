@@ -50,33 +50,14 @@ function supermemo2(
     }
 }
 
-function migrateToV2(cards) {
-    return cards.map((card) =>
-        card.halfLife === undefined
-            ? {
-                  id: card.id,
-                  repetitions: card.repetitions,
-                  halfLife: card.lastSchedule
-                      ? (-card.lastSchedule * 24 * 3600 * 1000) / Math.log2(0.9)
-                      : null,
-                  factor: card.factor,
-                  front: card.front,
-                  back: card.back,
-                  paused: card.paused,
-              }
-            : card
-    )
-}
-
 class Deck {
-    constructor(deck, updateDecks) {
-        this.cards = migrateToV2(deck.cards)
+    constructor(deck, dispatcher, onDeckUpdate) {
+        this.cards = deck.cards
         this.id = deck.id
         this.name = deck.name
         this.archived = !!deck.archived
-        this.updateDecks = updateDecks
-
-        this.currentIndex = null
+        this.dispatcher = dispatcher
+        this.onDeckUpdate = onDeckUpdate
     }
 
     toJSON() {
@@ -117,7 +98,11 @@ class Deck {
                   }
                 : entry
         )
-        this.updateDecks()
+        this.dispatcher.fetch(`/decks/${this.id}/cards/${cardId}/repetition`, {
+            method: "POST",
+            body: JSON.stringify({ date: new Date(), quality }),
+        })
+        this.onDeckUpdate()
     }
 
     learn(cardId) {
@@ -148,7 +133,7 @@ class Deck {
         }
         probabilities.sort((a, b) => b.probability - a.probability)
 
-        probabilities = probabilities.slice(0, 10)
+        probabilities = probabilities.slice(0, 5)
         let cards = probabilities.map(({ index }) => this.cards[index])
 
         return {
@@ -198,13 +183,16 @@ class Deck {
         return this.cards.filter((c) => c.halfLife === null)
     }
 
-    addCard(front = "", back = "") {
+    async addCard(front = "", back = "") {
+        const cardId = await this.dispatcher
+            .fetch(`/decks/${this.id}/cards`, {
+                method: "POST",
+                body: JSON.stringify({ front, back }),
+            })
+            .then((res) => res.text())
+
         const newCard = {
-            id:
-                this.cards.reduce(
-                    (acc, curr) => Math.max(acc, parseInt(curr.id)),
-                    0
-                ) + 1,
+            id: cardId,
             repetitions: [],
             halfLife: null,
             factor: 2.5,
@@ -213,6 +201,7 @@ class Deck {
             paused: false,
         }
         this.cards.push(newCard)
+        this.onDeckUpdate()
 
         return newCard
     }
@@ -221,6 +210,11 @@ class Deck {
         this.cards = this.cards.filter(
             (card) => card.id.toString() !== id.toString()
         )
+
+        this.dispatcher.fetch(`/decks/${this.id}/cards/${cardId}`, {
+            method: "DELETE",
+        })
+        this.onDeckUpdate()
     }
 
     togglePause(id) {
@@ -230,6 +224,14 @@ class Deck {
 
         if (card.length === 0) return
         card[0].paused = !card[0].paused
+
+        this.dispatcher.fetch(`/decks/${this.id}/cards/${id}`, {
+            method: "PUT",
+            body: JSON.stringify({
+                paused: card[0].paused,
+            }),
+        })
+        this.onDeckUpdate()
     }
 }
 
