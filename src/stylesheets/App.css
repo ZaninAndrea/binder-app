@@ -661,7 +661,7 @@ a {
 
 .home {
     width: calc(100% - 36px);
-    height: calc(100% - 36px);
+    height: calc(100% - 50px);
     margin: 18px;
 }
 .home-stats {
@@ -670,7 +670,7 @@ a {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin-bottom: 32px;
+    margin-top: 32px;
 }
 .home-stats div {
     margin: 8px;
@@ -680,22 +680,6 @@ a {
 }
 .home-stats div .unit {
     color: var(--light-text-color);
-}
-
-#streak-calendar {
-    width: 100%;
-    max-width: 1000px;
-    margin: auto;
-}
-
-#streak-calendar .color-scale-low {
-    fill: #ead1ff;
-}
-#streak-calendar .color-scale-medium {
-    fill: #dbb3ff;
-}
-#streak-calendar .color-scale-high {
-    fill: #ce96ff;
 }
 
 image {
@@ -731,4 +715,116 @@ button.full-width {
     font-family: "Montserrat", sans-serif;
     font-size: 16px;
     cursor: pointer;
+}
+
+/* Calendar */
+body {
+    --smallMargin: 5px;
+    --mediumMargin: 15px;
+    --largeMargin: 25px;
+
+    --borderSize: 1px;
+    --borderRadius: 4px;
+
+    --uiElementHeight: 50px; /* like buttons height */
+    --uiElementMediumHeight: 40px; /* like wide buttons height */
+    --uiElementSmallHeight: 28px; /* like textBox height */
+    --onBack: #ccd2d4;
+}
+
+.calendarTitle {
+    margin: auto;
+    text-align: center;
+    padding-bottom: 8px;
+    color: var(--light-text-color);
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    /* border: 2px solid red;
+    border-bottom: none; */
+}
+
+.commitmentCalendarContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(367.5px, 1fr));
+    grid-auto-rows: max-content;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    max-height: 350px;
+    overflow-y: auto;
+    /* border: 2px solid red;
+    border-top: none; */
+}
+
+.calendarWeek {
+    width: fit-content;
+}
+
+.calendarMonthContainer {
+    margin-top: var(--mediumMargin);
+    width: fit-content;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.calendarMonthTable {
+    border-spacing: var(--smallMargin);
+}
+
+.calendarDay,
+.calendarEmptyDay {
+    width: calc(0.85 * var(--uiElementHeight));
+    height: calc(0.85 * var(--uiElementHeight));
+    margin: var(--mediumMargin);
+    text-align: center;
+    box-sizing: border-box;
+    border-radius: var(--borderRadius);
+}
+
+.calendarDay {
+    color: var(--text);
+    border: 1px solid var(--shadow);
+}
+
+.calendarDay:not(.streakFrom):not(.streakMid):not(.streakTo) {
+    border: var(--borderSize) solid var(--onBack);
+}
+
+.calendarDay.streakMid {
+    border-radius: 0;
+    border-top-width: 6px;
+    border-bottom-width: 6px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    border-style: double;
+}
+
+.calendarDay.streakFrom {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-width: 6px;
+    border-bottom-width: 6px;
+    border-left-width: 6px;
+    border-right-width: 0px;
+    border-style: double;
+}
+
+.calendarDay.streakTo {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-width: 6px;
+    border-bottom-width: 6px;
+    border-left-width: 0px;
+    border-right-width: 6px;
+    border-style: double;
+}
+
+.calendarEmptyDay {
+    border: 1px solid var(--onBack);
+}
+
+.calendarFutureDay {
+    border: 1px solid var(--onBack);
+    color: var(--onBack);
+    background-color: transparent !important;
 }

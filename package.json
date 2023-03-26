@@ -6,7 +6,7 @@
         "@bit/chriso.validator-js.equals": "^10.11.0",
         "@material-ui/core": "^4.3.3",
         "@material-ui/icons": "^4.2.1",
-        "dayjs": "^1.8.15",
+        "dayjs": "^1.11.7",
         "dotenv": "^8.1.0",
         "file-dialog": "^0.0.8",
         "jsondiffpatch": "^0.4.1",
@@ -15,7 +15,14 @@
         "react-calendar-heatmap": "^1.8.1",
         "react-dom": "^16.8.6",
         "react-router-dom": "^5.0.1",
-        "react-scripts": "3.0.1"
+        "react-scripts": "3.0.1",
+        "rehype-katex": "^6.0.2",
+        "rehype-parse": "3",
+        "rehype-stringify": "^9.0.3",
+        "remark-math": "^5.1.1",
+        "remark-parse": "^10.0.1",
+        "remark-rehype": "^10.1.0",
+        "unified": "^10.1.2"
     },
     "scripts": {
         "start": "react-scripts start",

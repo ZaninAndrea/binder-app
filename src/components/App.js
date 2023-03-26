@@ -11,10 +11,13 @@ import SignupPage from "./pages/SignupPage"
 import { Mobile, Desktop } from "./utils/MobileDesktop"
 import { createMuiTheme } from "@material-ui/core"
 import { ThemeProvider } from "@material-ui/styles"
-import { create as jsondifferCreate, formatters } from "jsondiffpatch"
 import clonedeep from "lodash.clonedeep"
 import dayjs from "dayjs"
+import * as utc from "dayjs/plugin/utc"
+import * as timezone from "dayjs/plugin/timezone"
 import { updateAchievements } from "../controller/achievements"
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 const theme = createMuiTheme({
     props: {
@@ -49,7 +52,7 @@ class BackgroundDispatcher {
     fetch(path, options = {}) {
         return new Promise((resolve, reject) => {
             options.headers = options.headers || {}
-            options.headers["Authorization"] = this.token
+            options.headers["Authorization"] = "Bearer " + this.token
 
             this.queue.push({ path, options, resolve, reject })
 
@@ -83,6 +86,7 @@ class BackgroundDispatcher {
 
 class App extends React.Component {
     state = {
+        loading: true,
         decks: [],
         stats: {
             repetitions: 0,
@@ -107,6 +111,34 @@ class App extends React.Component {
     }
 
     trackAction = (name, data) => {
+        if (name === "learnedCard" || name === "reviewedCard") {
+            const date = dayjs()
+                .subtract(this.state.userData.endOfDay, "hours")
+                .tz(this.state.userData.timezone)
+                .format("YYYY-MM-DD")
+            this.setState(({ userData }) => {
+                return {
+                    userData: {
+                        ...userData,
+                        statistics: {
+                            ...userData.statistics,
+                            dailyRepetitions: {
+                                ...userData.statistics.dailyRepetitions,
+                                [date]: userData.statistics.dailyRepetitions[
+                                    date
+                                ]
+                                    ? userData.statistics.dailyRepetitions[
+                                          date
+                                      ] + 1
+                                    : 1,
+                            },
+                        },
+                    },
+                }
+            })
+        }
+
+        // TODO: Update this to new system
         this.setState((oldState) => {
             let stats = clonedeep(oldState.stats)
 
@@ -149,23 +181,25 @@ class App extends React.Component {
     componentWillMount() {
         let bearer = localStorage.getItem("bearer")
         let version = localStorage.getItem("version")
-        if (version !== "v3") {
+        if (version !== "v4") {
             bearer = null
             localStorage.removeItem("bearer")
         }
 
         if (bearer) {
             this.setBearer(bearer, window.location.pathname)
+        } else {
+            this.setState({ loading: false })
         }
-        localStorage.setItem("version", "v3")
+
+        localStorage.setItem("version", "v4")
     }
 
     setBearer = async (bearer, redirectTo = "/") => {
-        this.setState({ bearer, redirectTo })
         localStorage.setItem("bearer", bearer)
 
         let userData = await fetch(
-            "https://binderbackend.baida.dev:8080/user",
+            "https://binderbackend.baida.dev:8051/users",
             {
                 headers: {
                     Authorization: "Bearer " + bearer,
@@ -173,7 +207,7 @@ class App extends React.Component {
             }
         ).then((res) => res.json())
         let decksData = await fetch(
-            "https://binderbackend.baida.dev:8080/decks",
+            "https://binderbackend.baida.dev:8051/decks",
             {
                 headers: {
                     Authorization: "Bearer " + bearer,
@@ -182,16 +216,9 @@ class App extends React.Component {
         ).then((res) => res.json())
 
         this.dispatcher = new BackgroundDispatcher(
-            "https://binderbackend.baida.dev:8080",
+            "https://binderbackend.baida.dev:8051",
             bearer
         )
-        this.setState({
-            decks: decksData.map(
-                (deck) => new Deck(deck, this.dispatcher, this.onDeckUpdate)
-            ),
-            metadata: userData,
-        })
-
         this.unloadListener = window.addEventListener(
             "beforeunload",
             (e) => {
@@ -205,6 +232,16 @@ class App extends React.Component {
                 capture: true,
             }
         )
+
+        this.setState({
+            bearer,
+            redirectTo,
+            decks: decksData.map(
+                (deck) => new Deck(deck, this.dispatcher, this.onDeckUpdate)
+            ),
+            userData: userData,
+            loading: false,
+        })
     }
 
     logOut = () => {
@@ -214,12 +251,12 @@ class App extends React.Component {
             bearer: null,
             redirectTo: "/login",
             decks: [],
-            metadata: null,
+            userData: null,
         })
     }
 
     deleteUser = async () => {
-        await fetch("https://binderbackend.baida.dev:8080/user", {
+        await fetch("https://binderbackend.baida.dev:8051/users", {
             method: "DELETE",
             headers: {
                 Authorization: "Bearer " + this.state.bearer,
@@ -270,6 +307,8 @@ class App extends React.Component {
     }
 
     render() {
+        if (this.state.loading) return ""
+
         if (this.state.redirectTo) {
             let address = this.state.redirectTo
             this.setState({ redirectTo: "" })
@@ -320,7 +359,7 @@ class App extends React.Component {
                         this.setState({ redirectTo: location })
                     }
                     logOut={this.logOut}
-                    metadata={this.state.metadata}
+                    userData={this.state.userData}
                     deleteUser={this.deleteUser}
                     trackAction={this.trackAction}
                 />
@@ -334,11 +373,20 @@ class App extends React.Component {
                 <Router>
                     <div className="App">
                         {!this.state.bearer && <Redirect to="/login" />}
-                        <Route path="/" exact render={loggedInComponent} />
-                        <Route
-                            path={["/review", "/learn", "/settings", "/deck"]}
-                            render={loggedInComponent}
-                        />
+                        {this.state.bearer && (
+                            <Route path="/" exact render={loggedInComponent} />
+                        )}
+                        {this.state.bearer && (
+                            <Route
+                                path={[
+                                    "/review",
+                                    "/learn",
+                                    "/settings",
+                                    "/deck",
+                                ]}
+                                render={loggedInComponent}
+                            />
+                        )}
                         <Route path="/login" render={logInPage} />
                         <Route path="/signup" render={signUpPage} />
                     </div>

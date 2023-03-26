@@ -1,10 +1,10 @@
 import React from "react"
-const unified = require("unified")
-const markdown = require("remark-parse")
-const math = require("remark-math")
-const remark2rehype = require("remark-rehype")
-const katex = require("rehype-katex")
-const stringify = require("rehype-stringify")
+import { unified } from "unified"
+import remarkParse from "remark-parse"
+import remarkRehype from "remark-rehype"
+import remarkMath from "remark-math"
+import rehypeKatex from "rehype-katex"
+import rehypeStringify from "rehype-stringify"
 
 export function split(text) {
     let lines = text.split("\n")
@@ -54,12 +54,12 @@ function memoize(f) {
 
 function renderPipeline(source) {
     return unified()
-        .use(markdown)
-        .use(math)
-        .use(remark2rehype)
-        .use(katex)
-        .use(stringify)
-        .processSync(source).contents
+        .use(remarkParse)
+        .use(remarkMath)
+        .use(remarkRehype)
+        .use(rehypeKatex)
+        .use(rehypeStringify)
+        .processSync(source).value
 }
 
 const renderMarkdown = memoize(renderPipeline)

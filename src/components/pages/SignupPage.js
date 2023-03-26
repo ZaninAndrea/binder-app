@@ -9,7 +9,7 @@ export default class SignupPage extends React.Component {
     }
 
     signup = async () => {
-        const res = await fetch(`https://binderbackend.baida.dev:8080/users`, {
+        const res = await fetch(`https://binderbackend.baida.dev:8051/users`, {
             body: JSON.stringify({
                 email: this.state.email,
                 password: this.state.password,

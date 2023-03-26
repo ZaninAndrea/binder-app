@@ -124,7 +124,7 @@ export default class DeckPage extends React.Component {
 
         const { deck } = this.props
         const cardsRepeatedOnce = deck.cards.filter(
-            ({ repetitions }) => repetitions.length !== 0
+            (c) => c.lastRepetition !== null
         )
         const activeCards = cardsRepeatedOnce.filter((c) => !c.paused).length
         const totalCards = deck.cards.length
@@ -134,15 +134,14 @@ export default class DeckPage extends React.Component {
                 : Math.round((100 * activeCards) / totalCards)
 
         const { reps, correct } = cardsRepeatedOnce.reduce(
-            ({ reps, correct }, { repetitions }) => ({
-                reps: reps + repetitions.length,
-                correct:
-                    correct +
-                    repetitions.filter(({ quality }) => quality >= 4).length,
+            ({ reps, correct }, { totalRepetitions, correctRepetitions }) => ({
+                reps: reps + totalRepetitions,
+                correct: correct + correctRepetitions,
             }),
             { reps: 0, correct: 0 }
         )
 
+        console.log(reps, correct)
         const recallAccuracy =
             reps === 0 ? 100 : Math.round((100 * correct) / reps)
 
@@ -161,7 +160,7 @@ export default class DeckPage extends React.Component {
                         onBlur={() => {
                             deck.name = this.state.name
 
-                            this.dispatcher.fetch("/decks/" + deck.id, {
+                            this.props.dispatcher.fetch("/decks/" + deck.id, {
                                 method: "PUT",
                                 body: JSON.stringify({
                                     name: this.state.name,
@@ -212,12 +211,15 @@ export default class DeckPage extends React.Component {
                             onClick={() => {
                                 deck.archived = !deck.archived
 
-                                this.dispatcher.fetch("/decks/" + deck.id, {
-                                    method: "PUT",
-                                    body: JSON.stringify({
-                                        archived: deck.archived,
-                                    }),
-                                })
+                                this.props.dispatcher.fetch(
+                                    "/decks/" + deck.id,
+                                    {
+                                        method: "PUT",
+                                        body: JSON.stringify({
+                                            archived: deck.archived,
+                                        }),
+                                    }
+                                )
                                 this.props.onDeckUpdate()
                             }}
                         >

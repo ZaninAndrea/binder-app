@@ -10,7 +10,7 @@ export default class LoginPage extends React.Component {
 
     login = async () => {
         const res = await fetch(
-            `https://binderbackend.baida.dev:8080/users/login`,
+            `https://binderbackend.baida.dev:8051/users/login`,
             {
                 headers: {
                     "content-type": "application/json",
@@ -23,7 +23,7 @@ export default class LoginPage extends React.Component {
             }
         )
 
-        if (res.status === 200) this.props.setBearer((await res.json()).token)
+        if (res.status === 200) this.props.setBearer(await res.text())
         else this.setState({ error: await res.text() })
     }
 

@@ -9,11 +9,8 @@ export default class EditCardModal extends React.Component {
         updated: false,
     }
     render() {
-        const totalReviews = this.props.card.repetitions.length
-        const correctReviews = this.props.card.repetitions.reduce(
-            (acc, curr) => (curr.quality >= 4 ? acc + 1 : acc),
-            0
-        )
+        const totalReviews = this.props.card.totalRepetitions
+        const correctReviews = this.props.card.correctRepetitions
         const percentage = Math.round(
             totalReviews === 0 ? 100 : (100 * correctReviews) / totalReviews
         )
@@ -22,7 +19,9 @@ export default class EditCardModal extends React.Component {
                 <div className="modalClickAway" onClick={this.props.onClose} />
                 <div className="toolbar">
                     <span className="stats-tool">
-                        {percentage}% correct reviews out of {totalReviews}
+                        {totalReviews > 0
+                            ? `${percentage}% correct reviews out of ${totalReviews}`
+                            : "No reviews yet"}
                     </span>
                     <button
                         className="show-hide"

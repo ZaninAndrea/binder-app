@@ -52,7 +52,12 @@ function supermemo2(
 
 class Deck {
     constructor(deck, dispatcher, onDeckUpdate) {
-        this.cards = deck.cards
+        this.cards = deck.cards.map((c) => ({
+            ...c,
+            lastRepetition: c.lastRepetition
+                ? new Date(c.lastRepetition)
+                : null,
+        }))
         this.id = deck.id
         this.name = deck.name
         this.archived = !!deck.archived
@@ -80,19 +85,19 @@ class Deck {
             new Date(),
             card.halfLife,
             card.factor,
-            card.repetitions.length > 0
-                ? new Date(card.repetitions[card.repetitions.length - 1].date)
-                : null
+            card.lastRepetition
         )
 
         this.cards = this.cards.map((entry) =>
             entry.id === card.id
                 ? {
                       ...entry,
-                      repetitions: [
-                          ...entry.repetitions,
-                          { quality, date: new Date() },
-                      ],
+                      correctRepetitions:
+                          quality >= 3
+                              ? entry.correctRepetitions + 1
+                              : entry.correctRepetitions,
+                      totalRepetitions: entry.totalRepetitions + 1,
+                      lastRepetition: new Date(),
                       factor,
                       halfLife,
                   }
@@ -114,17 +119,12 @@ class Deck {
 
         let probabilities = []
         for (let i in this.cards) {
-            if (this.cards[i].halfLife === null || this.cards[i].paused) {
+            if (this.cards[i].lastRepetition === null || this.cards[i].paused) {
                 continue
             }
 
-            let previousRepetition = new Date(
-                this.cards[i].repetitions[
-                    this.cards[i].repetitions.length - 1
-                ].date
-            )
             let errorProbability = computeErrorProbability(
-                previousRepetition,
+                this.cards[i].lastRepetition,
                 now,
                 this.cards[i].halfLife
             )
@@ -145,7 +145,7 @@ class Deck {
 
     getBatchToLearn() {
         return this.cards
-            .filter((c) => c.halfLife === null && !c.paused)
+            .filter((c) => c.lastRepetition === null && !c.paused)
             .slice(0, 10)
     }
 
@@ -154,17 +154,12 @@ class Deck {
 
         let probabilities = []
         for (let i in this.cards) {
-            if (this.cards[i].halfLife === null || this.cards[i].paused) {
+            if (this.cards[i].lastRepetition === null || this.cards[i].paused) {
                 continue
             }
 
-            let previousRepetition = new Date(
-                this.cards[i].repetitions[
-                    this.cards[i].repetitions.length - 1
-                ].date
-            )
             let errorProbability = computeErrorProbability(
-                previousRepetition,
+                this.cards[i].lastRepetition,
                 time,
                 this.cards[i].halfLife
             )
@@ -180,7 +175,7 @@ class Deck {
     }
 
     cardsToLearn() {
-        return this.cards.filter((c) => c.halfLife === null)
+        return this.cards.filter((c) => c.lastRepetition === null)
     }
 
     async addCard(front = "", back = "") {
@@ -193,8 +188,10 @@ class Deck {
 
         const newCard = {
             id: cardId,
-            repetitions: [],
-            halfLife: null,
+            correctRepetitions: 0,
+            totalRepetitions: 0,
+            lastRepetition: null,
+            halfLife: 0,
             factor: 2.5,
             front,
             back,
@@ -207,20 +204,16 @@ class Deck {
     }
 
     deleteCard(id) {
-        this.cards = this.cards.filter(
-            (card) => card.id.toString() !== id.toString()
-        )
+        this.cards = this.cards.filter((card) => card.id !== id)
 
-        this.dispatcher.fetch(`/decks/${this.id}/cards/${cardId}`, {
+        this.dispatcher.fetch(`/decks/${this.id}/cards/${id}`, {
             method: "DELETE",
         })
         this.onDeckUpdate()
     }
 
     togglePause(id) {
-        let card = this.cards.filter(
-            (card) => card.id.toString() === id.toString()
-        )
+        let card = this.cards.filter((card) => card.id === id)
 
         if (card.length === 0) return
         card[0].paused = !card[0].paused

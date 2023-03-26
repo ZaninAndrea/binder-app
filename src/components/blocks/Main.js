@@ -17,7 +17,7 @@ class Main extends React.Component {
         const settingsComponent = () => (
             <SettingsPage
                 logOut={this.props.logOut}
-                metadata={this.props.metadata}
+                userData={this.props.userData}
                 deleteUser={this.props.deleteUser}
             />
         )
@@ -53,6 +53,7 @@ class Main extends React.Component {
                 decks={this.props.decks}
                 achievements={this.props.achievements}
                 stats={this.props.stats}
+                userData={this.props.userData}
             />
         )
 

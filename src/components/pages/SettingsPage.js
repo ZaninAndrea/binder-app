@@ -23,12 +23,20 @@ export default class SettingsPage extends Component {
             <div className="settings">
                 <h2>Account</h2>
                 <p id="settings-email">
-                    Email: {this.props.metadata && this.props.metadata.email}
+                    Email: {this.props.userData && this.props.userData.email}
                 </p>
                 <p id="settings-email">
                     Subscription:{" "}
-                    {this.props.metadata &&
-                        displayPlan(this.props.metadata.plan)}
+                    {this.props.userData &&
+                        displayPlan(this.props.userData.plan)}
+                </p>
+                <p id="settings-email">
+                    Timezone:{" "}
+                    {this.props.userData && this.props.userData.timezone}
+                </p>
+                <p id="settings-email">
+                    End of day:{" "}
+                    {this.props.userData && this.props.userData.endOfDay}
                 </p>
                 <button class="full-width">Change password</button>
                 <button onClick={this.props.logOut} class="full-width">
