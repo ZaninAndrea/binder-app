@@ -30,6 +30,7 @@ export default class MobileSidebar extends React.Component {
                     <NavLink
                         to="/learn"
                         activeClassName="active"
+                        className={cardsToLearn ? "" : "disabled-link"}
                         onClick={(e) => {
                             if (cardsToLearn === 0) e.preventDefault()
                             else this.props.onClose()
