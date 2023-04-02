@@ -30,9 +30,13 @@ export default class MobileSidebar extends React.Component {
                     <NavLink
                         to="/learn"
                         activeClassName="active"
-                        onClick={() => this.props.onClose()}
+                        onClick={(e) => {
+                            if (cardsToLearn === 0) e.preventDefault()
+                            else this.props.onClose()
+                        }}
                     >
-                        <SchoolIcon /> Learn ( {cardsToLearn} )
+                        <SchoolIcon /> Learn{" "}
+                        {cardsToLearn ? `( ${cardsToLearn} )` : ""}
                     </NavLink>
                     <p className="title">BINDERS</p>
                     {this.props.decks
