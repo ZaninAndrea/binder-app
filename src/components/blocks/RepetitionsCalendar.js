@@ -1,5 +1,7 @@
 import React, { Component } from "react"
 import dayjs from "dayjs"
+import Tooltip from "@mui/joy/Tooltip"
+import Typography from "@mui/joy/Typography"
 
 class RepetitionsCalendar extends Component {
     constructor(props) {
@@ -105,16 +107,18 @@ class RepetitionsCalendar extends Component {
                 )
                 if (in_st !== null) {
                     bc_str = in_st.streak.color
-                    extraClasses = " streak" + in_st.pos
+                    extraClasses += " streak" + in_st.pos
                 }
 
+                let tooltip = true
                 if (
                     this.compare_days(
                         { year, month, day: day_num },
                         this_today
                     ) === 1
                 ) {
-                    extraClasses = " calendarFutureDay"
+                    extraClasses += " calendarFutureDay"
+                    tooltip = false
                 }
 
                 if (day_num > num_of_days || day_num < 1) {
@@ -148,13 +152,24 @@ class RepetitionsCalendar extends Component {
                                 "-" +
                                 d.toString()
                             }
-                            title={
-                                today_value === 1
-                                    ? "1 repetition"
-                                    : today_value + " repetitions"
-                            }
                         >
-                            {day_num}
+                            {tooltip ? (
+                                <Tooltip
+                                    title={
+                                        today_value === 1
+                                            ? "1 repetition"
+                                            : today_value + " repetitions"
+                                    }
+                                >
+                                    <Typography level="body1">
+                                        {day_num}
+                                    </Typography>
+                                </Tooltip>
+                            ) : (
+                                <Typography level="body1" color="#ccd2d4">
+                                    {day_num}
+                                </Typography>
+                            )}
                         </td>
                     )
                 }
@@ -171,18 +186,18 @@ class RepetitionsCalendar extends Component {
         }
 
         const month_names = {
-            1: "Gen",
+            1: "Jan",
             2: "Feb",
             3: "Mar",
             4: "Apr",
-            5: "Mag",
-            6: "Giu",
-            7: "Lug",
-            8: "Ago",
-            9: "Set",
-            10: "Ott",
+            5: "May",
+            6: "Jun",
+            7: "Jul",
+            8: "Aug",
+            9: "Sep",
+            10: "Oct",
             11: "Nov",
-            12: "Dic",
+            12: "Dec",
         }
 
         return (

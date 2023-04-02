@@ -844,6 +844,6 @@ body {
 
 .calendarFutureDay {
     border: 1px solid var(--onBack);
-    color: var(--onBack);
+    color: var(--onBack) !important;
     background-color: transparent !important;
 }

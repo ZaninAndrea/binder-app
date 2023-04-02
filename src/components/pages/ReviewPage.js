@@ -4,6 +4,7 @@ import Markdown from "../utils/Markdown"
 import ArrowBackIcon from "@material-ui/icons/ArrowBack"
 import { NavLink } from "react-router-dom"
 import { Desktop } from "../utils/MobileDesktop"
+import EndBatchScreen from "../blocks/EndBatchScreen"
 
 function getBatchFromDecks(decks) {
     let batches = decks
@@ -26,6 +27,8 @@ export default class ReviewPage extends React.Component {
     state = {
         flipped: false,
         cards: [],
+        showEndBatchPage: false,
+        unlockedAchievements: [],
         cardIndex: -1,
         deckIndex: -1,
     }
@@ -49,7 +52,14 @@ export default class ReviewPage extends React.Component {
 
     onGrade = (quality) => {
         let reviewedCard = this.state.cards[this.state.cardIndex]
-        this.props.decks[this.state.deckIndex].grade(quality, reviewedCard.id)
+        this.props.decks[this.state.deckIndex]
+            .grade(quality, reviewedCard.id)
+            .then((res) =>
+                this.setState(({ unlockedAchievements }) => ({
+                    unlockedAchievements: [...unlockedAchievements, ...res],
+                }))
+            )
+
         this.props.trackAction("reviewedCard", { correct: quality >= 4 })
 
         if (quality < 3) {
@@ -67,9 +77,11 @@ export default class ReviewPage extends React.Component {
             new Audio("/completed.wav").play()
 
             let batch = getBatchFromDecks(this.props.decks)
-            if (batch === null) this.setState({ cards: [] })
+            if (batch === null)
+                this.setState({ showEndBatchPage: true, cards: [] })
             else
                 this.setState({
+                    showEndBatchPage: true,
                     cards: batch.cards,
                     cardIndex: 0,
                     deckIndex: batch.deckIndex,
@@ -79,6 +91,20 @@ export default class ReviewPage extends React.Component {
     }
 
     render() {
+        if (this.state.showEndBatchPage) {
+            return (
+                <EndBatchScreen
+                    unlockedAchievements={this.state.unlockedAchievements}
+                    continue={() =>
+                        this.setState({
+                            showEndBatchPage: false,
+                            unlockedAchievements: [],
+                        })
+                    }
+                />
+            )
+        }
+
         if (this.state.cards.length === 0) {
             return (
                 <div className="card">

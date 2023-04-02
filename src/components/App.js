@@ -11,11 +11,9 @@ import SignupPage from "./pages/SignupPage"
 import { Mobile, Desktop } from "./utils/MobileDesktop"
 import { createMuiTheme } from "@material-ui/core"
 import { ThemeProvider } from "@material-ui/styles"
-import clonedeep from "lodash.clonedeep"
 import dayjs from "dayjs"
 import * as utc from "dayjs/plugin/utc"
 import * as timezone from "dayjs/plugin/timezone"
-import { updateAchievements } from "../controller/achievements"
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -88,19 +86,6 @@ class App extends React.Component {
     state = {
         loading: true,
         decks: [],
-        stats: {
-            repetitions: 0,
-            correctRepetitions: 0,
-            activeDays: 0,
-            dailyRepetitionsCleared: 0,
-            today: {
-                date: null,
-                repetitions: 0,
-                correctRepetitions: 0,
-                active: false,
-                repetitionsCleared: false,
-            },
-        },
         achievements: {
             TOTAL_REPETITIONS: 0,
             SINGLE_DAY_REPETITIONS: 0,
@@ -112,6 +97,7 @@ class App extends React.Component {
 
     trackAction = (name, data) => {
         if (name === "learnedCard" || name === "reviewedCard") {
+            // Update daily repetitions statistics
             const date = dayjs()
                 .subtract(this.state.userData.endOfDay, "hours")
                 .tz(this.state.userData.timezone)
@@ -137,45 +123,6 @@ class App extends React.Component {
                 }
             })
         }
-
-        // TODO: Update this to new system
-        this.setState((oldState) => {
-            let stats = clonedeep(oldState.stats)
-
-            if (stats.today.date !== dayjs().format("DD-MM-YYYY")) {
-                stats.today = {
-                    date: dayjs().format("DD-MM-YYYY"),
-                    repetitions: 0,
-                    correctRepetitions: 0,
-                    active: false,
-                    repetitionsCleared: false,
-                }
-            }
-
-            if (name === "learnedCard" || name === "reviewedCard") {
-                stats.repetitions++
-                stats.today.repetitions++
-
-                if (data.correct) {
-                    stats.correctRepetitions++
-                    stats.today.correctRepetitions++
-                }
-
-                if (!stats.today.active) {
-                    stats.today.active = true
-                    stats.activeDays++
-                }
-            } else if (
-                name === "clearedRepetitions" &&
-                !stats.today.repetitionsCleared
-            ) {
-                stats.today.repetitionsCleared = true
-                stats.dailyRepetitionsCleared++
-            }
-
-            let achievements = updateAchievements(stats, oldState.achievements)
-            return { stats, achievements }
-        })
     }
 
     componentWillMount() {

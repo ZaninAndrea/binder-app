@@ -103,11 +103,14 @@ class Deck {
                   }
                 : entry
         )
-        this.dispatcher.fetch(`/decks/${this.id}/cards/${cardId}/repetition`, {
-            method: "POST",
-            body: JSON.stringify({ date: new Date(), quality }),
-        })
         this.onDeckUpdate()
+
+        return this.dispatcher
+            .fetch(`/decks/${this.id}/cards/${cardId}/repetition`, {
+                method: "POST",
+                body: JSON.stringify({ date: new Date(), quality }),
+            })
+            .then((res) => res.json())
     }
 
     learn(cardId) {
