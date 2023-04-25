@@ -9,6 +9,11 @@
 .latex-inline {
     display: inline;
 }
+
+.latex-inline .katex {
+    font-size: 1.1em;
+}
+
 .latex-inline-output {
     display: inline;
 }
@@ -66,19 +71,22 @@
     outline: none;
 }
 
-pre {
+.editor pre {
     background: #0d0d0d;
     border-radius: 0.5rem;
     color: #fff;
-    font-family: "JetBrainsMono", monospace;
     padding: 0.75rem 1rem;
 }
 
-pre code {
+.editor pre code {
     background: none;
     color: inherit;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     padding: 0;
+}
+
+.editor code {
+    font-family: "JetBrains Mono", monospace;
 }
 
 .editor p.is-editor-empty:first-child::before {
@@ -87,6 +95,10 @@ pre code {
     float: left;
     height: 0;
     pointer-events: none;
+}
+
+.editor strong {
+    font-weight: 600;
 }
 
 .hljs-comment,
@@ -151,11 +163,6 @@ body {
     --secondary-background-color: #393e46;
     --secondary-text-color: #eee;
     --light-text-color: #393e46;
-}
-
-h1,
-h2 {
-    font-family: "Karla", sans-serif;
 }
 
 div,

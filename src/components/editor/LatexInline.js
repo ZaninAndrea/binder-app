@@ -45,11 +45,11 @@ export default Node.create({
     inline: true,
     atom: true,
     selectable: true,
-    priority: 1000,
+    priority: 900,
     addInputRules() {
         return [
             nodePasteRule({
-                find: /(\$)([^\s]?.*?[^\s]*?)(\$)/g,
+                find: /(\$)([^\s]?.+?[^\s]*?)(\$)/g,
                 type: this.type,
                 getAttributes: (match) => {
                     return {
