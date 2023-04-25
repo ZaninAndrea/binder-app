@@ -1,6 +1,6 @@
 import React from "react"
 import Footer from "../blocks/Footer"
-import Markdown from "../utils/Markdown"
+import Editor from "../editor"
 import ArrowBackIcon from "@material-ui/icons/ArrowBack"
 import { NavLink } from "react-router-dom"
 import { Desktop } from "../utils/MobileDesktop"
@@ -144,7 +144,11 @@ export default class ReviewPage extends React.Component {
                 </div>
                 <div className="card">
                     <div className="front">
-                        <Markdown source={card.front} />
+                        <Editor
+                            value={card.front}
+                            editable={false}
+                            placeholder={"No question present"}
+                        />
                     </div>
                     <div
                         className={this.state.flipped ? "back" : "back hidden"}
@@ -155,7 +159,13 @@ export default class ReviewPage extends React.Component {
                         }}
                     >
                         {this.state.flipped ? (
-                            <Markdown source={card.back} />
+                            <div className="back">
+                                <Editor
+                                    value={card.back}
+                                    editable={false}
+                                    placeholder={"No answer present"}
+                                />
+                            </div>
                         ) : (
                             "show"
                         )}

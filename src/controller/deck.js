@@ -181,7 +181,7 @@ class Deck {
         return this.cards.filter((c) => c.lastRepetition === null)
     }
 
-    async addCard(front = "", back = "") {
+    async addCard(front = null, back = null) {
         const cardId = await this.dispatcher
             .fetch(`/decks/${this.id}/cards`, {
                 method: "POST",

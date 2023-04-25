@@ -1,6 +1,6 @@
 import React from "react"
 import EditCardModal from "../blocks/EditCardModal"
-import Markdown from "../utils/Markdown"
+import Editor from "../editor"
 import MoreIcon from "@material-ui/icons/MoreHoriz"
 import DeleteIcon from "@material-ui/icons/Delete"
 import Menu from "@material-ui/core/Menu"
@@ -141,7 +141,6 @@ export default class DeckPage extends React.Component {
             { reps: 0, correct: 0 }
         )
 
-        console.log(reps, correct)
         const recallAccuracy =
             reps === 0 ? 100 : Math.round((100 * correct) / reps)
 
@@ -320,14 +319,12 @@ export default class DeckPage extends React.Component {
                                 })
                             }
                         >
-                            {card.front && (
-                                <Markdown
-                                    source={card.front
-                                        .split("\n")[0]
-                                        .replace(new RegExp("^#+", "g"), "")
-                                        .trim()}
-                                />
-                            )}
+                            <Editor
+                                value={card.front}
+                                editable={false}
+                                placeholder={"No question"}
+                                showSummary
+                            />
                         </div>
                     ))}
                     <div
@@ -336,7 +333,7 @@ export default class DeckPage extends React.Component {
                         onClick={async () =>
                             this.setState({
                                 redirectTo: `/deck/${deck.id}/edit/${
-                                    (await deck.addCard("", "")).id
+                                    (await deck.addCard()).id
                                 }`,
                             })
                         }

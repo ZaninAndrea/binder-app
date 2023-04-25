@@ -472,32 +472,6 @@ a {
     }
 }
 
-.editor {
-    width: 100%;
-    min-height: 100px;
-    font-family: "Montserrat", sans-serif;
-    font-size: 22px;
-    padding-top: 1px;
-}
-
-.editor .paragraph {
-    margin: 0;
-    padding: 0;
-    min-height: 1.3em;
-}
-
-.editor .paragraph textarea {
-    display: block;
-    margin: 0;
-    padding: 0;
-    border: none;
-    width: 100%;
-    resize: none;
-    font: inherit;
-    background: inherit;
-    color: inherit;
-}
-
 .modal .topBar {
     height: 24px;
     margin: -14px -20px 8px -20px;

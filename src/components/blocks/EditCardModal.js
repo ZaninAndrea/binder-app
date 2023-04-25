@@ -1,5 +1,5 @@
 import React from "react"
-import Editor from "../utils/Editor"
+import Editor from "../editor"
 import DeleteIcon from "@material-ui/icons/Delete"
 import VisibilityIcon from "@material-ui/icons/Visibility"
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff"
@@ -41,18 +41,22 @@ export default class EditCardModal extends React.Component {
                     <div className="editor-container">
                         <div className="front">
                             <Editor
+                                placeholder={"Type the question here"}
+                                editable={true}
                                 value={this.props.card.front}
-                                onTextUpdate={(newText) => {
-                                    this.props.card.front = newText
+                                onUpdate={(newValue) => {
+                                    this.props.card.front = newValue
                                     this.setState({ updated: true })
                                 }}
                             />
                         </div>
                         <div className="back">
                             <Editor
+                                placeholder={"Type the answer here"}
+                                editable={true}
                                 value={this.props.card.back}
-                                onTextUpdate={(newText) => {
-                                    this.props.card.back = newText
+                                onUpdate={(newValue) => {
+                                    this.props.card.back = newValue
                                     this.setState({ updated: true })
                                 }}
                             />
