@@ -7,7 +7,7 @@ import Table from "@tiptap/extension-table"
 import TableHeader from "@tiptap/extension-table-header"
 import TableRow from "@tiptap/extension-table-row"
 import TableCell from "@tiptap/extension-table-cell"
-import { lowlight } from "lowlight/lib/all"
+import { lowlight } from "./lowlight"
 import LatexBlock from "./LatexBlock"
 import LatexInline from "./LatexInline"
 import "../../stylesheets/editor.css"
@@ -15,9 +15,6 @@ import "../../stylesheets/editor.css"
 const Editor = ({ placeholder, value, editable, onUpdate, showSummary }) => {
     const editor = useEditor({
         extensions: [
-            CodeBlockLowlight.configure({
-                lowlight,
-            }),
             StarterKit.configure({
                 codeBlock: false,
                 heading: !showSummary,
@@ -32,6 +29,9 @@ const Editor = ({ placeholder, value, editable, onUpdate, showSummary }) => {
             TableCell,
             TableRow,
             TableHeader,
+            CodeBlockLowlight.configure({
+                lowlight,
+            }),
         ],
         content: value,
         editable,
