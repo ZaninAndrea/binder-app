@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useMemo } from "react"
 import { useEditor, EditorContent, BubbleMenu } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight"

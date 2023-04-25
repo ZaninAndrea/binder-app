@@ -16,7 +16,10 @@ export default class EditCardModal extends React.Component {
         )
         return (
             <>
-                <div className="modalClickAway" onClick={this.props.onClose} />
+                <div
+                    className="modalClickAway"
+                    onClick={() => this.props.onClose(this.state.updated)}
+                />
                 <div className="toolbar">
                     <span className="stats-tool">
                         {totalReviews > 0
@@ -45,8 +48,10 @@ export default class EditCardModal extends React.Component {
                                 editable={true}
                                 value={this.props.card.front}
                                 onUpdate={(newValue) => {
-                                    this.props.card.front = newValue
-                                    this.setState({ updated: true })
+                                    if (newValue != this.props.card.front) {
+                                        this.props.card.front = newValue
+                                        this.setState({ updated: true })
+                                    }
                                 }}
                             />
                         </div>
@@ -56,8 +61,10 @@ export default class EditCardModal extends React.Component {
                                 editable={true}
                                 value={this.props.card.back}
                                 onUpdate={(newValue) => {
-                                    this.props.card.back = newValue
-                                    this.setState({ updated: true })
+                                    if (newValue != this.props.card.back) {
+                                        this.props.card.back = newValue
+                                        this.setState({ updated: true })
+                                    }
                                 }}
                             />
                         </div>

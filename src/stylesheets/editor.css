@@ -78,6 +78,10 @@
     outline: none;
 }
 
+.editor:not(.summary) p:not(:last-child) {
+    padding-bottom: 12px;
+}
+
 .editor pre {
     background: #0d0d0d;
     border-radius: 0.5rem;

@@ -73,7 +73,7 @@ export default class DeckPage extends React.Component {
     }
     onDeleteCard = (cardId) => {
         this.props.deck.deleteCard(cardId)
-        this.setState({ redirectTo: "/deck/" + this.props.deck.id })
+        this.setState({ editCard: null })
     }
 
     componentWillReceiveProps(nextProps) {
@@ -146,7 +146,11 @@ export default class DeckPage extends React.Component {
 
         const nCardsToLearn = deck.cardsToLearn().length
 
-        const deckComponent = () => (
+        const cardToEdit = deck.cards.filter(
+            ({ id }) => id === this.state.editCard
+        )[0]
+
+        return (
             <>
                 <h1 className="deckName">
                     <input
@@ -312,10 +316,10 @@ export default class DeckPage extends React.Component {
                 <div className="cardsList">
                     {deck.cards.map((card) => (
                         <div
-                            key={card.id}
+                            key={card.id + "-" + card.front}
                             onClick={() =>
                                 this.setState({
-                                    redirectTo: `/deck/${deck.id}/edit/${card.id}`,
+                                    editCard: card.id,
                                 })
                             }
                         >
@@ -332,9 +336,7 @@ export default class DeckPage extends React.Component {
                         id="new-card"
                         onClick={async () =>
                             this.setState({
-                                redirectTo: `/deck/${deck.id}/edit/${
-                                    (await deck.addCard()).id
-                                }`,
+                                editCard: (await deck.addCard()).id,
                             })
                         }
                     >
@@ -354,61 +356,34 @@ export default class DeckPage extends React.Component {
                         </div>
                     )}
                 </div>
-            </>
-        )
-
-        const editModal = ({
-            match: {
-                params: { deckId, cardId },
-            },
-        }) => {
-            const card = deck.cards.filter(({ id }) => id === cardId)[0]
-
-            // Close dialog if
-            if (card === undefined) {
-                this.setState({ redirectTo: "/deck/" + deck.id })
-                return ""
-            }
-
-            return (
-                <>
+                {cardToEdit && (
                     <EditCardModal
-                        card={card}
+                        card={cardToEdit}
                         onClose={(updated) => {
                             if (updated) {
                                 this.props.dispatcher.fetch(
-                                    `/decks/${this.props.deck.id}/cards/${cardId}`,
+                                    `/decks/${this.props.deck.id}/cards/${cardToEdit.id}`,
                                     {
                                         method: "PUT",
                                         body: JSON.stringify({
-                                            front: card.front,
-                                            back: card.back,
+                                            front: cardToEdit.front,
+                                            back: cardToEdit.back,
                                         }),
                                     }
                                 )
                                 this.props.onDeckUpdate()
+                                this.forceUpdate()
                             }
                             this.setState({
-                                redirectTo: "/deck/" + this.props.deck.id,
+                                editCard: null,
                             })
                         }}
-                        onDelete={() => this.onDeleteCard(cardId)}
-                        onTogglePaused={() => this.onTogglePaused(cardId)}
+                        onDelete={() => this.onDeleteCard(cardToEdit.id)}
+                        onTogglePaused={() =>
+                            this.onTogglePaused(cardToEdit.id)
+                        }
                     />
-                    {deckComponent()}
-                </>
-            )
-        }
-
-        return (
-            <>
-                <Router>
-                    <Route path="/deck/:deckId" exact render={deckComponent} />
-                    <Route
-                        path={"/deck/:deckId/edit/:cardId"}
-                        render={editModal}
-                    />
-                </Router>
+                )}
             </>
         )
     }
