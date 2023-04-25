@@ -90,14 +90,14 @@ export default class LearnPage extends React.Component {
                     </Desktop>
                 </div>
                 <div className="card">
-                    <div className="front">
+                    <div className="front" key={"front-" + card.id}>
                         <Editor
                             value={card.front}
                             editable={false}
                             placeholder={"No question present"}
                         />
                     </div>
-                    <div className="back">
+                    <div className="back" key={"back-" + card.id}>
                         <Editor
                             value={card.back}
                             editable={false}
