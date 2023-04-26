@@ -12,6 +12,9 @@ import Archive from "@material-ui/icons/Archive"
 import Download from "@material-ui/icons/SaveAlt"
 import fileDialog from "file-dialog"
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faBullseye, faLightbulb } from "@fortawesome/free-solid-svg-icons"
+import Tooltip from "@mui/joy/Tooltip"
 
 function downloadJson(name, cards) {
     let a = document.createElement("a")
@@ -133,16 +136,12 @@ export default class DeckPage extends React.Component {
                 ? 100
                 : Math.round((100 * activeCards) / totalCards)
 
-        const { reps, correct } = cardsRepeatedOnce.reduce(
-            ({ reps, correct }, { totalRepetitions, correctRepetitions }) => ({
-                reps: reps + totalRepetitions,
-                correct: correct + correctRepetitions,
-            }),
-            { reps: 0, correct: 0 }
+        const expectedAccuracy = Math.round(100 * deck.getStrengthInNDays(0))
+        const averageHalfLife = Math.round(
+            deck.cards.reduce((acc, card) => acc + card.halfLife, 0) /
+                (deck.cards.length * 24 * 3600 * 1000)
         )
-
-        const recallAccuracy =
-            reps === 0 ? 100 : Math.round((100 * correct) / reps)
+        console.log(averageHalfLife)
 
         const nCardsToLearn = deck.cardsToLearn().length
 
@@ -295,22 +294,28 @@ export default class DeckPage extends React.Component {
                                 }}
                             />
                         </div>
-                        <span className="text">
-                            {activeCards}/{totalCards} cards active
-                        </span>
+                        <Tooltip title="Number of cards in the deck in active study">
+                            <span className="text">
+                                {activeCards}/{totalCards}{" "}
+                                <FontAwesomeIcon icon={faLightbulb} />
+                            </span>
+                        </Tooltip>
                     </div>
                     <div className="stats-recall">
                         <div className="bar">
                             <div
                                 className="fill"
                                 style={{
-                                    width: `${recallAccuracy}%`,
+                                    width: `${expectedAccuracy}%`,
                                 }}
                             />
                         </div>
-                        <span className="text">
-                            {recallAccuracy}% right reviews
-                        </span>
+                        <Tooltip title="Predicted review accuracy">
+                            <span className="text">
+                                {expectedAccuracy}%{" "}
+                                <FontAwesomeIcon icon={faBullseye} />
+                            </span>
+                        </Tooltip>
                     </div>
                 </div>
                 <div className="cardsList">

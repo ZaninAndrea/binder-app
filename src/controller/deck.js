@@ -27,7 +27,7 @@ function supermemo2(
         lastHalfLife
     )
     let reviewUsefulness = errorProbability * 10
-    reviewUsefulness = reviewUsefulness > 2 ? 2 : reviewUsefulness
+    reviewUsefulness = reviewUsefulness > 1.5 ? 1.5 : reviewUsefulness
 
     let factorUpdate = 0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)
     let newFac = lastFactor + factorUpdate * reviewUsefulness
@@ -41,7 +41,7 @@ function supermemo2(
     if (quality < 3) {
         newHalfLife = lastHalfLife / 2
     } else {
-        newHalfLife = lastHalfLife * lerp(1, newFac * 2, reviewUsefulness)
+        newHalfLife = lastHalfLife * lerp(1, newFac, reviewUsefulness)
     }
 
     return {
