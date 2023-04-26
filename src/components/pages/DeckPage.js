@@ -294,7 +294,10 @@ export default class DeckPage extends React.Component {
                                 }}
                             />
                         </div>
-                        <Tooltip title="Number of cards in the deck in active study">
+                        <Tooltip
+                            title="Number of cards in the deck in active study"
+                            enterTouchDelay={0}
+                        >
                             <span className="text">
                                 {activeCards}/{totalCards}{" "}
                                 <FontAwesomeIcon icon={faLightbulb} />
@@ -310,7 +313,10 @@ export default class DeckPage extends React.Component {
                                 }}
                             />
                         </div>
-                        <Tooltip title="Predicted review accuracy">
+                        <Tooltip
+                            title="Predicted review accuracy"
+                            enterTouchDelay={0}
+                        >
                             <span className="text">
                                 {expectedAccuracy}%{" "}
                                 <FontAwesomeIcon icon={faBullseye} />

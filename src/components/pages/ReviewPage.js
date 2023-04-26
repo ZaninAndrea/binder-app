@@ -143,7 +143,7 @@ export default class ReviewPage extends React.Component {
                     </div>
                 </div>
                 <div className="card">
-                    <div className="front" key={card.id}>
+                    <div className="front" key={"front-" + card.id}>
                         <Editor
                             value={card.front}
                             editable={false}
@@ -157,6 +157,7 @@ export default class ReviewPage extends React.Component {
                                 flipped: true,
                             })
                         }}
+                        key={"back-" + card.id}
                     >
                         {this.state.flipped ? (
                             <Editor

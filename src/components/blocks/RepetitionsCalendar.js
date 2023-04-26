@@ -160,6 +160,7 @@ class RepetitionsCalendar extends Component {
                                             ? "1 repetition"
                                             : today_value + " repetitions"
                                     }
+                                    enterTouchDelay={0}
                                 >
                                     <Typography level="body1">
                                         {day_num}
