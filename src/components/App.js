@@ -12,6 +12,8 @@ import { Mobile, Desktop } from "./utils/MobileDesktop"
 import { createMuiTheme } from "@material-ui/core"
 import { ThemeProvider } from "@material-ui/styles"
 import dayjs from "dayjs"
+import WarningIcon from "@material-ui/icons/Warning"
+import Tooltip from "@mui/joy/Tooltip"
 import * as utc from "dayjs/plugin/utc"
 import * as timezone from "dayjs/plugin/timezone"
 dayjs.extend(utc)
@@ -36,6 +38,7 @@ class BackgroundDispatcher {
         this.token = token
         this.serverUrl = serverUrl
         this.offline = !window.navigator.onLine
+        this.queueCallback = null
 
         this.onlineListener = window.addEventListener("online", () => {
             this.offline = false
@@ -53,6 +56,7 @@ class BackgroundDispatcher {
             options.headers["Authorization"] = "Bearer " + this.token
 
             this.queue.push({ path, options, resolve, reject })
+            if (this.queueCallback) this.queueCallback()
 
             if (this.queue.length !== 0 && !this.emptying && !this.offline)
                 this.empty()
@@ -78,7 +82,62 @@ class BackgroundDispatcher {
         })
         request.resolve(response)
 
+        if (this.queueCallback) this.queueCallback()
+
         if (!this.offline) this.empty()
+    }
+}
+
+class DispatcherAlert extends React.Component {
+    state = {
+        show: false,
+        pendingChanges: 0,
+    }
+
+    componentDidMount() {
+        this.props.dispatcher.queueCallback = this.handleQueueUpdate
+        this.showTimer = null
+    }
+    componentWillUnmount() {
+        this.props.dispatcher.queueCallback = null
+    }
+
+    handleQueueUpdate = () => {
+        this.setState({ pendingChanges: this.props.dispatcher.queue.length })
+        if (this.props.dispatcher.queue.length === 0) {
+            if (this.showTimer) {
+                clearTimeout(this.showTimer)
+                this.showTimer = null
+            }
+
+            this.setState({ show: false })
+        } else {
+            if (!this.showTimer) {
+                this.showTimer = setTimeout(() => {
+                    this.showTimer = null
+                    this.setState({ show: true })
+                }, 5000)
+            }
+        }
+    }
+
+    render() {
+        if (!this.state.show) {
+            return ""
+        }
+
+        return (
+            <Tooltip
+                title={`You have ${this.state.pendingChanges} change${
+                    this.state.pendingChanges != 1 ? "s" : ""
+                } that will be synchronized when you go back online`}
+                enterTouchDelay={0}
+            >
+                <div className="dispatcher-alert">
+                    <WarningIcon />
+                </div>
+            </Tooltip>
+        )
     }
 }
 
@@ -268,6 +327,7 @@ class App extends React.Component {
 
         const loggedInComponent = () => (
             <>
+                <DispatcherAlert dispatcher={this.dispatcher} />
                 <Desktop>
                     <Sidebar
                         decks={this.state.decks}

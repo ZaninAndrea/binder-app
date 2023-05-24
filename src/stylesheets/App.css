@@ -43,6 +43,19 @@ textarea {
     height: 100%;
 }
 
+.dispatcher-alert {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 10000;
+    background-color: red;
+    color: white;
+    padding: 8px;
+    border-radius: 4px;
+    height: 40px;
+    width: 40px;
+}
+
 .sidebar {
     grid-area: sidebar;
     color: var(--secondary-text-color);
@@ -471,6 +484,11 @@ a {
         grid-template-columns: auto;
         grid-template-rows: 52px auto;
         grid-template-areas: "header" "main";
+    }
+
+    .dispatcher-alert {
+        top: 8px;
+        right: 50px;
     }
 
     .card {
