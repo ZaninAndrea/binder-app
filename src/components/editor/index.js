@@ -89,7 +89,7 @@ const Editor = ({ placeholder, value, editable, onUpdate, showSummary }) => {
                                     chain.setCodeBlock().run()
                                     break
                                 case "heading":
-                                    chain.setHeading({ level: 1 }).run()
+                                    chain.setHeading({ level: 2 }).run()
                                     break
                                 case "math":
                                     const { from, to } = editor.state.selection

@@ -170,7 +170,7 @@ class Deck {
             probabilities.push(1 - errorProbability)
         }
 
-        if (probabilities.length === 0) return 1
+        if (probabilities.length === 0) return 0
 
         let meanProbability =
             probabilities.reduce((a, b) => a + b, 0) / probabilities.length

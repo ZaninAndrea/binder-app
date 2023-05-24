@@ -316,7 +316,7 @@ a {
     background: var(--primary-background-color);
     margin: calc(3% + 48px + 24px) 20vw;
     z-index: 2000;
-    padding: 20px;
+    padding: 0 20px;
     border-radius: 10px;
     -webkit-box-shadow: 0px 3px 2px 2px rgba(84, 84, 84, 0.61);
     -moz-box-shadow: 0px 3px 2px 2px rgba(84, 84, 84, 0.61);
@@ -324,27 +324,17 @@ a {
 }
 
 .toolbar {
-    position: absolute;
-    left: 0;
-    top: 0;
     display: grid;
-    width: 60vw;
-    height: 48px;
-    padding: 0px 20px;
-    margin: 3% 20vw;
+    width: calc(100% + 8px);
+    height: 32px;
     line-height: 52px;
     vertical-align: middle;
+    margin-top: 12px;
+    margin-right: -8px;
 
-    color: var(--primary-text-color);
-    background: var(--primary-background-color);
-    border-radius: 10px;
-    -webkit-box-shadow: 0px 3px 2px 2px rgba(84, 84, 84, 0.61);
-    -moz-box-shadow: 0px 3px 2px 2px rgba(84, 84, 84, 0.61);
-    box-shadow: 0px 3px 2px 2px rgba(84, 84, 84, 0.61);
-    z-index: 2000;
-
-    grid-template-columns: 300px auto 42px 42px;
-    grid-template-areas: "stats . showhide delete";
+    grid-template-columns: 32px 32px 200px auto 32px;
+    grid-template-areas: "delete showhide stats . close";
+    gap: 8px;
 }
 
 .toolbar button {
@@ -359,13 +349,17 @@ a {
 
 .toolbar .stats-tool {
     grid-area: stats;
-    line-height: 52px;
+    line-height: 32px;
 }
 .toolbar .show-hide {
     grid-area: showhide;
 }
 .toolbar .delete {
     grid-area: delete;
+}
+.toolbar .close {
+    margin-top: 2px;
+    grid-area: close;
 }
 
 #loginForm {
@@ -470,12 +464,15 @@ a {
     }
 
     .modal {
-        width: 80vw;
-        margin: calc(3% + 48px + 24px) 10vw;
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        border-radius: 0;
     }
+
     .toolbar {
-        width: 80vw;
-        margin: 3% 10vw;
+        width: 100%;
+        margin-right: 0;
     }
 }
 
@@ -494,9 +491,11 @@ a {
 
 .editor-container {
     width: calc(100% + 40px);
-    height: calc(100% + 40px);
-    margin: -20px;
-    padding: 20px;
+    height: calc(100% - 52px);
+    margin: 0 -20px;
+    padding: 0 20px;
+    margin-top: 8px;
+    padding-top: 0;
     overflow: auto;
 }
 

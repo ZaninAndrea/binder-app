@@ -332,7 +332,7 @@ export default class DeckPage extends React.Component {
                             <div
                                 className="fill"
                                 style={{
-                                    width: "100%",
+                                    width: medianHalfLife !== 0 ? "100%" : "0%",
                                 }}
                             />
                         </div>
