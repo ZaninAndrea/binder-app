@@ -580,20 +580,22 @@ a {
     height: 36px;
     display: flex;
     color: var(--light-text-color);
+    gap: 20px;
+}
+
+@media only screen and (max-width: 420px) {
+    .stats {
+        gap: 10px;
+    }
 }
 
 .stats-learned,
-.stats-recall {
+.stats-recall,
+.stats-strength {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: calc(50% - 10px);
-}
-.stats-recall {
-    margin-left: 10px;
-}
-.stats-learned {
-    margin-right: 10px;
+    flex-grow: 1;
 }
 
 .bar {
@@ -607,11 +609,9 @@ a {
     height: 6px;
     border-radius: 3px;
 }
-.stats-learned .bar .fill {
-    background: var(--primary-highlight-color);
-}
-
-.stats-recall .bar .fill {
+.stats-learned .bar .fill,
+.stats-recall .bar .fill,
+.stats-strength .bar .fill {
     background: var(--primary-highlight-color);
 }
 

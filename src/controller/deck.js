@@ -177,6 +177,26 @@ class Deck {
         return meanProbability
     }
 
+    getMedianHalfLife() {
+        const halfLifes = this.cards
+            .filter((c) => c.lastRepetition !== null && !c.paused)
+            .map((c) => c.halfLife)
+        let medianHalfLife = 0
+
+        if (halfLifes.length > 0) {
+            if (halfLifes.length % 2 === 0) {
+                medianHalfLife =
+                    (halfLifes[halfLifes.length / 2] +
+                        halfLifes[halfLifes.length / 2 - 1]) /
+                    2
+            } else {
+                medianHalfLife = halfLifes[Math.floor(halfLifes.length / 2)]
+            }
+        }
+
+        return medianHalfLife
+    }
+
     cardsToLearn() {
         return this.cards.filter((c) => c.lastRepetition === null)
     }

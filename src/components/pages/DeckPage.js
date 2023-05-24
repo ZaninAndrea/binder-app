@@ -13,7 +13,11 @@ import Download from "@material-ui/icons/SaveAlt"
 import fileDialog from "file-dialog"
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faBullseye, faLightbulb } from "@fortawesome/free-solid-svg-icons"
+import {
+    faBullseye,
+    faLightbulb,
+    faClock,
+} from "@fortawesome/free-solid-svg-icons"
 import Tooltip from "@mui/joy/Tooltip"
 
 function downloadJson(name, cards) {
@@ -137,11 +141,11 @@ export default class DeckPage extends React.Component {
                 : Math.round((100 * activeCards) / totalCards)
 
         const expectedAccuracy = Math.round(100 * deck.getStrengthInNDays(0))
-        const averageHalfLife = Math.round(
-            deck.cards.reduce((acc, card) => acc + card.halfLife, 0) /
-                (deck.cards.length * 24 * 3600 * 1000)
+
+        // Compute median half-life
+        const medianHalfLife = Math.round(
+            deck.getMedianHalfLife() / (24 * 3600 * 1000)
         )
-        console.log(averageHalfLife)
 
         const nCardsToLearn = deck.cardsToLearn().length
 
@@ -295,7 +299,7 @@ export default class DeckPage extends React.Component {
                             />
                         </div>
                         <Tooltip
-                            title="Number of cards in the deck in active study"
+                            title="Number of cards in the deck learned and not paused"
                             enterTouchDelay={0}
                         >
                             <span className="text">
@@ -320,6 +324,25 @@ export default class DeckPage extends React.Component {
                             <span className="text">
                                 {expectedAccuracy}%{" "}
                                 <FontAwesomeIcon icon={faBullseye} />
+                            </span>
+                        </Tooltip>
+                    </div>
+                    <div className="stats-strength">
+                        <div className="bar">
+                            <div
+                                className="fill"
+                                style={{
+                                    width: "100%",
+                                }}
+                            />
+                        </div>
+                        <Tooltip
+                            title="Days without reviews before the accuracy is halved"
+                            enterTouchDelay={0}
+                        >
+                            <span className="text">
+                                {medianHalfLife}{" "}
+                                <FontAwesomeIcon icon={faClock} />
                             </span>
                         </Tooltip>
                     </div>
