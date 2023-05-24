@@ -5,6 +5,7 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack"
 import { NavLink } from "react-router-dom"
 import { Desktop } from "../utils/MobileDesktop"
 import EndBatchScreen from "../blocks/EndBatchScreen"
+import EditCardModal from "../blocks/EditCardModal"
 
 function getBatchFromDecks(decks) {
     let batches = decks
@@ -31,6 +32,7 @@ export default class ReviewPage extends React.Component {
         unlockedAchievements: [],
         cardIndex: -1,
         deckIndex: -1,
+        showEditModal: false,
     }
 
     static getDerivedStateFromProps(newProps, oldState) {
@@ -69,6 +71,29 @@ export default class ReviewPage extends React.Component {
                 cardIndex: cardIndex + 1,
             }))
         } else if (this.state.cardIndex < this.state.cards.length - 1) {
+            this.setState(({ cardIndex }) => ({
+                flipped: false,
+                cardIndex: cardIndex + 1,
+            }))
+        } else {
+            new Audio("/completed.wav").play()
+
+            let batch = getBatchFromDecks(this.props.decks)
+            if (batch === null)
+                this.setState({ showEndBatchPage: true, cards: [] })
+            else
+                this.setState({
+                    showEndBatchPage: true,
+                    cards: batch.cards,
+                    cardIndex: 0,
+                    deckIndex: batch.deckIndex,
+                    flipped: false,
+                })
+        }
+    }
+
+    skipCard = () => {
+        if (this.state.cardIndex < this.state.cards.length - 1) {
             this.setState(({ cardIndex }) => ({
                 flipped: false,
                 cardIndex: cardIndex + 1,
@@ -172,7 +197,51 @@ export default class ReviewPage extends React.Component {
                     </div>
                 </div>
                 {this.state.flipped && (
-                    <Footer onGrade={this.onGrade} isNew={false} />
+                    <Footer
+                        onGrade={this.onGrade}
+                        isNew={false}
+                        onEdit={() => this.setState({ showEditModal: true })}
+                    />
+                )}
+                {this.state.showEditModal && (
+                    <EditCardModal
+                        card={card}
+                        onClose={(updated) => {
+                            if (updated) {
+                                this.props.dispatcher.fetch(
+                                    `/decks/${
+                                        this.props.decks[this.state.deckIndex]
+                                            .id
+                                    }/cards/${card.id}`,
+                                    {
+                                        method: "PUT",
+                                        body: JSON.stringify({
+                                            front: card.front,
+                                            back: card.back,
+                                        }),
+                                    }
+                                )
+                                this.props.onDeckUpdate()
+                            }
+                            this.setState({
+                                showEditModal: false,
+                            })
+                        }}
+                        onDelete={() => {
+                            this.props.decks[this.state.deckIndex].deleteCard(
+                                card.id
+                            )
+                            this.setState({ showEditModal: false })
+                            this.skipCard()
+                        }}
+                        onTogglePaused={() => {
+                            this.props.decks[this.state.deckIndex].togglePause(
+                                card.id
+                            )
+                            this.setState({ showEditModal: false })
+                            this.skipCard()
+                        }}
+                    />
                 )}
             </>
         )

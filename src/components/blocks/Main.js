@@ -12,6 +12,8 @@ class Main extends React.Component {
             <ReviewPage
                 decks={this.props.decks.filter((deck) => !deck.archived)}
                 trackAction={this.props.trackAction}
+                dispatcher={this.props.dispatcher}
+                onDeckUpdate={this.props.onDeckUpdate}
             />
         )
         const settingsComponent = () => (
@@ -26,6 +28,8 @@ class Main extends React.Component {
             <LearnPage
                 decks={this.props.decks.filter((deck) => !deck.archived)}
                 trackAction={this.props.trackAction}
+                dispatcher={this.props.dispatcher}
+                onDeckUpdate={this.props.onDeckUpdate}
             />
         )
 

@@ -4,6 +4,7 @@ import Editor from "../editor"
 import ArrowBackIcon from "@material-ui/icons/ArrowBack"
 import { NavLink } from "react-router-dom"
 import { Desktop } from "../utils/MobileDesktop"
+import EditCardModal from "../blocks/EditCardModal"
 
 function getBatchFromDecks(decks) {
     let batches = decks
@@ -28,6 +29,7 @@ export default class LearnPage extends React.Component {
         cards: [],
         cardIndex: -1,
         deckIndex: -1,
+        showEditModal: false,
     }
 
     static getDerivedStateFromProps(newProps, oldState) {
@@ -48,7 +50,10 @@ export default class LearnPage extends React.Component {
         let reviewedCard = this.state.cards[this.state.cardIndex]
         this.props.decks[this.state.deckIndex].learn(reviewedCard.id)
         this.props.trackAction("learnedCard", { correct: true })
+        this.goToNextCard()
+    }
 
+    goToNextCard = () => {
         if (this.state.cardIndex < this.state.cards.length - 1) {
             this.setState(({ cardIndex }) => ({
                 cardIndex: cardIndex + 1,
@@ -106,7 +111,51 @@ export default class LearnPage extends React.Component {
                     </div>
                 </div>
 
-                <Footer onOk={this.onOk} isNew={true} />
+                <Footer
+                    onOk={this.onOk}
+                    isNew={true}
+                    onEdit={() => this.setState({ showEditModal: true })}
+                />
+                {this.state.showEditModal && (
+                    <EditCardModal
+                        card={card}
+                        onClose={(updated) => {
+                            if (updated) {
+                                this.props.dispatcher.fetch(
+                                    `/decks/${
+                                        this.props.decks[this.state.deckIndex]
+                                            .id
+                                    }/cards/${card.id}`,
+                                    {
+                                        method: "PUT",
+                                        body: JSON.stringify({
+                                            front: card.front,
+                                            back: card.back,
+                                        }),
+                                    }
+                                )
+                                this.props.onDeckUpdate()
+                            }
+                            this.setState({
+                                showEditModal: false,
+                            })
+                        }}
+                        onDelete={() => {
+                            this.props.decks[this.state.deckIndex].deleteCard(
+                                card.id
+                            )
+                            this.setState({ showEditModal: false })
+                            this.goToNextCard()
+                        }}
+                        onTogglePaused={() => {
+                            this.props.decks[this.state.deckIndex].togglePause(
+                                card.id
+                            )
+                            this.setState({ showEditModal: false })
+                            this.goToNextCard()
+                        }}
+                    />
+                )}
             </>
         )
     }

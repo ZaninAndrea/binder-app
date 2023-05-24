@@ -65,8 +65,25 @@ textarea {
 .footer {
     height: 96px;
     display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
+    margin: 0 20px;
+}
+
+.footer .grade-buttons {
+    padding-left: 64px;
+    flex-grow: 1;
+}
+.footer .edit-button {
+    flex-grow: 0;
+}
+
+@media only screen and (max-width: 540px) {
+    .footer .grade-buttons {
+        flex-grow: 0;
+        padding-left: 0;
+    }
 }
 
 .footer button {
@@ -85,6 +102,15 @@ textarea {
     border-radius: 32px;
     background: var(--primary-highlight-color);
     color: var(--secondary-text-color);
+}
+
+@media only screen and (max-width: 350px) {
+    .footer button {
+        height: 48px;
+        width: 48px;
+        margin: 16px 4px;
+        font-size: 16px;
+    }
 }
 
 .learn-header {
@@ -332,8 +358,8 @@ a {
     margin-top: 12px;
     margin-right: -8px;
 
-    grid-template-columns: 32px 32px 200px auto 32px;
-    grid-template-areas: "delete showhide stats . close";
+    grid-template-columns: 32px 32px auto 32px;
+    grid-template-areas: "delete showhide stats close";
     gap: 8px;
 }
 
@@ -468,6 +494,11 @@ a {
         height: 100vh;
         margin: 0;
         border-radius: 0;
+
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        border: none;
     }
 
     .toolbar {

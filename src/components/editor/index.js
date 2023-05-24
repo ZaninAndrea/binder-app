@@ -13,32 +13,35 @@ import LatexInline from "./LatexInline"
 import "../../stylesheets/editor.css"
 
 const Editor = ({ placeholder, value, editable, onUpdate, showSummary }) => {
-    const editor = useEditor({
-        extensions: [
-            StarterKit.configure({
-                codeBlock: false,
-                heading: !showSummary,
-            }),
-            Placeholder.configure({
-                placeholder,
-                showOnlyWhenEditable: false,
-            }),
-            LatexBlock,
-            LatexInline,
-            Table,
-            TableCell,
-            TableRow,
-            TableHeader,
-            CodeBlockLowlight.configure({
-                lowlight,
-            }),
-        ],
-        content: value,
-        editable,
-        onUpdate: ({ editor }) => {
-            onUpdate(editor.getHTML())
+    const editor = useEditor(
+        {
+            extensions: [
+                StarterKit.configure({
+                    codeBlock: false,
+                    heading: !showSummary,
+                }),
+                Placeholder.configure({
+                    placeholder,
+                    showOnlyWhenEditable: false,
+                }),
+                LatexBlock,
+                LatexInline,
+                Table,
+                TableCell,
+                TableRow,
+                TableHeader,
+                CodeBlockLowlight.configure({
+                    lowlight,
+                }),
+            ],
+            content: value,
+            editable,
+            onUpdate: ({ editor }) => {
+                onUpdate(editor.getHTML())
+            },
         },
-    })
+        editable ? [editable] : [editable, value]
+    )
 
     return (
         <>

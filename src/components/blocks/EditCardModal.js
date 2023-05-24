@@ -10,6 +10,18 @@ export default class EditCardModal extends React.Component {
     state = {
         updated: false,
     }
+
+    handlePopState = (e) => {
+        this.props.onClose(this.state.updated)
+    }
+
+    componentDidMount() {
+        window.addEventListener("popstate", this.handlePopState)
+    }
+    componentWillUnmount() {
+        window.removeEventListener("popstate", this.handlePopState)
+    }
+
     render() {
         const totalReviews = this.props.card.totalRepetitions
         const correctReviews = this.props.card.correctRepetitions
@@ -58,7 +70,7 @@ export default class EditCardModal extends React.Component {
                 </button>
                 <span className="stats-tool">
                     {totalReviews > 0
-                        ? `${percentage}% correct reviews out of ${totalReviews}`
+                        ? `${totalReviews} reviews (${percentage}% correct)`
                         : "No reviews yet"}
                 </span>
                 <button
