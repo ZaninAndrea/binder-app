@@ -5,10 +5,18 @@ import VisibilityIcon from "@material-ui/icons/Visibility"
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff"
 import CloseIcon from "@material-ui/icons/Close"
 import { Mobile, Desktop } from "../utils/MobileDesktop"
+import Button from "@mui/joy/Button"
+import Switch, { switchClasses } from "@mui/joy/Switch"
+import Tabs from "@mui/joy/Tabs"
+import TabList from "@mui/joy/TabList"
+import Tab from "@mui/joy/Tab"
+import TabPanel from "@mui/joy/TabPanel"
+import { computeCardStrength } from "../../controller/deck"
 
 export default class EditCardModal extends React.Component {
     state = {
         updated: false,
+        tab: "edit",
     }
 
     handlePopState = (e) => {
@@ -30,7 +38,7 @@ export default class EditCardModal extends React.Component {
         )
 
         const editorContainer = (
-            <div className="editor-container">
+            <div className="modal-editor" key="edit-panel">
                 <div className="front">
                     <Editor
                         placeholder={"Type the question here"}
@@ -60,32 +68,63 @@ export default class EditCardModal extends React.Component {
             </div>
         )
 
-        const cardToolbar = (
-            <div className="toolbar">
-                <button
-                    className="close"
-                    onClick={() => this.props.onClose(this.state.updated)}
+        const statsPanel = (
+            <div className="modal-stats" key="stats-panel">
+                {totalReviews > 0 ? (
+                    <>
+                        <p>
+                            <b>Total reviews:</b> {totalReviews}
+                        </p>
+                        <p>
+                            <b>Correct reviews:</b> {correctReviews} (
+                            {percentage}%)
+                        </p>
+                        <p>
+                            <b>Strength:</b>{" "}
+                            {Math.round(
+                                computeCardStrength(this.props.card) * 100
+                            )}
+                            %
+                        </p>
+                        <p>
+                            <b>Durability:</b>{" "}
+                            {Math.round(
+                                this.props.card.halfLife / (24 * 3600 * 1000)
+                            )}
+                        </p>
+                    </>
+                ) : (
+                    <p>
+                        <b>Card not learned yet</b>
+                    </p>
+                )}
+                <div style={{ display: "flex", alignItems: "center" }}>
+                    <b style={{ marginRight: "8px" }}>Active:</b>
+                    <Switch
+                        size="sm"
+                        checked={!this.props.card.paused}
+                        variant="solid"
+                        onChange={this.props.onTogglePaused}
+                        sx={{
+                            [`&.${switchClasses.checked}`]: {
+                                "--Switch-trackBackground":
+                                    "var(--primary-highlight-color)",
+                                "&:hover": {
+                                    "--Switch-trackBackground":
+                                        "var(--primary-highlight-color)",
+                                },
+                            },
+                        }}
+                    />
+                </div>
+                <div style={{ flexGrow: 1 }} />
+                <Button
+                    variant="solid"
+                    onClick={this.props.onDelete}
+                    color="danger"
                 >
-                    <CloseIcon />
-                </button>
-                <span className="stats-tool">
-                    {totalReviews > 0
-                        ? `${totalReviews} reviews (${percentage}% correct)`
-                        : "No reviews yet"}
-                </span>
-                <button
-                    className="show-hide"
-                    onClick={this.props.onTogglePaused}
-                >
-                    {this.props.card.paused ? (
-                        <VisibilityIcon />
-                    ) : (
-                        <VisibilityOffIcon />
-                    )}
-                </button>
-                <button className="delete" onClick={this.props.onDelete}>
-                    <DeleteIcon />
-                </button>
+                    Delete card
+                </Button>
             </div>
         )
 
@@ -97,8 +136,8 @@ export default class EditCardModal extends React.Component {
                         onClick={() => this.props.onClose(this.state.updated)}
                     />
                     <div className="modal">
-                        {cardToolbar}
                         {editorContainer}
+                        {statsPanel}
                     </div>
                 </Desktop>
                 <Mobile>
@@ -106,9 +145,39 @@ export default class EditCardModal extends React.Component {
                         className="modalClickAway"
                         onClick={() => this.props.onClose(this.state.updated)}
                     />
-                    <div className="modal">
-                        {cardToolbar}
-                        {editorContainer}
+                    <div className="modal mobile">
+                        <div className="modal-mobile-header">
+                            <Tabs
+                                key="tabs"
+                                className="modal-mobile-tabs"
+                                value={this.state.tab}
+                                size="sm"
+                                onChange={(e, newValue) =>
+                                    this.setState({ tab: newValue })
+                                }
+                            >
+                                <TabList>
+                                    <Tab value="edit" key="edit">
+                                        Edit
+                                    </Tab>
+                                    <Tab value="info" key="info">
+                                        Info
+                                    </Tab>
+                                </TabList>
+                            </Tabs>
+                            <button
+                                key="close"
+                                className="close"
+                                onClick={() =>
+                                    this.props.onClose(this.state.updated)
+                                }
+                            >
+                                <CloseIcon />
+                            </button>
+                        </div>
+                        {this.state.tab === "edit"
+                            ? editorContainer
+                            : statsPanel}
                     </div>
                 </Mobile>
             </>

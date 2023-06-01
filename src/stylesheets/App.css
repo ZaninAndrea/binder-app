@@ -353,34 +353,60 @@ a {
     position: absolute;
     left: 0;
     top: 0;
-    width: 60vw;
+    width: 80vw;
+    max-width: 1000px;
     height: 80%;
     color: var(--primary-text-color);
     background: var(--primary-background-color);
-    margin: calc(3% + 48px + 24px) 20vw;
+    margin: calc(3% + 48px + 24px) max(10vw, calc(50vw - 500px));
     z-index: 2000;
-    padding: 0 20px;
     border-radius: 10px;
     -webkit-box-shadow: 0px 3px 2px 2px rgba(84, 84, 84, 0.61);
     -moz-box-shadow: 0px 3px 2px 2px rgba(84, 84, 84, 0.61);
     box-shadow: 0px 3px 2px 2px rgba(84, 84, 84, 0.61);
+    display: grid;
+    grid-template-columns: auto 250px;
 }
 
-.toolbar {
-    display: grid;
-    width: calc(100% + 8px);
-    height: 32px;
-    line-height: 52px;
-    vertical-align: middle;
-    margin-top: 12px;
-    margin-right: -8px;
+.modal.mobile {
+    grid-template-columns: auto;
+    grid-template-rows: 50px auto;
+}
 
-    grid-template-columns: 32px 32px auto 32px;
-    grid-template-areas: "delete showhide stats close";
+.modal-editor {
+    width: 100%;
+    height: 100%;
+    padding: 0 20px;
+    overflow: auto;
+}
+
+.modal-stats {
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid black;
+    padding: 20px;
+    gap: 8px;
+}
+.modal.mobile .modal-stats {
+    border-left: none;
+}
+
+.modal-mobile-header {
+    display: grid;
+    padding: 6px 0;
+    line-height: 38px;
+    vertical-align: middle;
+
+    grid-template-columns: 32px auto 200px auto 24px 8px;
+    grid-template-areas: ". . tabs . close .";
     gap: 8px;
 }
 
-.toolbar button {
+.modal-mobile-tabs {
+    grid-area: tabs;
+}
+
+.modal-mobile-header .close {
     border: none;
     box-shadow: none;
     color: var(--primary-text-color);
@@ -388,20 +414,6 @@ a {
     font-family: "Montserrat", sans-serif;
     font-size: 14px;
     opacity: 0.75;
-}
-
-.toolbar .stats-tool {
-    grid-area: stats;
-    line-height: 32px;
-}
-.toolbar .show-hide {
-    grid-area: showhide;
-}
-.toolbar .delete {
-    grid-area: delete;
-}
-.toolbar .close {
-    margin-top: 2px;
     grid-area: close;
 }
 
@@ -529,30 +541,7 @@ a {
     }
 }
 
-.modal .topBar {
-    height: 24px;
-    margin: -14px -20px 8px -20px;
-    line-height: 24px;
-    display: grid;
-    grid-template-columns: 20px auto 28px 12px;
-    grid-template-areas: ". . delete .";
-}
-
-.modal .topBar .delete {
-    grid-area: delete;
-}
-
-.editor-container {
-    width: calc(100% + 40px);
-    height: calc(100% - 52px);
-    margin: 0 -20px;
-    padding: 0 20px;
-    margin-top: 8px;
-    padding-top: 0;
-    overflow: auto;
-}
-
-.editor-container .editor {
+.modal-editor .editor {
     min-height: calc(40vh - 55px);
 }
 
@@ -576,17 +565,17 @@ a {
     display: none;
 }
 
-.editor-container .front,
-.editor-container .back {
+.modal-editor .front,
+.modal-editor .back {
     width: 100%;
     min-height: 50%;
 }
 
-.editor-container .front {
+.modal-editor .front {
     padding: 16px 16px 32px 16px;
     border-bottom: 3px dashed var(--primary-text-color);
 }
-.editor-container .back {
+.modal-editor .back {
     padding: 30px 16px 16px 16px;
 }
 

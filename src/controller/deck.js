@@ -279,3 +279,16 @@ class Deck {
 }
 
 export default Deck
+
+export function computeCardStrength(card) {
+    if (card.lastRepetition === null) return 0
+
+    let now = new Date()
+    let errorProbability = computeErrorProbability(
+        card.lastRepetition,
+        now,
+        card.halfLife
+    )
+
+    return 1 - errorProbability
+}
