@@ -197,6 +197,33 @@ class Deck {
         return medianHalfLife
     }
 
+    // Computes the number of days it will take to halve the probability of
+    // recalling a card
+    getHalfLife() {
+        const halfLifes = this.cards
+            .filter((c) => c.lastRepetition !== null && !c.paused)
+            .map((c) => c.halfLife)
+        if (halfLifes.length === 0) return 0
+
+        const targetStrength = this.getStrengthInNDays(0) / 2
+        let upperBound = Math.max(...halfLifes) / (24 * 3600 * 1000)
+        let lowerBound = Math.min(...halfLifes) / (24 * 3600 * 1000)
+
+        // Binary search for the half life
+        while (upperBound - lowerBound > 1) {
+            const mid = Math.floor((upperBound + lowerBound) / 2)
+            const strength = this.getStrengthInNDays(mid)
+
+            if (strength >= targetStrength) {
+                lowerBound = mid
+            } else {
+                upperBound = mid
+            }
+        }
+
+        return Math.floor((upperBound + lowerBound) / 2)
+    }
+
     cardsToLearn() {
         return this.cards.filter((c) => c.lastRepetition === null)
     }

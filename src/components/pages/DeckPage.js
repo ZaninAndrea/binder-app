@@ -141,11 +141,7 @@ export default class DeckPage extends React.Component {
                 : Math.round((100 * activeCards) / totalCards)
 
         const expectedAccuracy = Math.round(100 * deck.getStrengthInNDays(0))
-
-        // Compute median half-life
-        const medianHalfLife = Math.round(
-            deck.getMedianHalfLife() / (24 * 3600 * 1000)
-        )
+        const deckHalfLife = deck.getHalfLife()
 
         const nCardsToLearn = deck.cardsToLearn().length
 
@@ -332,7 +328,7 @@ export default class DeckPage extends React.Component {
                             <div
                                 className="fill"
                                 style={{
-                                    width: medianHalfLife !== 0 ? "100%" : "0%",
+                                    width: deckHalfLife !== 0 ? "100%" : "0%",
                                 }}
                             />
                         </div>
@@ -341,7 +337,7 @@ export default class DeckPage extends React.Component {
                             enterTouchDelay={0}
                         >
                             <span className="text">
-                                {medianHalfLife}{" "}
+                                {deckHalfLife}{" "}
                                 <FontAwesomeIcon icon={faClock} />
                             </span>
                         </Tooltip>
