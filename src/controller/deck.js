@@ -210,8 +210,8 @@ class Deck {
         let lowerBound = Math.min(...halfLifes) / (24 * 3600 * 1000)
 
         // Binary search for the half life
-        while (upperBound - lowerBound > 1) {
-            const mid = Math.floor((upperBound + lowerBound) / 2)
+        while (upperBound - lowerBound > 0.5) {
+            const mid = (upperBound + lowerBound) / 2
             const strength = this.getStrengthInNDays(mid)
 
             if (strength >= targetStrength) {
@@ -221,7 +221,7 @@ class Deck {
             }
         }
 
-        return Math.floor((upperBound + lowerBound) / 2)
+        return Math.round((upperBound + lowerBound) / 2)
     }
 
     cardsToLearn() {
