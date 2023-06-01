@@ -155,6 +155,11 @@ class RepetitionsCalendar extends Component {
                         >
                             {tooltip ? (
                                 <Tooltip
+                                    slotProps={{
+                                        root: {
+                                            className: "tooltip",
+                                        },
+                                    }}
                                     title={
                                         today_value === 1
                                             ? "1 repetition"
@@ -162,7 +167,10 @@ class RepetitionsCalendar extends Component {
                                     }
                                     enterTouchDelay={0}
                                 >
-                                    <Typography level="body1">
+                                    <Typography
+                                        level="body1"
+                                        style={{ userSelect: "none" }}
+                                    >
                                         {day_num}
                                     </Typography>
                                 </Tooltip>

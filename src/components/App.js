@@ -128,6 +128,11 @@ class DispatcherAlert extends React.Component {
 
         return (
             <Tooltip
+                slotProps={{
+                    root: {
+                        className: "tooltip",
+                    },
+                }}
                 title={`You have ${this.state.pendingChanges} change${
                     this.state.pendingChanges != 1 ? "s" : ""
                 } that will be synchronized when you go back online`}

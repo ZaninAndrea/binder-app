@@ -9,10 +9,10 @@ import { ReactNodeViewRenderer, NodeViewWrapper } from "@tiptap/react"
 import katex from "katex"
 
 function renderLatexInline(source) {
-    if (!source)
+    if (source === "" || source === null || source === undefined)
         return `<div class="katex-empty">Insert a LaTeX expression</div>`
     try {
-        return katex.renderToString(source, {
+        return katex.renderToString(source.toString(), {
             displayMode: false,
             strict: false,
         })
@@ -20,6 +20,8 @@ function renderLatexInline(source) {
         let errorMessage = "Unknown error"
         if (e.message.startsWith("KaTeX parse error: ")) {
             errorMessage = e.message.slice("KaTeX parse error: ".length)
+        } else {
+            console.error(e)
         }
 
         return `<div class="katex-error">${errorMessage}</div>`
@@ -87,7 +89,7 @@ export default Node.create({
             {
                 tag: "span.math-inline",
                 getAttrs: (node) => ({
-                    latex: node.textContent,
+                    latex: node.textContent.toString(),
                 }),
             },
         ]

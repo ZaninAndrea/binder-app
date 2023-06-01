@@ -56,7 +56,7 @@ export default class HomePage extends Component {
                     maxValue={50}
                     streaks={[]}
                 />
-                <div className="home-stats">
+                <div className="home-stats" style={{ userSelect: "none" }}>
                     <div className="total-cards">
                         {totalCards} <span className="unit">Cards</span>
                     </div>

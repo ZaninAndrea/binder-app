@@ -295,6 +295,11 @@ export default class DeckPage extends React.Component {
                             />
                         </div>
                         <Tooltip
+                            slotProps={{
+                                root: {
+                                    className: "tooltip",
+                                },
+                            }}
                             title="Number of cards in the deck learned and not paused"
                             enterTouchDelay={0}
                         >
@@ -314,6 +319,11 @@ export default class DeckPage extends React.Component {
                             />
                         </div>
                         <Tooltip
+                            slotProps={{
+                                root: {
+                                    className: "tooltip",
+                                },
+                            }}
                             title="Predicted review accuracy"
                             enterTouchDelay={0}
                         >
@@ -333,6 +343,11 @@ export default class DeckPage extends React.Component {
                             />
                         </div>
                         <Tooltip
+                            slotProps={{
+                                root: {
+                                    className: "tooltip",
+                                },
+                            }}
                             title="Days without reviews before the accuracy is halved"
                             enterTouchDelay={0}
                         >

@@ -9,10 +9,10 @@ import { ReactNodeViewRenderer, NodeViewWrapper } from "@tiptap/react"
 import katex from "katex"
 
 function renderLatexBlock(source) {
-    if (!source)
+    if (source === "" || source === null || source === undefined)
         return `<div class="katex-empty">Insert a LaTeX expression</div>`
     try {
-        return katex.renderToString(source, {
+        return katex.renderToString(source.toString(), {
             displayMode: true,
             strict: false,
         })

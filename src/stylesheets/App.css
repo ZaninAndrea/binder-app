@@ -35,6 +35,10 @@ textarea {
     outline: none;
 }
 
+.tooltip {
+    user-select: none;
+}
+
 .App {
     display: grid;
     grid-template-columns: 270px auto;
