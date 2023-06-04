@@ -357,20 +357,53 @@ a {
     max-width: 1000px;
     height: 80%;
     color: var(--primary-text-color);
-    background: var(--primary-background-color);
+    background: transparent;
     margin: calc(3% + 48px + 24px) max(10vw, calc(50vw - 500px));
     z-index: 2000;
-    border-radius: 10px;
-    -webkit-box-shadow: 0px 3px 2px 2px rgba(84, 84, 84, 0.61);
-    -moz-box-shadow: 0px 3px 2px 2px rgba(84, 84, 84, 0.61);
-    box-shadow: 0px 3px 2px 2px rgba(84, 84, 84, 0.61);
     display: grid;
-    grid-template-columns: auto 250px;
 }
 
-.modal.mobile {
+.modal.mobile.stats-tab {
     grid-template-columns: auto;
     grid-template-rows: 50px auto;
+    grid-template-areas: "tab-switcher" "stats";
+}
+
+.modal.mobile.edit-tab {
+    grid-template-columns: auto;
+    grid-template-rows: 50px auto 48px;
+    grid-template-areas: "tab-switcher" "edit" "toolbar";
+}
+
+.modal.desktop {
+    grid-template-columns: auto 250px;
+    grid-template-rows: 48px auto;
+    grid-template-areas: "toolbar stats" "edit stats";
+}
+
+.modal-toolbar {
+    grid-area: toolbar;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 0 20px;
+    background: #eee;
+}
+.modal.desktop .modal-toolbar {
+    border-radius: 10px 10px 0 0;
+}
+.modal-toolbar button {
+    background: inherit;
+    color: inherit;
+    border: none;
+    width: 32px;
+    outline: none;
+}
+.modal-toolbar button:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+.modal-toolbar button.active {
+    color: var(--primary-highlight-color);
 }
 
 .modal-editor {
@@ -378,15 +411,42 @@ a {
     height: 100%;
     padding: 0 20px;
     overflow: auto;
+    grid-area: edit;
+    background: var(--primary-background-color);
+}
+
+.modal.desktop .modal-editor {
+    border-radius: 0 0 10px 10px;
 }
 
 .modal-stats {
     display: flex;
     flex-direction: column;
-    border-left: 1px solid black;
+    border-left: 1px solid #111;
     padding: 20px;
     gap: 8px;
+    grid-area: stats;
+    background: var(--primary-background-color);
 }
+.modal.desktop .modal-stats {
+    margin-left: 16px;
+    border-radius: 10px;
+    background: var(--secondary-background-color);
+    color: var(--secondary-text-color);
+}
+
+.stats-header {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 10px 10px 0 0;
+    margin: -20px -20px 0 -20px;
+    padding: 10px;
+    line-height: 28px;
+    font-weight: bold;
+    font-size: 1.2em;
+    text-align: center;
+    height: 48px;
+}
+
 .modal.mobile .modal-stats {
     border-left: none;
 }
@@ -396,10 +456,12 @@ a {
     padding: 6px 0;
     line-height: 38px;
     vertical-align: middle;
+    background: var(--primary-background-color);
 
     grid-template-columns: 32px auto 200px auto 24px 8px;
     grid-template-areas: ". . tabs . close .";
     gap: 8px;
+    grid-area: tab-switcher;
 }
 
 .modal-mobile-tabs {
