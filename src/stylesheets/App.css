@@ -386,17 +386,19 @@ a {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    padding: 0 20px;
     background: #eee;
+    overflow-x: auto;
+    padding: 0 0 0 20px;
 }
 .modal.desktop .modal-toolbar {
+    padding: 0 20px;
     border-radius: 10px 10px 0 0;
 }
 .modal-toolbar button {
     background: inherit;
     color: inherit;
     border: none;
-    width: 32px;
+    width: 48px;
     outline: none;
 }
 .modal-toolbar button:hover {
@@ -438,7 +440,8 @@ a {
 .stats-block {
     display: flex;
     flex-direction: column;
-    margin-bottom: 16px;
+    margin-top: 16px;
+    gap: 4px;
 }
 .stats-block .score {
     color: var(--primary-highlight-color);
@@ -944,4 +947,8 @@ body {
     border: 1px solid var(--onBack);
     color: var(--onBack) !important;
     background-color: transparent !important;
+}
+
+#card-menu {
+    z-index: 100000;
 }

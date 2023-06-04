@@ -2,6 +2,7 @@ import React from "react"
 import Editor from "../editor"
 import DeleteIcon from "@material-ui/icons/Delete"
 import VisibilityIcon from "@material-ui/icons/Visibility"
+import MoreIcon from "@material-ui/icons/MoreHoriz"
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff"
 import CloseIcon from "@material-ui/icons/Close"
 import { Mobile, Desktop } from "../utils/MobileDesktop"
@@ -12,12 +13,15 @@ import TabList from "@mui/joy/TabList"
 import Tab from "@mui/joy/Tab"
 import TabPanel from "@mui/joy/TabPanel"
 import { computeCardStrength } from "../../controller/deck"
+import Menu from "@material-ui/core/Menu"
+import MenuItem from "@material-ui/core/MenuItem"
 
 export default class EditCardModal extends React.Component {
     state = {
         updated: false,
         tab: "edit",
         focusedEditor: null,
+        menuAnchorEl: null,
     }
 
     frontEditor = null
@@ -260,6 +264,58 @@ export default class EditCardModal extends React.Component {
                 >
                     {"√"}
                 </button>
+                <div style={{ flexGrow: "1" }}></div>
+                <Desktop>
+                    <button
+                        onClick={this.props.onTogglePaused}
+                        className={this.props.card.paused ? "" : "active"}
+                    >
+                        {this.props.card.paused ? (
+                            <VisibilityOffIcon />
+                        ) : (
+                            <VisibilityIcon />
+                        )}
+                    </button>
+                    <button onClick={this.props.onDelete}>
+                        <DeleteIcon />
+                    </button>
+                </Desktop>
+                <Mobile>
+                    <button
+                        onClick={(e) =>
+                            this.setState({
+                                menuAnchorEl: e.currentTarget,
+                            })
+                        }
+                    >
+                        <MoreIcon />
+                    </button>
+
+                    <Menu
+                        id="card-menu"
+                        anchorEl={this.state.menuAnchorEl}
+                        open={!!this.state.menuAnchorEl}
+                        onClose={() => this.setState({ menuAnchorEl: null })}
+                        style={{ zIndex: 10000000 }}
+                    >
+                        <MenuItem
+                            onClick={() => {
+                                this.props.onDelete()
+                                this.setState({ menuAnchorEl: null })
+                            }}
+                        >
+                            Delete
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                this.props.onTogglePaused()
+                                this.setState({ menuAnchorEl: null })
+                            }}
+                        >
+                            {this.props.card.paused ? "Enable" : "Disable"}
+                        </MenuItem>
+                    </Menu>
+                </Mobile>
             </div>
         )
 
@@ -304,39 +360,6 @@ export default class EditCardModal extends React.Component {
                         <b>Card not learned yet</b>
                     </p>
                 )}
-                <div style={{ flexGrow: 1 }} />
-                <div
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        marginBottom: "16px",
-                    }}
-                >
-                    <b style={{ marginRight: "8px" }}>Active:</b>
-                    <Switch
-                        size="sm"
-                        checked={!this.props.card.paused}
-                        variant="solid"
-                        onChange={this.props.onTogglePaused}
-                        sx={{
-                            [`&.${switchClasses.checked}`]: {
-                                "--Switch-trackBackground":
-                                    "var(--primary-highlight-color)",
-                                "&:hover": {
-                                    "--Switch-trackBackground":
-                                        "var(--primary-highlight-color)",
-                                },
-                            },
-                        }}
-                    />
-                </div>
-                <Button
-                    variant="solid"
-                    onClick={this.props.onDelete}
-                    color="danger"
-                >
-                    Delete card
-                </Button>
             </div>
         )
 
@@ -380,7 +403,7 @@ export default class EditCardModal extends React.Component {
                                         Edit
                                     </Tab>
                                     <Tab value="info" key="info">
-                                        Info
+                                        Stats
                                     </Tab>
                                 </TabList>
                             </Tabs>
