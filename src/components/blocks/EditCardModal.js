@@ -270,33 +270,48 @@ export default class EditCardModal extends React.Component {
                 </Desktop>
                 {totalReviews > 0 ? (
                     <>
-                        <p>
-                            <b>Total reviews:</b> {totalReviews}
-                        </p>
-                        <p>
-                            <b>Correct reviews:</b> {correctReviews} (
-                            {percentage}%)
-                        </p>
-                        <p>
-                            <b>Strength:</b>{" "}
-                            {Math.round(
-                                computeCardStrength(this.props.card) * 100
-                            )}
-                            %
-                        </p>
-                        <p>
-                            <b>Durability:</b>{" "}
-                            {Math.round(
-                                this.props.card.halfLife / (24 * 3600 * 1000)
-                            )}
-                        </p>
+                        <div className="stats-block">
+                            <div className="score">
+                                {Math.round(
+                                    computeCardStrength(this.props.card) * 100
+                                )}
+                                %
+                            </div>
+                            <div className="description">Strength</div>
+                        </div>
+                        <div className="stats-block">
+                            <div className="score">
+                                {Math.round(
+                                    this.props.card.halfLife /
+                                        (24 * 3600 * 1000)
+                                )}
+                            </div>
+                            <div className="description">Durability</div>
+                        </div>
+                        <div className="stats-block">
+                            <div className="score">{totalReviews}</div>
+                            <div className="description">Total reviews</div>
+                        </div>
+                        <div className="stats-block">
+                            <div className="score">
+                                {correctReviews} ({percentage}%)
+                            </div>
+                            <div className="description">Correct reviews</div>
+                        </div>
                     </>
                 ) : (
                     <p>
                         <b>Card not learned yet</b>
                     </p>
                 )}
-                <div style={{ display: "flex", alignItems: "center" }}>
+                <div style={{ flexGrow: 1 }} />
+                <div
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        marginBottom: "16px",
+                    }}
+                >
                     <b style={{ marginRight: "8px" }}>Active:</b>
                     <Switch
                         size="sm"
@@ -315,7 +330,6 @@ export default class EditCardModal extends React.Component {
                         }}
                     />
                 </div>
-                <div style={{ flexGrow: 1 }} />
                 <Button
                     variant="solid"
                     onClick={this.props.onDelete}

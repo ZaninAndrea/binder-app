@@ -435,6 +435,20 @@ a {
     color: var(--secondary-text-color);
 }
 
+.stats-block {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+.stats-block .score {
+    color: var(--primary-highlight-color);
+    text-align: center;
+    font-size: 1.3em;
+}
+.stats-block .description {
+    text-align: center;
+}
+
 .stats-header {
     background: rgba(0, 0, 0, 0.4);
     border-radius: 10px 10px 0 0;
