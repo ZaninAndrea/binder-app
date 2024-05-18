@@ -423,6 +423,17 @@ export default class DeckPage extends React.Component {
                                 editCard: null,
                             })
                         }}
+                        allDecks={this.props.allDecks}
+                        onCopy={async (deck) => {
+                            await this.props.deck.copyCard(cardToEdit.id, deck)
+                            this.props.onDeckUpdate()
+                            this.forceUpdate()
+                        }}
+                        onMove={async (deck) => {
+                            await this.props.deck.moveCard(cardToEdit.id, deck)
+                            this.props.onDeckUpdate()
+                            this.forceUpdate()
+                        }}
                         onDelete={() => this.onDeleteCard(cardToEdit.id)}
                         onTogglePaused={() =>
                             this.onTogglePaused(cardToEdit.id)

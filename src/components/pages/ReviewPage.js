@@ -227,6 +227,21 @@ export default class ReviewPage extends React.Component {
                                 showEditModal: false,
                             })
                         }}
+                        allDecks={this.props.allDecks}
+                        onCopy={async (deck) => {
+                            await this.props.decks[
+                                this.state.deckIndex
+                            ].copyCard(card.id, deck)
+                            this.props.onDeckUpdate()
+                            this.forceUpdate()
+                        }}
+                        onMove={async (deck) => {
+                            await this.props.decks[
+                                this.state.deckIndex
+                            ].moveCard(card.id, deck)
+                            this.props.onDeckUpdate()
+                            this.forceUpdate()
+                        }}
                         onDelete={() => {
                             this.props.decks[this.state.deckIndex].deleteCard(
                                 card.id

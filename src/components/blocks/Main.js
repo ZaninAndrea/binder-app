@@ -11,6 +11,7 @@ class Main extends React.Component {
         const reviewPathComponent = () => (
             <ReviewPage
                 decks={this.props.decks.filter((deck) => !deck.archived)}
+                allDecks={this.props.decks}
                 trackAction={this.props.trackAction}
                 dispatcher={this.props.dispatcher}
                 onDeckUpdate={this.props.onDeckUpdate}
@@ -27,6 +28,7 @@ class Main extends React.Component {
         const learnPathComponent = () => (
             <LearnPage
                 decks={this.props.decks.filter((deck) => !deck.archived)}
+                allDecks={this.props.decks}
                 trackAction={this.props.trackAction}
                 dispatcher={this.props.dispatcher}
                 onDeckUpdate={this.props.onDeckUpdate}
@@ -45,6 +47,7 @@ class Main extends React.Component {
         const deckPage = ({ match }) => (
             <DeckPage
                 deck={getCurrentDeck(match)}
+                allDecks={this.props.decks}
                 dispatcher={this.props.dispatcher}
                 onDeckUpdate={this.props.onDeckUpdate}
                 deleteDeck={this.props.deleteDeck(match.params.deckId)}

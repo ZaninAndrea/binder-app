@@ -5,13 +5,12 @@ import VisibilityIcon from "@material-ui/icons/Visibility"
 import MoreIcon from "@material-ui/icons/MoreHoriz"
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff"
 import CloseIcon from "@material-ui/icons/Close"
+import ContentCopyIcon from "@mui/icons-material/ContentCopy"
+import ContentCutIcon from "@mui/icons-material/ContentCut"
 import { Mobile, Desktop } from "../utils/MobileDesktop"
-import Button from "@mui/joy/Button"
-import Switch, { switchClasses } from "@mui/joy/Switch"
 import Tabs from "@mui/joy/Tabs"
 import TabList from "@mui/joy/TabList"
 import Tab from "@mui/joy/Tab"
-import TabPanel from "@mui/joy/TabPanel"
 import { computeCardStrength } from "../../controller/deck"
 import Menu from "@material-ui/core/Menu"
 import MenuItem from "@material-ui/core/MenuItem"
@@ -22,6 +21,8 @@ export default class EditCardModal extends React.Component {
         tab: "edit",
         focusedEditor: null,
         menuAnchorEl: null,
+        copyMenuAnchorEl: null,
+        moveMenuAnchorEl: null,
     }
 
     frontEditor = null
@@ -276,6 +277,24 @@ export default class EditCardModal extends React.Component {
                             <VisibilityIcon />
                         )}
                     </button>
+                    <button
+                        onClick={(e) =>
+                            this.setState({
+                                copyMenuAnchorEl: e.currentTarget,
+                            })
+                        }
+                    >
+                        <ContentCopyIcon />
+                    </button>
+                    <button
+                        onClick={(e) =>
+                            this.setState({
+                                moveMenuAnchorEl: e.currentTarget,
+                            })
+                        }
+                    >
+                        <ContentCutIcon />
+                    </button>
                     <button onClick={this.props.onDelete}>
                         <DeleteIcon />
                     </button>
@@ -307,6 +326,26 @@ export default class EditCardModal extends React.Component {
                             Delete
                         </MenuItem>
                         <MenuItem
+                            onClick={(e) =>
+                                this.setState({
+                                    copyMenuAnchorEl: e.currentTarget,
+                                    menuAnchorEl: null,
+                                })
+                            }
+                        >
+                            Copy
+                        </MenuItem>
+                        <MenuItem
+                            onClick={(e) =>
+                                this.setState({
+                                    moveMenuAnchorEl: e.currentTarget,
+                                    menuAnchorEl: null,
+                                })
+                            }
+                        >
+                            Move
+                        </MenuItem>
+                        <MenuItem
                             onClick={() => {
                                 this.props.onTogglePaused()
                                 this.setState({ menuAnchorEl: null })
@@ -316,6 +355,50 @@ export default class EditCardModal extends React.Component {
                         </MenuItem>
                     </Menu>
                 </Mobile>
+
+                <Menu
+                    id="copy-menu"
+                    anchorEl={this.state.copyMenuAnchorEl}
+                    open={!!this.state.copyMenuAnchorEl}
+                    onClose={() => this.setState({ copyMenuAnchorEl: null })}
+                    style={{ zIndex: 10000000 }}
+                >
+                    {this.props.allDecks.map((deck) => (
+                        <MenuItem
+                            key={deck.id}
+                            onClick={async () => {
+                                await this.props.onCopy(deck)
+                                this.setState({
+                                    copyMenuAnchorEl: null,
+                                })
+                            }}
+                        >
+                            {deck.name}
+                        </MenuItem>
+                    ))}
+                </Menu>
+
+                <Menu
+                    id="move-menu"
+                    anchorEl={this.state.moveMenuAnchorEl}
+                    open={!!this.state.moveMenuAnchorEl}
+                    onClose={() => this.setState({ moveMenuAnchorEl: null })}
+                    style={{ zIndex: 10000000 }}
+                >
+                    {this.props.allDecks.map((deck) => (
+                        <MenuItem
+                            key={deck.id}
+                            onClick={async () => {
+                                await this.props.onMove(deck)
+                                this.setState({
+                                    moveMenuAnchorEl: null,
+                                })
+                            }}
+                        >
+                            {deck.name}
+                        </MenuItem>
+                    ))}
+                </Menu>
             </div>
         )
 

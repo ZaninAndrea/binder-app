@@ -262,6 +262,41 @@ class Deck {
         this.onDeckUpdate()
     }
 
+    async copyCard(cardId, targetDeck) {
+        const newCard = await this.dispatcher
+            .fetch(`/decks/${this.id}/cards/${cardId}/copy`, {
+                method: "PUT",
+                body: JSON.stringify({ newDeckId: targetDeck.id }),
+            })
+            .then((res) => res.json())
+        newCard.lastRepetition = newCard.lastRepetition
+            ? new Date(newCard.lastRepetition)
+            : null
+        targetDeck.cards.push(newCard)
+        targetDeck.onDeckUpdate()
+
+        return newCard
+    }
+
+    async moveCard(cardId, targetDeck) {
+        const newCard = await this.dispatcher
+            .fetch(`/decks/${this.id}/cards/${cardId}/move`, {
+                method: "PUT",
+                body: JSON.stringify({ newDeckId: targetDeck.id }),
+            })
+            .then((res) => res.json())
+        newCard.lastRepetition = newCard.lastRepetition
+            ? new Date(newCard.lastRepetition)
+            : null
+        targetDeck.cards.push(newCard)
+        targetDeck.onDeckUpdate()
+
+        this.cards = this.cards.filter((card) => card.id !== cardId)
+        this.onDeckUpdate()
+
+        return newCard
+    }
+
     togglePause(id) {
         let card = this.cards.filter((card) => card.id === id)
 
