@@ -11453,6 +11453,11 @@ trough@^2.0.0:
   resolved "https://registry.yarnpkg.com/trough/-/trough-2.1.0.tgz#0f7b511a4fde65a46f18477ab38849b22c554876"
   integrity sha512-AqTiAOLcj85xS7vQ8QkAV41hPDIJ71XJB4RCUrzo/1GM2CQwhkJGaf9Hgr7BOugMRpgGUrqRg/DrBDl4H40+8g==
 
+ts-fsrs@^4.4.3:
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/ts-fsrs/-/ts-fsrs-4.4.3.tgz#c4bfa00705027d74235558af9d04d2a2b379d37c"
+  integrity sha512-QOmzfsOkYfkHxCI0MOyKhSZ/XME1vbDuKo4c3Km2JGFF3K/K67RpTQvRJdDNwEUq4wa9wTrD3GSC+OPNtvAn0A==
+
 ts-pnp@1.1.2, ts-pnp@^1.0.0:
   version "1.1.2"
   resolved "https://registry.npmjs.org/ts-pnp/-/ts-pnp-1.1.2.tgz"

@@ -209,25 +209,19 @@ class App extends React.Component {
     setBearer = async (bearer, redirectTo = "/") => {
         localStorage.setItem("bearer", bearer)
 
-        let userData = await fetch(
-            "https://binderbackend.baida.dev:8051/users",
-            {
-                headers: {
-                    Authorization: "Bearer " + bearer,
-                },
-            }
-        ).then((res) => res.json())
-        let decksData = await fetch(
-            "https://binderbackend.baida.dev:8051/decks",
-            {
-                headers: {
-                    Authorization: "Bearer " + bearer,
-                },
-            }
-        ).then((res) => res.json())
+        let userData = await fetch(process.env.BACKEND_URL + "/users", {
+            headers: {
+                Authorization: "Bearer " + bearer,
+            },
+        }).then((res) => res.json())
+        let decksData = await fetch(process.env.BACKEND_URL + "/decks", {
+            headers: {
+                Authorization: "Bearer " + bearer,
+            },
+        }).then((res) => res.json())
 
         this.dispatcher = new BackgroundDispatcher(
-            "https://binderbackend.baida.dev:8051",
+            process.env.BACKEND_URL,
             bearer
         )
         this.unloadListener = window.addEventListener(
@@ -267,7 +261,7 @@ class App extends React.Component {
     }
 
     deleteUser = async () => {
-        await fetch("https://binderbackend.baida.dev:8051/users", {
+        await fetch(process.env.BACKEND_URL + "/users", {
             method: "DELETE",
             headers: {
                 Authorization: "Bearer " + this.state.bearer,

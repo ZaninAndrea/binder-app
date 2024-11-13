@@ -1,53 +1,27 @@
 const dayjs = require("dayjs")
+const {
+    createEmptyCard,
+    formatDate,
+    FSRS,
+    generatorParameters,
+    Rating,
+    Grades,
+} = require("ts-fsrs")
 
-function lerp(a, b, t) {
-    return a * (1 - t) + b * t
-}
+const f = new FSRS()
 
-function computeErrorProbability(previousRepetition, time, halfLife) {
-    let reviewDelay = time - previousRepetition
-
-    return 1 - Math.pow(2, -reviewDelay / halfLife)
-}
-
-function supermemo2(
-    quality,
-    reviewTime,
-    lastHalfLife,
-    lastFactor,
-    previousRepetition
-) {
-    if (previousRepetition === null) {
-        return { factor: 2.5, halfLife: 6.58 * 24 * 3600 * 1000 }
-    }
-
-    let errorProbability = computeErrorProbability(
-        previousRepetition,
-        reviewTime,
-        lastHalfLife
-    )
-    let reviewUsefulness = errorProbability * 10
-    reviewUsefulness = reviewUsefulness > 1.5 ? 1.5 : reviewUsefulness
-
-    let factorUpdate = 0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02)
-    let newFac = lastFactor + factorUpdate * reviewUsefulness
-    if (newFac < 1.3) {
-        newFac = 1.3
-    } else if (newFac > 2.5) {
-        newFac = 2.5
-    }
-
-    let newHalfLife
-    if (quality < 3) {
-        newHalfLife = lastHalfLife / 2
+function qualityToRating(quality) {
+    if (quality < 2) {
+        return Rating.Again
+    } else if (quality === 2) {
+        return Rating.Hard
     } else {
-        newHalfLife = lastHalfLife * lerp(1, newFac, reviewUsefulness)
+        return Rating.Easy
     }
+}
 
-    return {
-        factor: newFac,
-        halfLife: newHalfLife,
-    }
+function computeErrorProbability(fsrs, now) {
+    return 1.0
 }
 
 class Deck {
@@ -80,14 +54,7 @@ class Deck {
             throw new Error("Could not find card by id")
         }
 
-        let { factor, halfLife } = supermemo2(
-            quality,
-            new Date(),
-            card.halfLife,
-            card.factor,
-            card.lastRepetition
-        )
-
+        let fsrs = f.next(card.fsrs, new Date(), qualityToRating(quality))
         this.cards = this.cards.map((entry) =>
             entry.id === card.id
                 ? {
@@ -98,8 +65,7 @@ class Deck {
                               : entry.correctRepetitions,
                       totalRepetitions: entry.totalRepetitions + 1,
                       lastRepetition: new Date(),
-                      factor,
-                      halfLife,
+                      fsrs,
                   }
                 : entry
         )
@@ -127,9 +93,8 @@ class Deck {
             }
 
             let errorProbability = computeErrorProbability(
-                this.cards[i].lastRepetition,
-                now,
-                this.cards[i].halfLife
+                this.cards[i].fsrs,
+                now
             )
 
             probabilities.push({ probability: errorProbability, index: i })
@@ -162,9 +127,8 @@ class Deck {
             }
 
             let errorProbability = computeErrorProbability(
-                this.cards[i].lastRepetition,
-                time,
-                this.cards[i].halfLife
+                this.cards[i].fsrs,
+                time
             )
 
             probabilities.push(1 - errorProbability)
@@ -319,11 +283,7 @@ export function computeCardStrength(card) {
     if (card.lastRepetition === null) return 0
 
     let now = new Date()
-    let errorProbability = computeErrorProbability(
-        card.lastRepetition,
-        now,
-        card.halfLife
-    )
+    let errorProbability = computeErrorProbability(card.fsrs, now)
 
     return 1 - errorProbability
 }
