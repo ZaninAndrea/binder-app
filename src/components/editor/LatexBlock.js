@@ -7,6 +7,7 @@ import {
 } from "@tiptap/core"
 import { ReactNodeViewRenderer, NodeViewWrapper } from "@tiptap/react"
 import katex from "katex"
+require("katex/contrib/mhchem/mhchem.js")
 
 function renderLatexBlock(source) {
     if (source === "" || source === null || source === undefined)
