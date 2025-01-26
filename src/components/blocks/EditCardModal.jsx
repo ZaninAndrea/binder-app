@@ -11,7 +11,7 @@ import { Mobile, Desktop } from "../utils/MobileDesktop"
 import Tabs from "@mui/joy/Tabs"
 import TabList from "@mui/joy/TabList"
 import Tab from "@mui/joy/Tab"
-import { computeCardStrength } from "../../controller/deck"
+import { computeCardStrength, computeHalfLife } from "../../controller/deck"
 import Menu from "@material-ui/core/Menu"
 import MenuItem from "@material-ui/core/MenuItem"
 
@@ -421,8 +421,7 @@ export default class EditCardModal extends React.Component {
                         <div className="stats-block">
                             <div className="score">
                                 {Math.round(
-                                    this.props.card.halfLife /
-                                        (24 * 3600 * 1000)
+                                    computeHalfLife(this.props.card.fsrs)
                                 )}
                             </div>
                             <div className="description">Durability</div>

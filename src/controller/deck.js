@@ -1,14 +1,23 @@
-const dayjs = require("dayjs")
-const {
+import dayjs from "dayjs/esm/index.js"
+import {
     createEmptyCard,
     formatDate,
     FSRS,
     generatorParameters,
     Rating,
     Grades,
-} = require("ts-fsrs")
+    State,
+} from "ts-fsrs"
 
-const f = new FSRS()
+const f = new FSRS({
+    request_retention: 0.9,
+    maximum_interval: 36500,
+    w: [
+        0.351, 1.0322, 2.7665, 13.8047, 6.9274, 0.7638, 2.1923, 0.001, 2.1606,
+        0.1401, 1.6333, 2.004, 0.001, 0.3529, 2.589, 0.1048, 3.6259, 0.0076,
+        0.2189,
+    ],
+})
 
 function qualityToRating(quality) {
     if (quality < 2) {
@@ -20,8 +29,32 @@ function qualityToRating(quality) {
     }
 }
 
+const FACTOR = 19 / 81
+const DECAY = -0.5
 function computeErrorProbability(fsrs, now) {
-    return 1.0
+    let delta = (now - fsrs.last_review) / (24 * 3600 * 1000)
+    return Math.pow(1 + FACTOR * (delta / fsrs.stability), DECAY)
+}
+
+export function computeHalfLife(fsrs) {
+    return (fsrs.stability * (Math.pow(0.5, 1 / DECAY) - 1)) / FACTOR
+}
+
+function decodeFSRS(card) {
+    let fsrsCard = createEmptyCard()
+    fsrsCard.difficulty = card.fsrs.Difficulty
+    fsrsCard.due = new Date(card.fsrs.Due)
+    fsrsCard.elapsed_days = card.fsrs.ElapsedDays
+    fsrsCard.lapses = card.fsrs.Lapses
+    fsrsCard.last_review = card.fsrs.LastReview
+        ? new Date(card.fsrs.LastReview)
+        : undefined
+    fsrsCard.reps = card.fsrs.Reps
+    fsrsCard.scheduled_days = card.fsrs.ScheduledDays
+    fsrsCard.stability = card.fsrs.Stability
+    fsrsCard.state = card.fsrs.State
+
+    return fsrsCard
 }
 
 class Deck {
@@ -31,6 +64,7 @@ class Deck {
             lastRepetition: c.lastRepetition
                 ? new Date(c.lastRepetition)
                 : null,
+            fsrs: decodeFSRS(c),
         }))
         this.id = deck.id
         this.name = deck.name
@@ -54,7 +88,7 @@ class Deck {
             throw new Error("Could not find card by id")
         }
 
-        let fsrs = f.next(card.fsrs, new Date(), qualityToRating(quality))
+        let fsrs = f.next(card.fsrs, new Date(), qualityToRating(quality)).card
         this.cards = this.cards.map((entry) =>
             entry.id === card.id
                 ? {
@@ -141,37 +175,17 @@ class Deck {
         return meanProbability
     }
 
-    getMedianHalfLife() {
-        const halfLifes = this.cards
-            .filter((c) => c.lastRepetition !== null && !c.paused)
-            .map((c) => c.halfLife)
-        let medianHalfLife = 0
-
-        if (halfLifes.length > 0) {
-            if (halfLifes.length % 2 === 0) {
-                medianHalfLife =
-                    (halfLifes[halfLifes.length / 2] +
-                        halfLifes[halfLifes.length / 2 - 1]) /
-                    2
-            } else {
-                medianHalfLife = halfLifes[Math.floor(halfLifes.length / 2)]
-            }
-        }
-
-        return medianHalfLife
-    }
-
     // Computes the number of days it will take to halve the probability of
     // recalling a card
     getHalfLife() {
         const halfLifes = this.cards
             .filter((c) => c.lastRepetition !== null && !c.paused)
-            .map((c) => c.halfLife)
+            .map((c) => computeHalfLife(c.fsrs))
         if (halfLifes.length === 0) return 0
 
         const targetStrength = this.getStrengthInNDays(0) / 2
-        let upperBound = Math.max(...halfLifes) / (24 * 3600 * 1000)
-        let lowerBound = Math.min(...halfLifes) / (24 * 3600 * 1000)
+        let upperBound = Math.max(...halfLifes)
+        let lowerBound = Math.min(...halfLifes)
 
         // Binary search for the half life
         while (upperBound - lowerBound > 0.5) {
@@ -205,8 +219,7 @@ class Deck {
             correctRepetitions: 0,
             totalRepetitions: 0,
             lastRepetition: null,
-            halfLife: 0,
-            factor: 2.5,
+            fsrs: createEmptyCard(),
             front,
             back,
             paused: false,
@@ -236,6 +249,7 @@ class Deck {
         newCard.lastRepetition = newCard.lastRepetition
             ? new Date(newCard.lastRepetition)
             : null
+        newCard.fsrs = decodeFSRS(newCard)
         targetDeck.cards.push(newCard)
         targetDeck.onDeckUpdate()
 
@@ -252,6 +266,7 @@ class Deck {
         newCard.lastRepetition = newCard.lastRepetition
             ? new Date(newCard.lastRepetition)
             : null
+        newCard.fsrs = decodeFSRS(newCard)
         targetDeck.cards.push(newCard)
         targetDeck.onDeckUpdate()
 

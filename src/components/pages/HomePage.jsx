@@ -3,7 +3,7 @@ import CalendarHeatmap from "react-calendar-heatmap"
 import "react-calendar-heatmap/dist/styles.css"
 import { Mobile, Desktop } from "../utils/MobileDesktop"
 import RepetitionsCalendar from "../blocks/RepetitionsCalendar"
-const dayjs = require("dayjs")
+import dayjs from "dayjs/esm/index.js"
 
 export default class HomePage extends Component {
     componentDidMount() {

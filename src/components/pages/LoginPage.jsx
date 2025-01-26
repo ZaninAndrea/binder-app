@@ -9,7 +9,7 @@ export default class LoginPage extends React.Component {
     }
 
     login = async () => {
-        const res = await fetch(process.env.BACKEND_URL + `/users/login`, {
+        const res = await fetch(import.meta.env.VITE_BACKEND_URL + `/users/login`, {
             headers: {
                 "content-type": "application/json",
             },

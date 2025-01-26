@@ -11,11 +11,11 @@ import SignupPage from "./pages/SignupPage"
 import { Mobile, Desktop } from "./utils/MobileDesktop"
 import { createMuiTheme } from "@material-ui/core"
 import { ThemeProvider } from "@material-ui/styles"
-import dayjs from "dayjs"
+import dayjs from "dayjs/esm/index.js"
 import WarningIcon from "@material-ui/icons/Warning"
 import Tooltip from "@mui/joy/Tooltip"
-import * as utc from "dayjs/plugin/utc"
-import * as timezone from "dayjs/plugin/timezone"
+import utc from "dayjs/plugin/utc"
+import timezone from "dayjs/plugin/timezone"
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -209,19 +209,19 @@ class App extends React.Component {
     setBearer = async (bearer, redirectTo = "/") => {
         localStorage.setItem("bearer", bearer)
 
-        let userData = await fetch(process.env.BACKEND_URL + "/users", {
+        let userData = await fetch(import.meta.env.VITE_BACKEND_URL + "/users", {
             headers: {
                 Authorization: "Bearer " + bearer,
             },
         }).then((res) => res.json())
-        let decksData = await fetch(process.env.BACKEND_URL + "/decks", {
+        let decksData = await fetch(import.meta.env.VITE_BACKEND_URL + "/decks", {
             headers: {
                 Authorization: "Bearer " + bearer,
             },
         }).then((res) => res.json())
 
         this.dispatcher = new BackgroundDispatcher(
-            process.env.BACKEND_URL,
+            import.meta.env.VITE_BACKEND_URL,
             bearer
         )
         this.unloadListener = window.addEventListener(
@@ -261,7 +261,7 @@ class App extends React.Component {
     }
 
     deleteUser = async () => {
-        await fetch(process.env.BACKEND_URL + "/users", {
+        await fetch(import.meta.env.VITE_BACKEND_URL + "/users", {
             method: "DELETE",
             headers: {
                 Authorization: "Bearer " + this.state.bearer,

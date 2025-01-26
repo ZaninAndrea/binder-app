@@ -9,7 +9,7 @@ export default class SignupPage extends React.Component {
     }
 
     signup = async () => {
-        const res = await fetch(`${process.env.BACKEND_URL}/users`, {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users`, {
             body: JSON.stringify({
                 email: this.state.email,
                 password: this.state.password,

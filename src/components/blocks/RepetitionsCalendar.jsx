@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import dayjs from "dayjs"
+import dayjs from "dayjs/esm/index.js"
 import Tooltip from "@mui/joy/Tooltip"
 import Typography from "@mui/joy/Typography"
 
