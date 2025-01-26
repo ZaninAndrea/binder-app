@@ -1,5 +1,5 @@
 import React from "react"
-import { useEditor, EditorContent, BubbleMenu } from "@tiptap/react"
+import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight"
 import Placeholder from "@tiptap/extension-placeholder"
@@ -7,6 +7,7 @@ import Table from "@tiptap/extension-table"
 import TableHeader from "@tiptap/extension-table-header"
 import TableRow from "@tiptap/extension-table-row"
 import TableCell from "@tiptap/extension-table-cell"
+import Image from "@tiptap/extension-image"
 import { lowlight } from "./lowlight"
 import LatexBlock from "./LatexBlock"
 import LatexInline from "./LatexInline"
@@ -41,6 +42,12 @@ const Editor = ({
                 TableHeader,
                 CodeBlockLowlight.configure({
                     lowlight,
+                }),
+                Image.configure({
+                    allowBase64: true,
+                    HTMLAttributes: {
+                        style: "max-width: 100%;max-height:100%;",
+                    },
                 }),
             ],
             content: value,
