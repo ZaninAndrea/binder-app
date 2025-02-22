@@ -282,9 +282,7 @@ export default class EditCardModal extends React.Component {
                                         .chain()
                                         .focus()
                                         .setImage({
-                                            src:
-                                                "data:image/jpg;base64" +
-                                                e.target.result,
+                                            src: e.target.result,
                                         })
                                         .run()
                                 }
