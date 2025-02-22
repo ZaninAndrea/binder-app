@@ -17,6 +17,8 @@
         "@mui/icons-material": "^5.15.18",
         "@mui/joy": "^5.0.0-alpha.73",
         "@mui/material": "^5.15.18",
+        "@tiptap-pro/extension-file-handler": "^2.17.4",
+        "@tiptap-pro/extension-unique-id": "^2.17.4",
         "@tiptap/extension-code-block-lowlight": "2.0.2",
         "@tiptap/extension-floating-menu": "^2.0.0-beta.218",
         "@tiptap/extension-image": "^2.11.3",

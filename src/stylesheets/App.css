@@ -620,8 +620,8 @@ a {
     }
 }
 
-.modal-editor .editor {
-    min-height: calc(40vh - 55px);
+.modal-editor .editor .tiptap {
+    min-height: calc(40vh - 80px);
 }
 
 ::-webkit-scrollbar {
@@ -651,11 +651,32 @@ a {
 }
 
 .modal-editor .front {
-    padding: 16px 16px 32px 16px;
+    padding: 16px 16px 0 16px;
     border-bottom: 3px dashed var(--primary-text-color);
 }
 .modal-editor .back {
-    padding: 30px 16px 16px 16px;
+    padding: 0 16px 16px 16px;
+}
+
+.modal-editor .front .editor .tiptap {
+    padding-bottom: 32px;
+}
+.modal-editor .back .editor .tiptap {
+    padding-top: 32px;
+}
+
+.editor img {
+    max-width: 80%;
+    max-height: 100%;
+    display: block;
+    margin: 0 auto;
+}
+
+@media (orientation: portrait) {
+    .editor img {
+        max-width: 100%;
+        max-height: 80%;
+    }
 }
 
 .deckName {
