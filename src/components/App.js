@@ -89,17 +89,30 @@ class BackgroundDispatcher {
 }
 
 class DispatcherAlert extends React.Component {
-    state = {
-        show: false,
-        pendingChanges: 0,
+    constructor(props) {
+        super(props)
+        this.handleBeforeUnload = this.handleBeforeUnload.bind(this)
+        this.state = {
+            show: false,
+            pendingChanges: 0,
+        }
     }
 
     componentDidMount() {
         this.props.dispatcher.queueCallback = this.handleQueueUpdate
         this.showTimer = null
+        window.addEventListener("beforeunload", this.handleBeforeUnload)
     }
     componentWillUnmount() {
         this.props.dispatcher.queueCallback = null
+        window.removeEventListener("beforeunload", this.handleBeforeUnload)
+    }
+
+    handleBeforeUnload(event) {
+        if (this.state.pendingChanges > 0) {
+            event.preventDefault()
+            event.returnValue = "" // Required for Chrome
+        }
     }
 
     handleQueueUpdate = () => {
