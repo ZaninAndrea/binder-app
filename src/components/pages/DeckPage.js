@@ -71,6 +71,7 @@ export default class DeckPage extends React.Component {
             wantsToDelete: false,
             name: this.props.deck && this.props.deck.name,
             loadingDeck: false,
+            creatingCard: false,
             redirectTo: "",
         }
     }
@@ -114,6 +115,21 @@ export default class DeckPage extends React.Component {
             }
             reader.readAsText(file)
         })
+    }
+
+    onNewCard = async () => {
+        if (this.state.creatingCard) return
+
+        this.setState({ creatingCard: true })
+
+        try {
+            const card = await this.props.deck.addCard()
+            this.setState({
+                editCard: card.id,
+            })
+        } finally {
+            this.setState({ creatingCard: false })
+        }
     }
 
     render() {
@@ -379,13 +395,15 @@ export default class DeckPage extends React.Component {
                     <div
                         key="new-card"
                         id="new-card"
-                        onClick={async () =>
-                            this.setState({
-                                editCard: (await deck.addCard()).id,
-                            })
-                        }
+                        className={this.state.creatingCard ? "disabled" : ""}
+                        aria-disabled={this.state.creatingCard}
+                        onClick={this.onNewCard}
                     >
-                        New Card
+                        {this.state.creatingCard ? (
+                            <MinimalLoader />
+                        ) : (
+                            "New Card"
+                        )}
                     </div>{" "}
                     {deck.cards.length === 0 && (
                         <div

@@ -294,6 +294,18 @@ a {
     border-style: dashed;
     align-items: center;
 }
+
+#new-card.disabled {
+    cursor: default;
+    opacity: 0.65;
+    pointer-events: none;
+}
+
+.cardsList #new-card.disabled:hover {
+    color: var(--primary-text-color);
+    border-color: var(--primary-text-color);
+}
+
 .cardsList div:hover {
     color: var(--primary-highlight-color);
     border-color: var(--primary-highlight-color);
