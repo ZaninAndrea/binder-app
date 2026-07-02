@@ -68,6 +68,9 @@ export default class EditCardModal extends React.Component {
                         onBlur={() => {
                             this.forceUpdate()
                         }}
+                        onSelectionUpdate={() => {
+                            this.forceUpdate()
+                        }}
                     />
                 </div>
                 <div className="back">
@@ -88,6 +91,9 @@ export default class EditCardModal extends React.Component {
                             this.setState({ focusedEditor: "back" })
                         }}
                         onBlur={() => {
+                            this.forceUpdate()
+                        }}
+                        onSelectionUpdate={() => {
                             this.forceUpdate()
                         }}
                     />

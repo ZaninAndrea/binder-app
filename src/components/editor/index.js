@@ -23,6 +23,7 @@ const Editor = ({
     editorRef,
     onFocus,
     onBlur,
+    onSelectionUpdate,
 }) => {
     const editor = useEditor(
         {
@@ -111,6 +112,9 @@ const Editor = ({
             },
             onBlur: ({ editor }) => {
                 if (onBlur) onBlur()
+            },
+            onSelectionUpdate: () => {
+                if (onSelectionUpdate) onSelectionUpdate()
             },
             onUpdate: ({ editor }) => {
                 onUpdate(editor.getHTML())

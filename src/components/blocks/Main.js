@@ -86,8 +86,11 @@ class Main extends React.Component {
                         return (
                             <LearnPage
                                 decks={deck}
+                                allDecks={this.props.decks}
                                 backTo={`/deck/${match.params.deckId}`}
                                 trackAction={this.props.trackAction}
+                                dispatcher={this.props.dispatcher}
+                                onDeckUpdate={this.props.onDeckUpdate}
                             />
                         )
                     }}
@@ -103,8 +106,11 @@ class Main extends React.Component {
                         return (
                             <ReviewPage
                                 decks={deck}
+                                allDecks={this.props.decks}
                                 backTo={`/deck/${match.params.deckId}`}
                                 trackAction={this.props.trackAction}
+                                dispatcher={this.props.dispatcher}
+                                onDeckUpdate={this.props.onDeckUpdate}
                             />
                         )
                     }}
